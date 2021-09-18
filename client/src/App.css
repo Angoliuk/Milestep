@@ -1,0 +1,28 @@
+a{
+    text-decoration: none;
+    font-size: 18px;
+    font-weight: 600
+}
+
+button{
+    border-radius: 15px;
+    padding: 10px;
+    background-color: rgb(32, 75, 216);
+    border: 0;
+    color: White;
+    font-size: 17px;
+    font-weight: 700;
+    margin: 10px;
+}
+
+input{
+    height: 20px;
+    margin: 7px;
+}
+
+.App{
+    display: flex;
+    justify-content: center;
+}
+
+
