@@ -3,14 +3,18 @@ import React from 'react'
 import {Switch, Route, Redirect} from 'react-router-dom'
 import { AuthPage } from './AuthPage'
 import { CreatePage } from './CreatePage'
-import { EventsPage } from './EventsPage'
+import { CompaniesPage } from './CompaniesPage'
+import { WorkPage } from './Work'
 
 export const useRoutes = isAuth => {
     if(isAuth){
         return(
             <Switch>
-                <Route path="/event" exact>
-                    <EventsPage />
+                <Route path="/companies" exact>
+                    <CompaniesPage />
+                </Route>
+                <Route path="/work" exact>
+                    <WorkPage />
                 </Route>
                 <Route path="/create" exact>
                     <CreatePage />
