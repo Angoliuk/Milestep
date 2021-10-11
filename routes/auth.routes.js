@@ -4,14 +4,16 @@ const config = require('config')
 const jwt = require('jsonwebtoken')
 const {check, validationResult} = require('express-validator')
 const User = require('../models/User')
-const EventNew = require('../models/Events')
+const Company = require('../models/Company')
+const { isValidObjectId } = require('mongoose')
 const router = Router()
 
 router.post(
     '/register',
      [
+        check('name', "short name").isLength({min:3}),
         check('email', 'wrong email').isEmail(),
-        check('password', "wrong pass").isLength({min:6})
+        check('password', "wrong pass").isLength({min:6}),
     ] 
      , async (req, res) => {
     try {
@@ -24,7 +26,7 @@ router.post(
             })
         }
 
-        const {email, password} = req.body
+        const {name, email, password} = req.body
 
         const candidate = await User.findOne({ email })
 
@@ -33,7 +35,7 @@ router.post(
         }
 
         const hashedPass = await bcrypt.hash(password, 12)
-        const user = new User({email, password: hashedPass})
+        const user = new User({name, email, password: hashedPass})
 
         await user.save()
 
@@ -48,7 +50,8 @@ router.post(
     '/login',
     [
         check('email', 'wrong email').normalizeEmail().isEmail(),
-        check('password', "worng pass").exists()
+        check('password', "worng pass").exists(),
+        check('name', "wrong name").exists(),
     ] 
      , async (req, res) => {
     try {
@@ -62,7 +65,7 @@ router.post(
             })
         }
 
-        const {email, password} = req.body
+        const {name, email, password} = req.body
 
         const user = await User.findOne({email})
 
@@ -79,10 +82,10 @@ router.post(
         const token = jwt.sign(
             {userId : user.id},
             config.get('jwtSecret'),
-            {expiresIn: '1000000h'}
+            {expiresIn: '10h'}
         )
 
-        res.json({ token, userId: user.id })
+        res.json({name, token, userId: user.id })
 
     } catch (e) {
         res.status(500).json({message: "auth routes 500"})
@@ -90,12 +93,11 @@ router.post(
 })
 
 router.get(
-    "/events",
+    "/allCompanies",
      async (req, res) => {
     try {
-        const you = await User.findOne({token: req.token})
-        const allEvents = await EventNew.find({token: you})
-        res.json(allEvents)
+        const allCompanies = await Company.find()
+        res.json(allCompanies)
         
 
     }catch(e){
@@ -107,12 +109,23 @@ router.post(
     "/create",
     async (req, res) => {
         try {
-            const {date, description, owner, token} = req.body
-            console.log(date, description, owner)
-            const event = new EventNew({date, description, owner, token})
-
-             await event.save()
+            const {name, edrpou, numOfWorkers, payerPDW, address, phoneNum, salary, responsible, taxationSystem, tasks} = req.body
+            const company = new Company({name, edrpou, numOfWorkers, payerPDW, address, phoneNum, salary, responsible, taxationSystem, tasks})
+            await company.save()
             res.status(201).json({message: "ok"})
+        } catch (e) {
+            console.error(req.body);
+            res.status(500).json({message: "bug"})
+        }
+    })
+
+router.post(
+    "/update",
+    async (req, res) => {
+        try {
+            const {id, tasksList} = req.body
+            await Company.findOneAndUpdate( {_id: id}, {tasks: tasksList})
+            res.status(201).json({message: "update completed"})
         } catch (e) {
             console.error(req.body);
             res.status(500).json({message: "bug"})

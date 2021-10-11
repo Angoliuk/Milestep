@@ -7,7 +7,7 @@ export const AuthPage = () => {
     const auth = useContext(AuthContext)
     const {loading, request} = useHttp()  
     const [form, setForm] = useState({
-        email:'', password:''
+        name:'', email:'', password:'',
     })
 
 
@@ -24,9 +24,11 @@ export const AuthPage = () => {
         }
     }
     const loginHandler = async () => {
+        console.log(1)
         try {
             const data = await request('/api/auth/login', 'POST', {...form})
-            auth.login(data.token, data.userId)
+            console.log('login button', data.name)
+            auth.login(data.name, data.token, data.userId)
         } catch (e) {
             alert("wrong data")
         }
@@ -35,6 +37,10 @@ export const AuthPage = () => {
         <div className="main-block">
             <h1>AuthPage</h1>
             <div>
+                <div>
+                    <input id="name" name="name" onChange={changeHandler}/>
+                    <label htmlFor="name">name</label>
+                </div>
                 <div>
                     <input id="Email" name="email" onChange={changeHandler}/>
                     <label htmlFor="Email">Email</label>

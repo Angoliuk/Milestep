@@ -6,7 +6,7 @@ import { AuthContext } from './context/AuthContext';
 import { Loader } from './Components/Loader.js'
 
 function App() {
-  const {token, login, logout, userId, ready} = useAuth()
+  const {name, token, login, logout, userId, ready} = useAuth()
   const isAuth = !!token
   const routes = useRoutes(isAuth)
 
@@ -16,7 +16,7 @@ function App() {
 
   return (
     <AuthContext.Provider value={{
-      token, login, logout, userId, isAuth
+      name, token, login, logout, userId, isAuth
     }}>
       <div className="App">
         <Router>
