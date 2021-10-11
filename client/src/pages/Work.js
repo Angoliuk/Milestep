@@ -6,7 +6,7 @@ import { useHttp } from '../hooks/http.hook'
 export const WorkPage = () => {
 
     let [list, setList] = useState([])
-    const [numOfDays, setNumOfDays] = useState()
+    const [numOfDays, setNumOfDays] = useState(5)
     const {token,userId ,logout} = useContext(AuthContext)
     const {loading, request} = useHttp()
 
@@ -27,6 +27,10 @@ export const WorkPage = () => {
             console.log("here")
         }
     } ,[request])
+
+    useEffect(() => {
+        dataRequest()
+    }, [dataRequest])
 
     const updateHandler = async (companyInfo, task) => {
         list.find(company => company._id === companyInfo._id).tasks[task.id].ready = true

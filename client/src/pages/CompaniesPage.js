@@ -22,26 +22,21 @@ export const CompaniesPage = () => {
     const dataRequest = useCallback( async () => {
         try {
             const data = await request("/api/auth/allCompanies", "GET", null)
-            console.log('data', data);
             setList(data)
         } catch (e) {
             console.error(e);
             console.log("here")
         }
     } ,[request])
+
+    useEffect(() => {
+        dataRequest()
+    }, [dataRequest])
     
 
     return (
         <div className="container">
             <NavBar />
-            {/* <label for="pet-select">Фільтрувати список:</label>
-            <select name="pets" id="pet-select">
-                <option value="all">Всі компанії</option>
-                <option value="1">Dog</option>
-                <option value="2">Cat</option>
-                <option value="5">Hamster</option>
-            </select> */}
-            <button onClick={dataRequest}>Show</button>
             {list && list.map((oneElem)=>{
                return(
                 <div className="element">

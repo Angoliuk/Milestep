@@ -98,8 +98,6 @@ router.get(
     try {
         const allCompanies = await Company.find()
         res.json(allCompanies)
-        
-
     }catch(e){
         res.status(500).json({message:"something went wrong"})
     }
@@ -131,5 +129,16 @@ router.post(
             res.status(500).json({message: "bug"})
         }
     })
+
+router.get(
+    "/allUsers",
+     async (req, res) => {
+    try {
+        const allUsers = await User.find()
+        res.json(allUsers)
+    }catch(e){
+        res.status(500).json({message:"something went wrong"})
+    }
+})
 
 module.exports = router

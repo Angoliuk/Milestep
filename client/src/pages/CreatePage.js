@@ -1,4 +1,4 @@
-import React, {useCallback, useContext, useState} from 'react'
+import React, {useCallback, useContext, useEffect, useState} from 'react'
 import { AuthContext } from '../context/AuthContext'
 import { NavBar } from '../Components/NavBar'
 import { useHttp } from '../hooks/http.hook'
@@ -8,7 +8,7 @@ export const CreatePage = () => {
 
     const {loading, request} = useHttp() 
     const {userId, token} = useContext(AuthContext)
-
+    const [users, setUsers] = useState([])
 
 
     const [eForm, setEForm] = useState({
@@ -26,10 +26,23 @@ export const CreatePage = () => {
         }
     }
 
+    const dataRequest = useCallback(async () => {
+        try {
+            const data = await request('/api/auth/allUsers', 'GET', null)
+            setUsers(data)
+            console.log(data)
+        } catch (e) {
+            console.log(e)
+        }
+    }, [request])
+
+    useEffect(() => {
+        dataRequest()
+    }, [dataRequest])
+
     const changeHandlerTask = (event) => {
         if (event.target.name === 'ready') {
             setTaskParam({...taskParam, [event.target.name]: event.target.checked})
-            console.log(taskParam)
         }else{
             setTaskParam({...taskParam, [event.target.name]: event.target.value})
         }
@@ -110,7 +123,15 @@ export const CreatePage = () => {
                     <label htmlFor="salary">Сума оплати</ label>
                 </div>
                 <div>
-                    <input onChange={changeHandlerForm} name="responsible" id="responsible"/>
+                    <input onChange={changeHandlerForm} name="responsible" id="responsible" list="responsibleDataList" />
+                    <datalist id="responsibleDataList">
+                        {console.log(users)}
+                        {users.map((user) => {
+                            return(
+                                <option value={user.name}/>
+                        )
+                        })}
+                    </datalist>
                     <label htmlFor="responsible">Відповідальний</ label>
                 </div>
                 <div>
