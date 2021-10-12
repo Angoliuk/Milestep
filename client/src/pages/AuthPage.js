@@ -35,11 +35,11 @@ export const AuthPage = () => {
     }
     return(
         <div className="main-block">
-            <h1>AuthPage</h1>
+            <h1>Вхід в акаунт</h1>
             <div>
                 <div>
                     <input id="name" name="name" onChange={changeHandler}/>
-                    <label htmlFor="name">name</label>
+                    <label htmlFor="name">Ім'я</label>
                 </div>
                 <div>
                     <input id="Email" name="email" onChange={changeHandler}/>
@@ -47,11 +47,11 @@ export const AuthPage = () => {
                 </div>
                 <div>
                     <input id="Password" name="password" onChange={changeHandler}/>
-                    <label htmlFor="Password">Password</label>
+                    <label htmlFor="Password">Пароль</label>
                 </div>
                 <div>
-                    <button onClick={loginHandler} disabled={loading}>Login</button>
-                    <button onClick={registerHandler} disabled={loading}>Register</button>
+                    <button onClick={loginHandler} disabled={loading}>Увійти</button>
+                    <button onClick={registerHandler} disabled={loading}>Регістрація</button>
                 </div>
             </div>
         </div>
