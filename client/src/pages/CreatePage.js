@@ -140,7 +140,7 @@ export const CreatePage = () => {
                 </div>
             </div>
             <div>
-                <h1>Add task</h1>
+                <h1>Додати завдання</h1>
                 <div>
                     <input onChange={changeHandlerTask} name="title" id="title"/>
                     <label htmlFor="title">Завдання</ label>
