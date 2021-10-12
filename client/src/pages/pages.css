@@ -6,22 +6,53 @@
 }
 
 
-.description-input{
-    height: 50px;
-    width: 250px;
+.searchInput{
+    height: 30px;
+    width: 40%;
 }
 
 .textarea-block{
     margin-left: 7px;
 }
 
-.element{
+.taskElement{
     padding: 15px;
     margin: 15px;
     background-color: rgb(169, 195, 250);
     border-radius: 10px;
 }
 
-.element p{
+.taskElement span{
     font-size: 16px;
+    margin-right: 5%;
+}
+.taskElement p{
+    font-size: 16px;
+    margin-right: 5%;
+}
+
+.companyElement{
+    padding: 15px;
+    margin: 15px;
+    background-color: rgb(169, 195, 250);
+    border-radius: 10px;
+}
+
+.inputForCreate{
+    width: 60%;
+    height: 30px;
+}
+
+.checkboxForCreate{
+    width: 5%;
+}
+
+.checkboxBlock{
+    display: flex;
+    align-items: center;
+}
+
+input{
+    border-radius: 5px;
+    border: 1px solid gray
 }

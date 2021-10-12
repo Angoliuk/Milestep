@@ -5,9 +5,9 @@ import { useHttp } from '../hooks/http.hook'
 
 export const WorkPage = () => {
 
-    let [list, setList] = useState([])
+    const {token,userId, name ,logout} = useContext(AuthContext)
+    const [list, setList] = useState([])
     const [numOfDays, setNumOfDays] = useState(5)
-    const {token,userId ,logout} = useContext(AuthContext)
     const {loading, request} = useHttp()
 
     const logoutHandler = async () => {
@@ -21,18 +21,18 @@ export const WorkPage = () => {
     const dataRequest = useCallback( async () => {
         try {
             const data = await request("/api/auth/allCompanies", "GET", null)
-            setList(data)
+            setList(data.filter((company) => company.responsible === name))
         } catch (e) {
             console.error(e);
             console.log("here")
         }
-    } ,[request])
+    } ,[request, name])
 
     useEffect(() => {
         dataRequest()
     }, [dataRequest])
 
-    const updateHandler = async (companyInfo, task) => {
+    const updateHandler = useCallback( async (companyInfo, task) => {
         list.find(company => company._id === companyInfo._id).tasks[task.id].ready = true
         let tasksList = list.find(company => company._id === companyInfo._id).tasks
         console.log(tasksList)
@@ -43,12 +43,16 @@ export const WorkPage = () => {
             console.log(e)
         }
         // 
-    }
+    }, [list, request])
 
     const handleChangeInput = (event) => {
         setNumOfDays(event.target.value)
         console.log(numOfDays)
     }
+
+    let time = new Date()
+    time = time.setDate(time.getDate() + numOfDays)
+    time = new Date(time)
 
     return (
         <div className="container">
@@ -56,35 +60,29 @@ export const WorkPage = () => {
             <input onChange={handleChangeInput} name="numOfDays" id="numOfDays" type="number" />
             <label htmlFor="numOfDays">Кількість днів</label>
             <button onClick={dataRequest}>Show</button>
-            {list && list.map((oneCompany)=>{
-                let time = new Date()
-                time = time.setDate(time.getDate() + numOfDays)
-                time = new Date(time)
-               if (oneCompany.tasks.find(item => item.ready === false) !== -1 && oneCompany.tasks.find(item => new Date(item.date) <= time) !== -1) {
-                return(
-                    <div className="element">
-                        <p>Назва: {oneCompany.name}</p>
-                        <p>ЄДПРОУ: {oneCompany.edrpou}</p>
-                        <p>Номер Телефону: {oneCompany.phoneNum}</p>
-                        <p>Список завдань: </p>
-                        <ol>
-                            {oneCompany.tasks.map((task)=>{
-                                if (!task.ready && new Date(task.date) <= time) {
-                                    return(
-                                        <li className='element' key={task.id}>
-                                            <p>Завдання: {task.title}</p>
-                                            <p>Дата: {task.date}</p>
-                                            <p>Готово: {(task.ready) ? "Так" : "Ні"}</p>
-                                            <button onClick={() => {updateHandler(oneCompany, task)}} disabled={loading}>виконано</button>
-                                        </li>
-                                    )
-                                }  
-                            })}
-                        </ol>
-                    </div>)
-               }
-               
-           })}  
+            {
+                list.map((oneCompany)=>{
+                    return(
+                        <div className="companyElement">
+                            <p>Назва: {oneCompany.name}</p>
+                            <p>ЄДПРОУ: {oneCompany.edrpou}</p>
+                            <p>Список завдань: </p>
+                            <ol>
+                                {oneCompany.tasks.map((task)=>{
+                                    if (!task.ready && new Date(task.date) <= time) {
+                                        return(
+                                            <li className='taskElement' key={task.id}>
+                                                <p>Завдання: {task.title}</p>
+                                                <span>Дата: {task.date}</span>
+                                                <span>Готово: {(task.ready) ? "Так" : "Ні"}</span>
+                                                <button onClick={() => {updateHandler(oneCompany, task)}} disabled={loading}>виконано</button>
+                                            </li>
+                                        )
+                                    }  
+                                })}
+                            </ol>
+                        </div>)
+                   })}
         </div>
         )
 }

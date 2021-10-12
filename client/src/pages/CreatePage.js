@@ -51,7 +51,7 @@ export const CreatePage = () => {
     const TaskList = (()=>{
         const list = eForm.tasks.map((task)=>{
             return(
-                <div className='element' key={task.id}>
+                <div className='taskElement' key={task.id}>
                     <p>Завдання: {task.title}</p>
                     <p>Періодичність: {task.period}</p>
                     <p>Дата: {task.date}</p>
@@ -93,37 +93,33 @@ export const CreatePage = () => {
         <div className="main-block">
             <NavBar />
             <div>
-                <h1>Create new event</h1>
+                <h1>Інформація про компанію</h1>
                 <div>
-                    <input onChange={changeHandlerForm} name="name" id="name"/>
+                    <input onChange={changeHandlerForm} className="inputForCreate" name="name" id="name"/>
                     <label htmlFor="name">Назва</ label>
                 </div>
                 <div>
-                    <input onChange={changeHandlerForm} name="edrpou" id="edrpou" type="number"/>
+                    <input onChange={changeHandlerForm} className="inputForCreate" name="edrpou" id="edrpou" type="number"/>
                     <label htmlFor="date">ЄДПРОУ</ label>
                 </div>
                 <div>
-                    <input onChange={changeHandlerForm} name="payerPDW" id="payerPDW" type="checkbox"/>
-                    <label htmlFor="payerPDW">Платник ПДВ</ label>
-                </div>
-                <div>
-                    <input onChange={changeHandlerForm} name="address" id="address"/>
+                    <input onChange={changeHandlerForm} className="inputForCreate" name="address" id="address"/>
                     <label htmlFor="address">Адреса</ label>
                 </div>
                 <div>
-                    <input onChange={changeHandlerForm} name="phoneNum" id="phoneNum" type="number"/>
+                    <input onChange={changeHandlerForm} className="inputForCreate" name="phoneNum" id="phoneNum" type="number"/>
                     <label htmlFor="phoneNum">Номер телефону</ label>
                 </div>
                 <div>
-                    <input onChange={changeHandlerForm} name="numOfWorkers" id="numOfWorkers" type="number"/>
+                    <input onChange={changeHandlerForm} className="inputForCreate" name="numOfWorkers" id="numOfWorkers" type="number"/>
                     <label htmlFor="numOfWorkers">Всього робітників</ label>
                 </div>
                 <div>
-                    <input onChange={changeHandlerForm} name="salary" id="salary" type="number"/>
+                    <input onChange={changeHandlerForm} className="inputForCreate" name="salary" id="salary" type="number"/>
                     <label htmlFor="salary">Сума оплати</ label>
                 </div>
                 <div>
-                    <input onChange={changeHandlerForm} name="responsible" id="responsible" list="responsibleDataList" />
+                    <input onChange={changeHandlerForm} className="inputForCreate" name="responsible" id="responsible" list="responsibleDataList" />
                     <datalist id="responsibleDataList">
                         {console.log(users)}
                         {users.map((user) => {
@@ -135,26 +131,30 @@ export const CreatePage = () => {
                     <label htmlFor="responsible">Відповідальний</ label>
                 </div>
                 <div>
-                    <input onChange={changeHandlerForm} name="taxationSystem" id="taxationSystem"/>
+                    <input onChange={changeHandlerForm} className="inputForCreate" name="taxationSystem" id="taxationSystem"/>
                     <label htmlFor="taxationSystem">Сиcтема оподаткування</ label>
+                </div>
+                <div className="checkboxBlock">
+                    <input onChange={changeHandlerForm} className="inputForCreate checkboxForCreate" name="payerPDW" id="payerPDW" type="checkbox"/>
+                    <label htmlFor="payerPDW">Платник ПДВ</ label>
                 </div>
             </div>
             <div>
                 <h1>Додати завдання</h1>
                 <div>
-                    <input onChange={changeHandlerTask} name="title" id="title"/>
+                    <input onChange={changeHandlerTask} className="inputForCreate" name="title" id="title"/>
                     <label htmlFor="title">Завдання</ label>
                 </div>
                 <div>
-                    <input onChange={changeHandlerTask} name="date" id="date" type="date"/>
+                    <input onChange={changeHandlerTask} className="inputForCreate" name="date" id="date" type="date"/>
                     <label htmlFor="date">Дата</ label>
                 </div>
-                <div>
-                    <input onChange={changeHandlerTask} name="ready" id="ready" type="checkbox"/>
+                <div className="checkboxBlock">
+                    <input onChange={changeHandlerTask} className="inputForCreate checkboxForCreate" name="ready" id="ready" type="checkbox"/>
                     <label htmlFor="ready">Готово</ label>
                 </div>
                 <div>
-                    <input onChange={changeHandlerTask} name="period" id="period" type="number"/>
+                    <input onChange={changeHandlerTask} className="inputForCreate" name="period" id="period" type="number"/>
                     <label htmlFor="period">періодичність</ label>
                 </div>
                 <button onClick={addTask}>Додати завдання</button>
@@ -166,7 +166,7 @@ export const CreatePage = () => {
                 <textarea className='description-input' onChange={changeHandler} name="description" id="description"/>
             </div> */}
             
-            <button onClick={addCompany}>Add company</button>
+            <button onClick={addCompany}>Додати Компанію</button>
         </div>
     )
 }

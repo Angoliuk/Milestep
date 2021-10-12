@@ -5,11 +5,11 @@ import { useHttp } from '../hooks/http.hook'
 
 export const CompaniesPage = () => {
 
-    let [list, setList] = useState([])
+    const [list, setList] = useState([])
+    const [searchName, setSearchName] = useState()
     const {token,userId ,logout} = useContext(AuthContext)
     const {loading, request} = useHttp()
 
-    //
     const logoutHandler = async () => {
         try {
             logout()
@@ -17,7 +17,60 @@ export const CompaniesPage = () => {
             
         }
     }
-    //
+
+    const changeHandlerSearchName = (event) => {
+        setSearchName(event.target.value)
+    }
+
+    const SearchCompany = useCallback(() => {
+        let listForSearch = []
+        let listCompletedTasks = []
+        let sortedList = []
+        if (searchName) {
+                listForSearch = list.filter((company) => company.name === searchName)
+                listForSearch.forEach(company => {
+                listCompletedTasks = company.tasks.filter((task) => task.ready === true)
+                sortedList = company.tasks.filter((task) => task.ready === false)
+                sortedList = [...sortedList, ...listCompletedTasks]
+                company.tasks = sortedList
+                });
+            }else{
+                listForSearch = list
+                listForSearch.forEach(company => {
+                listCompletedTasks = company.tasks.filter((task) => task.ready === true)
+                sortedList = company.tasks.filter((task) => task.ready === false)
+                sortedList = [...sortedList, ...listCompletedTasks]
+                company.tasks = sortedList
+            })};
+        return(
+            listForSearch.map((oneElem)=>{
+                return(
+                <div className="companyElement">
+                    <p>Назва: {oneElem.name}</p>
+                    <p>ЄДПРОУ: {oneElem.edrpou}</p>
+                    <p>Всього робітників: {oneElem.numOfWorkers}</p>
+                    <p>Платник ПДВ: {(oneElem.payerPDW) ? "Так" : "Ні"}</p>
+                    <p>Адреса: {oneElem.address}</p>
+                    <p>Номер Телефону: {oneElem.phoneNum}</p>
+                    <p>Сума оплати: {oneElem.salary}</p>
+                    <p>Система оподаткування: {oneElem.taxationSystem}</p>
+                    <p>Відповідальний: {oneElem.responsible}</p>
+                    <p>Список завдань: </p>
+                    <ol>
+                        {oneElem.tasks.map((task)=>{
+                                return(
+                                    <li className='taskElement' key={task.id}>
+                                        <p>Завдання: {task.title}</p>
+                                        <span>Періодичність: {task.period} місяці</span>
+                                        <span>Дата: {task.date}</span>
+                                        <span>Готово: {(task.ready) ? "Так" : "Ні"}</span>
+                                    </li>
+                                )
+                            })}
+                    </ol>
+                </div>)
+            }))  
+    }, [list, searchName])
 
     const dataRequest = useCallback( async () => {
         try {
@@ -32,38 +85,28 @@ export const CompaniesPage = () => {
     useEffect(() => {
         dataRequest()
     }, [dataRequest])
+
+    useEffect(() => {
+        SearchCompany()
+    }, [SearchCompany])
     
 
     return (
         <div className="container">
             <NavBar />
-            {list && list.map((oneElem)=>{
-               return(
-                <div className="element">
-                    <p>Назва: {oneElem.name}</p>
-                    <p>ЄДПРОУ: {oneElem.edrpou}</p>
-                    <p>Всього робітників: {oneElem.numOfWorkers}</p>
-                    <p>Платник ПДВ: {(oneElem.payerPDW) ? "Так" : "Ні"}</p>
-                    <p>Адреса: {oneElem.address}</p>
-                    <p>Номер Телефону: {oneElem.phoneNum}</p>
-                    <p>Сума оплати: {oneElem.salary}</p>
-                    <p>Система оподаткування: {oneElem.taxationSystem}</p>
-                    <p>Відповідальний: {oneElem.responsible}</p>
-                    <p>Список завдань: </p>
-                    <ol>
-                        {oneElem.tasks.map((task)=>{
-                            return(
-                                <li className='element' key={task.id}>
-                                    <p>Завдання: {task.title}</p>
-                                    <p>Періодичність: {task.period} місяці</p>
-                                    <p>Дата: {task.date}</p>
-                                    <p>Готово: {(task.ready) ? "Так" : "Ні"}</p>
-                                </li>
-                            )
-                        })}
-                    </ol>
-                </div>)
-           })}  
+            <input onChange={changeHandlerSearchName} className="searchInput" name="companiesSearch" id="companiesSearch" list="companiesSearchList" />
+            <label htmlFor="companiesSearch">Назва компанії</label>
+            {/* <button onClick={() => {setSearchName()}}>Пошук</button> */}
+            <datalist id="companiesSearchList" >
+                {
+                    list.map((company) => {
+                        return(
+                            <option value={company.name} />
+                        )
+                    })
+                }
+            </datalist>
+            <SearchCompany />
         </div>
         )
 }
