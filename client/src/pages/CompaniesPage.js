@@ -2,6 +2,7 @@ import React, { useCallback, useContext, useEffect, useState } from 'react'
 import { NavBar } from '../Components/NavBar'
 import { AuthContext } from '../context/AuthContext'
 import { useHttp } from '../hooks/http.hook'
+import {NavLink} from 'react-router-dom'
 
 export const CompaniesPage = () => {
 
@@ -18,11 +19,21 @@ export const CompaniesPage = () => {
         }
     }
 
+    const deleteHandlerCompany = useCallback(async(id) => {
+        try {
+            await request('/api/auth/deleteCompany', 'POST', {id})
+            window.location.reload()
+        } catch (e) {
+            console.log(e)
+        }
+    }, [request])
+
     const changeHandlerSearchName = (event) => {
         setSearchName(event.target.value)
     }
 
     const SearchCompany = useCallback(() => {
+        console.log(list)
         let listForSearch = []
         let listCompletedTasks = []
         let sortedList = []
@@ -68,13 +79,16 @@ export const CompaniesPage = () => {
                                 )
                             })}
                     </ol>
+                    <button><NavLink className="editButton" to={`/edit/${oneElem._id}`}>Редагувати</NavLink></button>
+                    <button className="deleteButton" onClick={() => {deleteHandlerCompany(oneElem._id)}}>Видалити</button>
                 </div>)
             }))  
-    }, [list, searchName])
+    }, [list, searchName, deleteHandlerCompany])
 
     const dataRequest = useCallback( async () => {
         try {
             const data = await request("/api/auth/allCompanies", "GET", null)
+            console.log(data)
             setList(data)
         } catch (e) {
             console.error(e);
@@ -88,7 +102,7 @@ export const CompaniesPage = () => {
 
     useEffect(() => {
         SearchCompany()
-    }, [SearchCompany])
+    })
     
 
     return (

@@ -7,7 +7,7 @@ export const WorkPage = () => {
 
     const {token,userId, name ,logout} = useContext(AuthContext)
     const [list, setList] = useState([])
-    const [numOfDays, setNumOfDays] = useState(5)
+    const [numOfDays, setNumOfDays] = useState(3)
     const {loading, request} = useHttp()
 
     const logoutHandler = async () => {
@@ -46,20 +46,26 @@ export const WorkPage = () => {
     }, [list, request])
 
     const handleChangeInput = (event) => {
-        setNumOfDays(event.target.value)
+        let newNumOfDays = Number(event.target.value)
+        if (newNumOfDays < 0 || newNumOfDays > 735) {
+            setNumOfDays(3)
+        }else{
+            setNumOfDays(newNumOfDays)
+        }
         console.log(numOfDays)
     }
 
     let time = new Date()
     time = time.setDate(time.getDate() + numOfDays)
+    console.log(new Date(time), numOfDays)
     time = new Date(time)
 
     return (
         <div className="container">
             <NavBar />
-            <input onChange={handleChangeInput} name="numOfDays" id="numOfDays" type="number" />
+            <input onChange={handleChangeInput} value={numOfDays} name="numOfDays" max="90" id="numOfDays" type="number" />
             <label htmlFor="numOfDays">Кількість днів</label>
-            <button onClick={dataRequest}>Show</button>
+            {/* <button onClick={dataRequest}>Show</button> */}
             {
                 list.map((oneCompany)=>{
                     return(
@@ -70,6 +76,7 @@ export const WorkPage = () => {
                             <ol>
                                 {oneCompany.tasks.map((task)=>{
                                     if (!task.ready && new Date(task.date) <= time) {
+                                        // console.log(new Date(task.date), time)
                                         return(
                                             <li className='taskElement' key={task.id}>
                                                 <p>Завдання: {task.title}</p>

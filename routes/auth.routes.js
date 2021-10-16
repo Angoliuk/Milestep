@@ -103,6 +103,17 @@ router.get(
     }
 })
 
+router.get(
+    "/edit/:id",
+     async (req, res) => {
+    try {
+        const company = await Company.findById(req.params.id)
+        res.json(company)
+    }catch(e){
+        res.status(500).json({message:"something went wrong"})
+    }
+})
+
 router.post(
     "/create",
     async (req, res) => {
@@ -124,6 +135,41 @@ router.post(
             const {id, tasksList} = req.body
             await Company.findOneAndUpdate( {_id: id}, {tasks: tasksList})
             res.status(201).json({message: "update completed"})
+        } catch (e) {
+            console.error(req.body);
+            res.status(500).json({message: "bug"})
+        }
+    })
+
+router.post(
+    "/updateCompany",
+    async (req, res) => {
+        try {
+            const {_id, name, edrpou, numOfWorkers, payerPDW, address, phoneNum, salary, responsible, taxationSystem, tasks} = req.body
+            await Company.findOneAndUpdate( {_id: _id}, {
+                name: name,
+                edrpou: edrpou, 
+                numOfWorkers: numOfWorkers, 
+                address: address, 
+                payerPDW: payerPDW, 
+                phoneNum: phoneNum, 
+                salary: salary, 
+                responsible: responsible, 
+                taxationSystem: taxationSystem,  
+                tasks: tasks})
+            res.status(201).json({message: "update completed"})
+        } catch (e) {
+            console.error(req.body);
+            res.status(500).json({message: "bug"})
+        }
+    })
+
+router.post(
+    "/deleteCompany",
+    async (req, res) => {
+        try {
+            await Company.deleteOne({_id: req.body.id})
+            res.status(201).json({message: "successful deleted"})
         } catch (e) {
             console.error(req.body);
             res.status(500).json({message: "bug"})

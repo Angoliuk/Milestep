@@ -11,6 +11,7 @@ export const AuthContext = createContext(
         name: null,
         login: noop,
         logout: noop,
-        isAuth: false
+        isAuth: false,
+        eForm: [],
     }
 )

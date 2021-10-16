@@ -50,9 +50,22 @@
 .checkboxBlock{
     display: flex;
     align-items: center;
+    margin-bottom: 5px;
 }
 
 input{
     border-radius: 5px;
     border: 1px solid gray
+}
+
+.editButton{
+    margin: 0;
+    padding: 10px;
+    color: White;
+}
+
+.deleteButton{
+        margin: 0;
+        padding: 11px;
+        background-color: #f44336;
 }
