@@ -15,7 +15,9 @@ export const EditPage = () => {
     const [eForm, setEForm] = useState({
         name:'', edrpou:'', numOfWorkers: '', payerPDW: null, address: '', phoneNum:'', salary:'', responsible:'',  taxationSystem:'', tasks:[],
     })
+
     const [taskParam, setTaskParam] = useState({title:'', date:'', period:'', id: 0,  ready: false})
+
 
     const changeHandlerForm = (event) => {
         if(event.target.name === 'payerPDW'){
@@ -25,6 +27,7 @@ export const EditPage = () => {
         }
     }
 
+
     const changeHandlerTask = (event) => {
         if (event.target.name === 'ready') {
             setTaskParam({...taskParam, [event.target.name]: event.target.checked})
@@ -32,7 +35,10 @@ export const EditPage = () => {
             setTaskParam({...taskParam, [event.target.name]: event.target.value})
         }
     }
+
     let allTasks = eForm.tasks
+
+
     const changeHandlerCreatedTask = (position) => (event) => {
             if (event.target.name === 'ready') {
                 allTasks[position][event.target.name] = event.target.checked
@@ -47,6 +53,7 @@ export const EditPage = () => {
             console.log(eForm,event.target.name)
         }
 
+
     const deleteHandlerTask = (position) => {
         let newTasks = eForm.tasks
         newTasks.splice(position, 1)
@@ -56,7 +63,8 @@ export const EditPage = () => {
             }
         })
         setEForm({...eForm, tasks: newTasks})
-}
+    }
+
 
     const addTask = () => {
         console.log(taskParam.id)
@@ -72,6 +80,7 @@ export const EditPage = () => {
         setTaskParam({title: '', date:'', period:'', id: eForm.tasks.length, ready: false})
     }
 
+
     const TaskList = (()=>{
         const list = eForm.tasks.map((task)=>{
             return(
@@ -82,12 +91,10 @@ export const EditPage = () => {
                         <label htmlFor="period">Періодичність</label>
                         <input onChange={changeHandlerCreatedTask(task.id)} defaultValue={task.date} name="date" id="date" className="inputForCreate" type="date" />
                         <label htmlFor="date">Дата</label>  
-                    <div className="checkboxBlock">
-                        <input onChange={changeHandlerCreatedTask(task.id)} defaultChecked={task.ready} name="ready" id="ready" className="inputForCreate checkboxForCreate" type="checkbox" />
-                        <label htmlFor="ready">Готово</label>
-                    </div>
-                    {/* <button onClick={() => {editHandlerTask(task.id)}}>Зберегти зміни завдання</button> */}
-                    {/* () => {editHandlerTask(task.id)} */}
+                        <div className="checkboxBlock">
+                            <input onChange={changeHandlerCreatedTask(task.id)} defaultChecked={task.ready} name="ready" id="ready" className="inputForCreate checkboxForCreate" type="checkbox" />
+                            <label htmlFor="ready">Готово</label>
+                        </div>
                     <button className="deleteButton" onClick={() => {deleteHandlerTask(task.id)}}>Видалити завдання</button>
                 </form>
             )
@@ -98,6 +105,7 @@ export const EditPage = () => {
             </div>
         )
     }) 
+
 
     const dataRequest = useCallback( async () => {
         try {
@@ -112,6 +120,7 @@ export const EditPage = () => {
         }
     } ,[request, companyId])
 
+
     useEffect(() => {
         dataRequest()
     }, [dataRequest])
@@ -120,6 +129,7 @@ export const EditPage = () => {
     const history = useHistory()
     const goBackAfterEdition = () => { history.push('/companies') }
 
+    
     const saveChanges = async () => {
         try {
             await request('/api/auth/updateCompany', 'POST', eForm)
@@ -130,6 +140,7 @@ export const EditPage = () => {
         }
     }
 
+    
     return (
         <div className="container">
             <NavBar />

@@ -1,10 +1,13 @@
-.main-block{
-    background-color: rgb(234, 234, 245);
-    border-radius: 15px;
-    margin: 20px;
-    padding: 2% 12% 15% 12%;
+.container{
+    width: 80%;
 }
 
+@media screen and (max-width: 1150px) {
+    .container{
+        width: 100%;
+        margin: 0px 30px;
+    }
+}
 
 .searchInput{
     height: 30px;

@@ -3,6 +3,7 @@ import { NavBar } from '../Components/NavBar'
 import { AuthContext } from '../context/AuthContext'
 import { useHttp } from '../hooks/http.hook'
 import {NavLink} from 'react-router-dom'
+import "./pages.css"
 
 export const CompaniesPage = () => {
 
@@ -10,6 +11,7 @@ export const CompaniesPage = () => {
     const [searchName, setSearchName] = useState()
     const {token,userId ,logout} = useContext(AuthContext)
     const {loading, request} = useHttp()
+
 
     const logoutHandler = async () => {
         try {
@@ -19,6 +21,7 @@ export const CompaniesPage = () => {
         }
     }
 
+    
     const deleteHandlerCompany = useCallback(async(id) => {
         try {
             await request('/api/auth/deleteCompany', 'POST', {id})
@@ -28,15 +31,18 @@ export const CompaniesPage = () => {
         }
     }, [request])
 
+
     const changeHandlerSearchName = (event) => {
         setSearchName(event.target.value)
     }
 
+
     const SearchCompany = useCallback(() => {
-        console.log(list)
+
         let listForSearch = []
         let listCompletedTasks = []
         let sortedList = []
+
         if (searchName) {
                 listForSearch = list.filter((company) => company.name === searchName)
                 listForSearch.forEach(company => {
@@ -53,6 +59,7 @@ export const CompaniesPage = () => {
                 sortedList = [...sortedList, ...listCompletedTasks]
                 company.tasks = sortedList
             })};
+
         return(
             listForSearch.map((oneElem)=>{
                 return(
@@ -85,6 +92,7 @@ export const CompaniesPage = () => {
             }))  
     }, [list, searchName, deleteHandlerCompany])
 
+
     const dataRequest = useCallback( async () => {
         try {
             const data = await request("/api/auth/allCompanies", "GET", null)
@@ -96,9 +104,11 @@ export const CompaniesPage = () => {
         }
     } ,[request])
 
+
     useEffect(() => {
         dataRequest()
     }, [dataRequest])
+
 
     useEffect(() => {
         SearchCompany()
@@ -107,10 +117,10 @@ export const CompaniesPage = () => {
 
     return (
         <div className="container">
+            
             <NavBar />
             <input onChange={changeHandlerSearchName} className="searchInput" name="companiesSearch" id="companiesSearch" list="companiesSearchList" />
             <label htmlFor="companiesSearch">Назва компанії</label>
-            {/* <button onClick={() => {setSearchName()}}>Пошук</button> */}
             <datalist id="companiesSearchList" >
                 {
                     list.map((company) => {
@@ -120,6 +130,7 @@ export const CompaniesPage = () => {
                     })
                 }
             </datalist>
+
             <SearchCompany />
         </div>
         )

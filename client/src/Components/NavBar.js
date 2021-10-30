@@ -8,11 +8,13 @@ export const NavBar = () => {
     return(
         <div className="container-nav">
             {/* <p className="name">EventCalendar</p> */}
-            <NavLink className="nav-elem" to="/create">Додати нову компанію</NavLink>
-            <NavLink className="nav-elem" to="/work">Завдання</NavLink>
-            <NavLink className="nav-elem" to="/companies">Список всіх компаній</NavLink>
-            <p className="name">{name}</p>
-            <button className="nav-button" onClick={logout}>logout</button>
+            <nav>
+                <NavLink className="nav-elem" to="/create">Додати нову компанію</NavLink>
+                <NavLink className="nav-elem" to="/work">Завдання</NavLink>
+                <NavLink className="nav-elem" to="/companies">Список всіх компаній</NavLink>
+                <p className="name">{name}</p>
+                <button className="nav-button" onClick={logout}>logout</button>
+            </nav>
         </div>
     )
 }

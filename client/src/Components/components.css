@@ -10,7 +10,10 @@
     margin: 33px;
 }
 
-.nav-button{
-    height: 60%;
-    margin: 25px
+nav{
+    width: 90%;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
 }
+

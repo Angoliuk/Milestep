@@ -2,6 +2,7 @@ import React, { useCallback, useContext, useEffect, useState } from 'react'
 import { NavBar } from '../Components/NavBar'
 import { AuthContext } from '../context/AuthContext'
 import { useHttp } from '../hooks/http.hook'
+import "./pages.css"
 
 export const WorkPage = () => {
 
@@ -52,7 +53,6 @@ export const WorkPage = () => {
         }else{
             setNumOfDays(newNumOfDays)
         }
-        console.log(numOfDays)
     }
 
     let time = new Date()
@@ -62,10 +62,11 @@ export const WorkPage = () => {
 
     return (
         <div className="container">
+
             <NavBar />
             <input onChange={handleChangeInput} value={numOfDays} name="numOfDays" max="90" id="numOfDays" type="number" />
             <label htmlFor="numOfDays">Кількість днів</label>
-            {/* <button onClick={dataRequest}>Show</button> */}
+
             {
                 list.map((oneCompany)=>{
                     return(
@@ -76,7 +77,6 @@ export const WorkPage = () => {
                             <ol>
                                 {oneCompany.tasks.map((task)=>{
                                     if (!task.ready && new Date(task.date) <= time) {
-                                        // console.log(new Date(task.date), time)
                                         return(
                                             <li className='taskElement' key={task.id}>
                                                 <p>Завдання: {task.title}</p>

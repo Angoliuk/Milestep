@@ -14,7 +14,9 @@ export const CreatePage = () => {
     const [eForm, setEForm] = useState({
         name:'', edrpou:'', numOfWorkers: '', payerPDW: null, address: '', phoneNum:'', salary:'', responsible:'',  taxationSystem:'', tasks:[],
     })
+
     const [taskParam, setTaskParam] = useState({title:'', date:'', period:'', id: 0,  ready: false})
+
 
     const changeHandlerForm = (event) => {
         if(event.target.name === 'payerPDW'){
@@ -26,6 +28,7 @@ export const CreatePage = () => {
         }
     }
 
+
     const dataRequest = useCallback(async () => {
         try {
             const data = await request('/api/auth/allUsers', 'GET', null)
@@ -36,9 +39,11 @@ export const CreatePage = () => {
         }
     }, [request])
 
+
     useEffect(() => {
         dataRequest()
     }, [dataRequest])
+
 
     const changeHandlerTask = (event) => {
         if (event.target.name === 'ready') {
@@ -47,6 +52,7 @@ export const CreatePage = () => {
             setTaskParam({...taskParam, [event.target.name]: event.target.value})
         }
     }
+
 
     const TaskList = (()=>{
         const list = eForm.tasks.map((task)=>{
@@ -66,6 +72,7 @@ export const CreatePage = () => {
         )
     }) 
 
+
     const addTask = () => {
         let newTasksList = eForm.tasks
         newTasksList.push({
@@ -78,6 +85,7 @@ export const CreatePage = () => {
         setEForm({...eForm, tasks: newTasksList})
         setTaskParam({title: '', date:'', period:'', id: taskParam.id + 1, ready: false})
     }
+
 
     const addCompany = async () => {
         try {
@@ -94,6 +102,7 @@ export const CreatePage = () => {
         <div className="container">
             <NavBar />
             <div className="companyElement">
+
                 <div>
                     <h1>Інформація про компанію</h1>
                         <input onChange={changeHandlerForm} value={eForm.name} className="inputForCreate" name="name" id="name"/>
@@ -108,6 +117,7 @@ export const CreatePage = () => {
                         <label htmlFor="numOfWorkers">Всього робітників</ label>
                         <input onChange={changeHandlerForm} value={eForm.salary} className="inputForCreate" name="salary" id="salary" type="number"/>
                         <label htmlFor="salary">Сума оплати</ label>
+
                     <div>
                         <input onChange={changeHandlerForm} value={eForm.responsible} className="inputForCreate" name="responsible" id="responsible" list="responsibleDataList" />
                         <datalist id="responsibleDataList">
@@ -119,29 +129,36 @@ export const CreatePage = () => {
                         </datalist>
                         <label htmlFor="responsible">Відповідальний</ label>
                     </div>
+
                         <input onChange={changeHandlerForm} value={eForm.taxationSystem} className="inputForCreate" name="taxationSystem" id="taxationSystem"/>
                         <label htmlFor="taxationSystem">Сиcтема оподаткування</ label>
+
                     <div className="checkboxBlock">
                         <input onChange={changeHandlerForm} checked={eForm.payerPDW} className="inputForCreate checkboxForCreate" name="payerPDW" id="payerPDW" type="checkbox"/>
                         <label htmlFor="payerPDW">Платник ПДВ</ label>
                     </div>
+
                 </div>
                 <div>
-                    <h1>Додати завдання</h1>
+                        <h1>Додати завдання</h1>
                         <input onChange={changeHandlerTask} value={taskParam.title} className="inputForCreate" name="title" id="title"/>
                         <label htmlFor="title">Завдання</ label>
                         <input onChange={changeHandlerTask} value={taskParam.date} className="inputForCreate" name="date" id="date" type="date"/>
                         <label htmlFor="date">Дата</ label>
+
                     <div>
                         <input onChange={changeHandlerTask} value={taskParam.period} className="inputForCreate" name="period" id="period" type="number"/>
                         <label htmlFor="period">періодичність</ label>
                     </div>
+
                     <div className="checkboxBlock">
                         <input onChange={changeHandlerTask} checked={taskParam.ready} className="inputForCreate checkboxForCreate" name="ready" id="ready" type="checkbox"/>
                         <label htmlFor="ready">Готово</ label>
                     </div>
+
                     <button onClick={addTask}>Додати завдання</button>
                 </div>
+
                 <TaskList />
                 <button onClick={addCompany}>Додати Компанію</button>
             </div>
