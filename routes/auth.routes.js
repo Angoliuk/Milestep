@@ -4,6 +4,7 @@ const config = require('config')
 const jwt = require('jsonwebtoken')
 const {check, validationResult} = require('express-validator')
 const User = require('../models/User')
+const StaticInfo = require('../models/StaticInformation')
 const Company = require('../models/Company')
 const { isValidObjectId } = require('mongoose')
 const router = Router()
@@ -186,5 +187,32 @@ router.get(
         res.status(500).json({message:"something went wrong"})
     }
 })
+
+router.get(
+    "/staticInfoGet",
+    async(req, res) => {
+        try {
+            const staticInfo = await StaticInfo.find()
+            res.json(staticInfo)
+        } catch (e) {
+            res.status(500).json({message: 'auth routes error'})
+        }
+    }
+)
+
+router.post(
+    "/staticInfoUpdate",
+    async(req, res) => {
+        const { name, info } = req.body
+
+        try {
+            await StaticInfo.findOneAndUpdate({name}, {
+                info: info
+            })
+        } catch (e) {
+            res.status(500).json({message: 'auth routes error'})
+        }
+    }
+)
 
 module.exports = router

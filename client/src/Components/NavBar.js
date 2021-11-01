@@ -9,9 +9,10 @@ export const NavBar = () => {
         <div className="container-nav">
             {/* <p className="name">EventCalendar</p> */}
             <nav>
-                <NavLink className="nav-elem" to="/create">Додати нову компанію</NavLink>
+                <NavLink className="nav-elem" to="/standartTasks">Стандартні завдання</NavLink>
+                <NavLink className="nav-elem" to="/create">Нова компанія</NavLink>
                 <NavLink className="nav-elem" to="/work">Завдання</NavLink>
-                <NavLink className="nav-elem" to="/companies">Список всіх компаній</NavLink>
+                <NavLink className="nav-elem" to="/companies">Всі компанії</NavLink>
                 <p className="name">{name}</p>
                 <button className="nav-button" onClick={logout}>logout</button>
             </nav>

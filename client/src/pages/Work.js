@@ -34,9 +34,36 @@ export const WorkPage = () => {
     }, [dataRequest])
 
     const updateHandler = useCallback( async (companyInfo, task) => {
-        list.find(company => company._id === companyInfo._id).tasks[task.id].ready = true
+        let currentTasksList = list.find(company => company._id === companyInfo._id).tasks
+        let currentTask = currentTasksList.find(currentTask => currentTask.id === task.id)
+        currentTask.ready = true
+        let newDate = new Date(Date.parse(currentTask.date))
+        switch (task.period) {
+            case '2':
+                newDate.setDate(newDate.getDate()+14)
+                break;  
+    
+            case '3':
+                newDate.setMonth(newDate.getMonth()+1)
+                break;
+    
+            case '4':
+                newDate.setMonth(newDate.getMonth()+3)
+                break;
+
+            case '5':
+                newDate.setMonth(newDate.getMonth()+12)
+                break;
+
+            default:
+                newDate.setDate(newDate.getDate()+7)
+                break;
+            }
+        currentTask.date = `${newDate.getFullYear()}-${((newDate.getMonth()+1) >= 10) ? newDate.getMonth()+1 : '0' + (newDate.getMonth()+1)}-${(newDate.getDate() >= 10) ? newDate.getDate() : '0' + newDate.getDate() }`
+        console.log(currentTask.date)
+
         let tasksList = list.find(company => company._id === companyInfo._id).tasks
-        console.log(tasksList)
+
         try {
             await request("/api/auth/update", "POST", {id: companyInfo._id, tasksList: tasksList})
             alert("saved")
@@ -57,14 +84,14 @@ export const WorkPage = () => {
 
     let time = new Date()
     time = time.setDate(time.getDate() + numOfDays)
-    console.log(new Date(time), numOfDays)
+    // console.log(new Date(time), numOfDays)
     time = new Date(time)
 
     return (
         <div className="container">
 
             <NavBar />
-            <input onChange={handleChangeInput} value={numOfDays} name="numOfDays" max="90" id="numOfDays" type="number" />
+            <input onChange={handleChangeInput} value={numOfDays} className="searchInput" name="numOfDays" max="735" id="numOfDays" type="number" />
             <label htmlFor="numOfDays">Кількість днів</label>
 
             {

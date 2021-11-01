@@ -42,6 +42,7 @@ export const CompaniesPage = () => {
         let listForSearch = []
         let listCompletedTasks = []
         let sortedList = []
+        let period = ''
 
         if (searchName) {
                 listForSearch = list.filter((company) => company.name === searchName)
@@ -76,10 +77,31 @@ export const CompaniesPage = () => {
                     <p>Список завдань: </p>
                     <ol>
                         {oneElem.tasks.map((task)=>{
+                                switch (task.period) {
+                                    case '2':
+                                        period = 'Кожні 2 тижні'
+                                        break;  
+                        
+                                    case '3':
+                                        period = 'Щомісяця'
+                                        break;
+                        
+                                    case '4':
+                                        period = 'Раз у квартал'
+                                        break;
+                        
+                                    case '5':
+                                        period = 'Раз у рік'
+                                        break;
+                        
+                                    default:
+                                        period = 'Щотижня'
+                                        break;
+                                }
                                 return(
                                     <li className='taskElement' key={task.id}>
                                         <p>Завдання: {task.title}</p>
-                                        <span>Періодичність: {task.period} місяці</span>
+                                        <span>Періодичність: {period}</span>
                                         <span>Дата: {task.date}</span>
                                         <span>Готово: {(task.ready) ? "Так" : "Ні"}</span>
                                     </li>
@@ -96,7 +118,6 @@ export const CompaniesPage = () => {
     const dataRequest = useCallback( async () => {
         try {
             const data = await request("/api/auth/allCompanies", "GET", null)
-            console.log(data)
             setList(data)
         } catch (e) {
             console.error(e);
@@ -119,17 +140,16 @@ export const CompaniesPage = () => {
         <div className="container">
             
             <NavBar />
-            <input onChange={changeHandlerSearchName} className="searchInput" name="companiesSearch" id="companiesSearch" list="companiesSearchList" />
-            <label htmlFor="companiesSearch">Назва компанії</label>
-            <datalist id="companiesSearchList" >
+            <select onChange={changeHandlerSearchName} className="searchInput" name="companiesSearch" id="companiesSearch">
                 {
                     list.map((company) => {
                         return(
-                            <option value={company.name} />
+                            <option value={company.name}>{company.name}</option>
                         )
                     })
                 }
-            </datalist>
+            </select>
+            <label htmlFor="companiesSearch">Назва компанії</label>
 
             <SearchCompany />
         </div>

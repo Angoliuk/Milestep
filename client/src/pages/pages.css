@@ -56,9 +56,15 @@
     margin-bottom: 5px;
 }
 
-input{
+input, select{
     border-radius: 5px;
     border: 1px solid gray
+}
+
+select{
+    margin: 7px;
+    height: 35px;
+    width: 60.5%
 }
 
 .editButton{

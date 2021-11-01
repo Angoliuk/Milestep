@@ -15,7 +15,7 @@ export const CreatePage = () => {
         name:'', edrpou:'', numOfWorkers: '', payerPDW: null, address: '', phoneNum:'', salary:'', responsible:'',  taxationSystem:'', tasks:[],
     })
 
-    const [taskParam, setTaskParam] = useState({title:'', date:'', period:'', id: 0,  ready: false})
+    const [taskParam, setTaskParam] = useState({title:'', date: 0, period:'', id: 0,  ready: false})
 
 
     const changeHandlerForm = (event) => {
@@ -55,11 +55,33 @@ export const CreatePage = () => {
 
 
     const TaskList = (()=>{
+        let period = ''
         const list = eForm.tasks.map((task)=>{
+            switch (task.period) {
+                case '2':
+                    period = 'Кожні 2 тижні'
+                    break;  
+    
+                case '3':
+                    period = 'Щомісяця'
+                    break;
+    
+                case '4':
+                    period = 'Раз у квартал'
+                    break;
+    
+                case '5':
+                    period = 'Раз у рік'
+                    break;
+    
+                default:
+                    period = 'Щотижня'
+                    break;
+            }
             return(
                 <div className='taskElement' key={task.id}>
                     <p>Завдання: {task.title}</p>
-                    <p>Періодичність: {task.period}</p>
+                    <p>Періодичність: {period}</p>
                     <p>Дата: {task.date}</p>
                     <p>Готово: {(task.ready) ? "Так" : "Ні"}</p>
                 </div>
@@ -105,28 +127,27 @@ export const CreatePage = () => {
 
                 <div>
                     <h1>Інформація про компанію</h1>
-                        <input onChange={changeHandlerForm} value={eForm.name} className="inputForCreate" name="name" id="name"/>
-                        <label htmlFor="name">Назва</ label>
-                        <input onChange={changeHandlerForm} value={eForm.edrpou} className="inputForCreate" name="edrpou" id="edrpou" type="number"/>
-                        <label htmlFor="date">ЄДПРОУ</ label>
-                        <input onChange={changeHandlerForm} value={eForm.address} className="inputForCreate" name="address" id="address"/>
-                        <label htmlFor="address">Адреса</ label>
-                        <input onChange={changeHandlerForm} value={eForm.phoneNum} className="inputForCreate" name="phoneNum" id="phoneNum" type="number"/>
-                        <label htmlFor="phoneNum">Номер телефону</ label>
-                        <input onChange={changeHandlerForm} value={eForm.numOfWorkers} className="inputForCreate" name="numOfWorkers" id="numOfWorkers" type="number"/>
-                        <label htmlFor="numOfWorkers">Всього робітників</ label>
-                        <input onChange={changeHandlerForm} value={eForm.salary} className="inputForCreate" name="salary" id="salary" type="number"/>
-                        <label htmlFor="salary">Сума оплати</ label>
+                    <input onChange={changeHandlerForm} value={eForm.name} className="inputForCreate" name="name" id="name"/>
+                    <label htmlFor="name">Назва</ label>
+                    <input onChange={changeHandlerForm} value={eForm.edrpou} className="inputForCreate" name="edrpou" id="edrpou" type="number"/>
+                    <label htmlFor="date">ЄДПРОУ</ label>
+                    <input onChange={changeHandlerForm} value={eForm.address} className="inputForCreate" name="address" id="address"/>
+                    <label htmlFor="address">Адреса</ label>
+                    <input onChange={changeHandlerForm} value={eForm.phoneNum} className="inputForCreate" name="phoneNum" id="phoneNum" type="number"/>
+                    <label htmlFor="phoneNum">Номер телефону</ label>
+                    <input onChange={changeHandlerForm} value={eForm.numOfWorkers} className="inputForCreate" name="numOfWorkers" id="numOfWorkers" type="number"/>
+                    <label htmlFor="numOfWorkers">Всього робітників</ label>
+                    <input onChange={changeHandlerForm} value={eForm.salary} className="inputForCreate" name="salary" id="salary" type="number"/>
+                    <label htmlFor="salary">Сума оплати</ label>
 
                     <div>
-                        <input onChange={changeHandlerForm} value={eForm.responsible} className="inputForCreate" name="responsible" id="responsible" list="responsibleDataList" />
-                        <datalist id="responsibleDataList">
+                        <select onChange={changeHandlerForm} value={eForm.responsible} name="responsible" id="responsible">
                             {users.map((user) => {
                                 return(
-                                    <option value={user.name}/>
+                                    <option value={user.name}>{user.name}</option>
                             )
                             })}
-                        </datalist>
+                        </select>
                         <label htmlFor="responsible">Відповідальний</ label>
                     </div>
 
@@ -137,17 +158,23 @@ export const CreatePage = () => {
                         <input onChange={changeHandlerForm} checked={eForm.payerPDW} className="inputForCreate checkboxForCreate" name="payerPDW" id="payerPDW" type="checkbox"/>
                         <label htmlFor="payerPDW">Платник ПДВ</ label>
                     </div>
-
                 </div>
+
                 <div>
-                        <h1>Додати завдання</h1>
-                        <input onChange={changeHandlerTask} value={taskParam.title} className="inputForCreate" name="title" id="title"/>
-                        <label htmlFor="title">Завдання</ label>
-                        <input onChange={changeHandlerTask} value={taskParam.date} className="inputForCreate" name="date" id="date" type="date"/>
-                        <label htmlFor="date">Дата</ label>
+                    <h1>Додати завдання</h1>
+                    <input onChange={changeHandlerTask} value={taskParam.title} className="inputForCreate" name="title" id="title"/>
+                    <label htmlFor="title">Завдання</ label>
+                    <input onChange={changeHandlerTask} value={taskParam.date} className="inputForCreate" name="date" id="date" type="date"/>
+                    <label htmlFor="date">Дата</ label>
 
                     <div>
-                        <input onChange={changeHandlerTask} value={taskParam.period} className="inputForCreate" name="period" id="period" type="number"/>
+                        <select onChange={changeHandlerTask} value={taskParam.period} className="inputForCreate" name="period" id="period">
+                            <option value='1'>Щотижня</option>
+                            <option value='2'>Кожні 2 тижні</option>
+                            <option value='3'>Щомісяця</option>
+                            <option value='4'>Раз у квартал</option>
+                            <option value='5'>Раз у рік</option>
+                        </select>
                         <label htmlFor="period">періодичність</ label>
                     </div>
 

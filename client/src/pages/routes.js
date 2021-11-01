@@ -6,6 +6,7 @@ import { CreatePage } from './CreatePage'
 import { CompaniesPage } from './CompaniesPage'
 import { WorkPage } from './Work'
 import { EditPage } from './EditPage'
+import { StandartTasks } from './StandartTasks'
 
 export const useRoutes = isAuth => {
     if(isAuth){
@@ -22,6 +23,9 @@ export const useRoutes = isAuth => {
                 </Route>
                 <Route path="/edit/:id" exact>
                     <EditPage />
+                </Route>
+                <Route path="/standartTasks" exact>
+                    <StandartTasks />
                 </Route>
                 <Redirect to="/create" />
             </Switch>
