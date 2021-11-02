@@ -206,9 +206,10 @@ router.post(
         const { name, info } = req.body
 
         try {
-            await StaticInfo.findOneAndUpdate({name}, {
+            await StaticInfo.findOneAndUpdate({name: name}, {
                 info: info
             })
+            res.status(201).json({message: "successful updated"})
         } catch (e) {
             res.status(500).json({message: 'auth routes error'})
         }

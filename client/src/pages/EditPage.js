@@ -10,7 +10,7 @@ export const EditPage = () => {
     const {loading, request} = useHttp() 
     const {userId, token} = useContext(AuthContext)
     const [users, setUsers] = useState([])
-    const [standartTasks, setStandartTasks] = useState([])
+    const [standartTasks, setStandartTasks] = useState({})
 
     
     const [eForm, setEForm] = useState({
@@ -86,7 +86,7 @@ export const EditPage = () => {
         const list = eForm.tasks.map((task)=>{
             return(
                 <form className='taskElement' key={task.id}>
-                        <input onChange={changeHandlerCreatedTask(task.id)} value={task.title} name="title" id="title" className="inputForCreate"  />
+                        <input onChange={changeHandlerCreatedTask(task.id)} value={task.title} name="title" id="title" className="inputForCreate" list="titleDatalist" />
                         <label htmlFor="name">Завдання</label>
                         <select onChange={changeHandlerCreatedTask(task.id)} value={task.period} name="period" id="period" className="inputForCreate">
                             <option value='1'>Щотижня</option>
@@ -123,8 +123,8 @@ export const EditPage = () => {
             const usersData = await request('/api/auth/allUsers', 'GET', null)
             setUsers(usersData)
 
-            const staticInfo = await request('/api/auth/staticInfo', 'GET', null) 
-            setStandartTasks(staticInfo.standartTasks)
+            const staticInfo = await request('/api/auth/staticInfoGet', 'GET', null) 
+            setStandartTasks(staticInfo.find((info) => info.name === 'standartTasks'))
         } catch (e) {
             console.error(e);
             console.log("here")
@@ -194,13 +194,20 @@ export const EditPage = () => {
 
                 <div>
                     <h1>Додати завдання</h1>
-                    <input onChange={changeHandlerTask} value={taskParam.title} className="inputForCreate" name="title" id="title"/>
-                    <datalist>
-                        {standartTasks.map((standartTask) => {
+                    <input onChange={changeHandlerTask} value={taskParam.title} className="inputForCreate" name="title" id="title" list="titleDatalist"/>
+                    <datalist id="titleDatalist">
+                        {/* {console.log(standartTasks)} */}
+                        {(standartTasks && standartTasks.info)
+                        ?
+                        standartTasks.info.map((standartTask) => {
+                            console.log(standartTask)
                             return(
-                                <option value={standartTask}>{standartTask}</option>
+                                <option value={standartTask.text}>{standartTask.text}</option>
                             )
-                        })}
+                        })
+                        : 
+                            <option>Ви ще не додали стандартні завдання</option>
+                    }
                     </datalist>
                     <label htmlFor="title">Завдання</ label>
                     <input onChange={changeHandlerTask} value={taskParam.date} className="inputForCreate" name="date" id="date" type="date"/>

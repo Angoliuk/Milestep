@@ -16,6 +16,7 @@ export const CreatePage = () => {
     })
 
     const [taskParam, setTaskParam] = useState({title:'', date: 0, period:'', id: 0,  ready: false})
+    const [standartTasks, setStandartTasks] = useState({})
 
 
     const changeHandlerForm = (event) => {
@@ -33,7 +34,10 @@ export const CreatePage = () => {
         try {
             const data = await request('/api/auth/allUsers', 'GET', null)
             setUsers(data)
-            console.log(data)
+
+            const staticInfo = await request('/api/auth/staticInfoGet', 'GET', null)
+            setStandartTasks(staticInfo.find((info) => info.name === 'standartTasks'))
+
         } catch (e) {
             console.log(e)
         }
@@ -162,7 +166,17 @@ export const CreatePage = () => {
 
                 <div>
                     <h1>Додати завдання</h1>
-                    <input onChange={changeHandlerTask} value={taskParam.title} className="inputForCreate" name="title" id="title"/>
+                    <input onChange={changeHandlerTask} value={taskParam.title} className="inputForCreate" name="title" id="title" list="titleDatalist"/>
+                    <datalist id="titleDatalist">
+                        {(standartTasks && standartTasks.info)
+                        ?
+                            standartTasks.info.map((standartTask) => {
+                                return <option value={standartTask.text}>{standartTask.text}</option>
+                            })
+                        :
+                            <option>Ви ще не додали стандартні завдання</option>
+                    }
+                    </datalist>
                     <label htmlFor="title">Завдання</ label>
                     <input onChange={changeHandlerTask} value={taskParam.date} className="inputForCreate" name="date" id="date" type="date"/>
                     <label htmlFor="date">Дата</ label>
