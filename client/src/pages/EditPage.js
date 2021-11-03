@@ -43,15 +43,10 @@ export const EditPage = () => {
     const changeHandlerCreatedTask = (position) => (event) => {
             if (event.target.name === 'ready') {
                 allTasks[position][event.target.name] = event.target.checked
-                console.log(allTasks[position][event.target.name])
             } else {
-                setEForm({...eForm, })
                 allTasks[position][event.target.name] = event.target.value
-                console.log(allTasks[position][event.target.name])
-                console.log(allTasks)
             }
             setEForm({...eForm, tasks: allTasks})
-            console.log(eForm,event.target.name)
         }
 
 
