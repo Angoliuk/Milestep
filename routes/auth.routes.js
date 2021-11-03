@@ -13,7 +13,7 @@ router.post(
     '/register',
      [
         check('name', "short name").isLength({min:3}),
-        check('email', 'wrong email').isEmail(),
+        check('email', 'wrong email').normalizeEmail().isEmail(),
         check('password', "wrong pass").isLength({min:6}),
     ] 
      , async (req, res) => {
@@ -51,7 +51,7 @@ router.post(
     '/login',
     [
         check('email', 'wrong email').normalizeEmail().isEmail(),
-        check('password', "worng pass").exists(),
+        check('password', "wrong pass").exists(),
         check('name', "wrong name").exists(),
     ] 
      , async (req, res) => {
@@ -69,6 +69,7 @@ router.post(
         const {name, email, password} = req.body
 
         const user = await User.findOne({email})
+        // console.log(user)
 
         if (!user) {
             return res.status(400).json({message: 'error'})
