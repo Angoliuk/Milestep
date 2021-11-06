@@ -41,6 +41,7 @@ export const EditPage = () => {
 
 
     const changeHandlerCreatedTask = (position) => (event) => {
+        
             if (event.target.name === 'ready') {
                 allTasks[position][event.target.name] = event.target.checked
             } else {
