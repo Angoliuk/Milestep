@@ -38,15 +38,15 @@ export const AuthPage = () => {
             <h1>Вхід в акаунт</h1>
             <div>
                 <div>
-                    <input id="name" name="name" onChange={changeHandler}/>
+                    <input id="name" name="name" onChange={changeHandler} autocomplete="off"/>
                     <label htmlFor="name">Ім'я</label>
                 </div>
                 <div>
-                    <input id="Email" name="email" onChange={changeHandler}/>
+                    <input id="Email" name="email" onChange={changeHandler} type="email"/>
                     <label htmlFor="Email">Email</label>
                 </div>
                 <div>
-                    <input id="Password" name="password" onChange={changeHandler}/>
+                    <input id="Password" name="password" onChange={changeHandler} type="password"/>
                     <label htmlFor="Password">Пароль</label>
                 </div>
                 <div>

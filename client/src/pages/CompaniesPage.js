@@ -102,7 +102,7 @@ export const CompaniesPage = () => {
                                     <li className='taskElement' key={task.id}>
                                         <p>Завдання: {task.title}</p>
                                         <span>Періодичність: {period}</span>
-                                        <span>Дата: {task.date}</span>
+                                        <span>Дата: {new Date(task.date).toLocaleString('uk-UA', {year: 'numeric', month: 'numeric', day: 'numeric' })}</span>
                                         <span>Готово: {(task.ready) ? "Так" : "Ні"}</span>
                                     </li>
                                 )

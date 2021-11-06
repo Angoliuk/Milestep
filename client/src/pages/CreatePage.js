@@ -86,7 +86,7 @@ export const CreatePage = () => {
                 <div className='taskElement' key={task.id}>
                     <p>Завдання: {task.title}</p>
                     <p>Періодичність: {period}</p>
-                    <p>Дата: {task.date}</p>
+                    <p>Дата: {new Date(task.date).toLocaleString('uk-UA', {year: 'numeric', month: 'numeric', day: 'numeric' })}</p>
                     <p>Готово: {(task.ready) ? "Так" : "Ні"}</p>
                 </div>
             )

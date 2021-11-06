@@ -196,7 +196,6 @@ export const EditPage = () => {
                         {(standartTasks && standartTasks.info)
                         ?
                         standartTasks.info.map((standartTask) => {
-                            console.log(standartTask)
                             return(
                                 <option value={standartTask.text}>{standartTask.text}</option>
                             )

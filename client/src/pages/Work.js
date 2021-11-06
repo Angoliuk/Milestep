@@ -107,7 +107,7 @@ export const WorkPage = () => {
                                         return(
                                             <li className='taskElement' key={task.id}>
                                                 <p>Завдання: {task.title}</p>
-                                                <span>Дата: {task.date}</span>
+                                                <span>Дата: {new Date(task.date).toLocaleString('uk-UA', {year: 'numeric', month: 'numeric', day: 'numeric' })}</span>
                                                 <span>Готово: {(task.ready) ? "Так" : "Ні"}</span>
                                                 <button onClick={() => {updateHandler(oneCompany, task)}} disabled={loading}>виконано</button>
                                             </li>
