@@ -8,8 +8,9 @@ export const WorkPage = () => {
 
     const {token,userId, name ,logout} = useContext(AuthContext)
     const [list, setList] = useState([])
-    const [numOfDays, setNumOfDays] = useState(3)
+    const [numOfDays, setNumOfDays] = useState(5)
     const {loading, request} = useHttp()
+    const [searchName, setSearchName] = useState()
 
     const logoutHandler = async () => {
         try {
@@ -60,7 +61,6 @@ export const WorkPage = () => {
                 break;
             }
         currentTask.date = `${newDate.getFullYear()}-${((newDate.getMonth()+1) >= 10) ? newDate.getMonth()+1 : '0' + (newDate.getMonth()+1)}-${(newDate.getDate() >= 10) ? newDate.getDate() : '0' + newDate.getDate() }`
-        console.log(currentTask.date)
 
         let tasksList = list.find(company => company._id === companyInfo._id).tasks
 
@@ -70,22 +70,69 @@ export const WorkPage = () => {
         } catch (e) {
             console.log(e)
         }
-        // 
+
     }, [list, request])
 
     const handleChangeInput = (event) => {
+
         let newNumOfDays = Number(event.target.value)
+
         if (newNumOfDays < 0 || newNumOfDays > 735) {
-            setNumOfDays(3)
+            setNumOfDays(5)
         }else{
             setNumOfDays(newNumOfDays)
         }
+
     }
 
     let time = new Date()
-    time = time.setDate(time.getDate() + numOfDays)
-    // console.log(new Date(time), numOfDays)
-    time = new Date(time)
+
+    const changeHandlerSearchName = (event) => {
+        setSearchName(event.target.value)
+    }
+
+    const SearchCompany = useCallback(() => {
+
+        let listForSearch = []
+
+        searchName 
+        ? listForSearch = list.filter((company) => company.name === searchName) 
+        : listForSearch = list
+
+        time = time.setDate(time.getDate() + numOfDays)
+        time = new Date(time)
+    
+
+
+        return(
+            listForSearch.map((oneCompany)=>{
+                return(
+                    <div className="companyElement">
+                        <p>Назва: {oneCompany.name}</p>
+                        <p>ЄДПРОУ: {oneCompany.edrpou}</p>
+                        <p>Список завдань: </p>
+                        <ol>
+                            {oneCompany.tasks.map((task)=>{
+                                if (!task.ready && new Date(task.date) <= time) {
+                                    return(
+                                        <li className='taskElement' key={task.id}>
+                                            <p>Завдання: {task.title}</p>
+                                            <span>Дата: {new Date(task.date).toLocaleString('uk-UA', {year: 'numeric', month: 'numeric', day: 'numeric' })}</span>
+                                            <span>Готово: {(task.ready) ? "Так" : "Ні"}</span>
+                                            <button onClick={() => {updateHandler(oneCompany, task)}}>виконано</button>
+                                        </li>
+                                    )
+                                }  
+                            })}
+                        </ol>
+                    </div>)
+                })
+        )
+        }, [list, searchName, updateHandler, time])
+
+    useEffect(() => {
+        SearchCompany()
+    })
 
     return (
         <div className="container">
@@ -93,30 +140,21 @@ export const WorkPage = () => {
             <NavBar />
             <input onChange={handleChangeInput} value={numOfDays} className="searchInput" name="numOfDays" max="735" id="numOfDays" type="number" />
             <label htmlFor="numOfDays">Кількість днів</label>
+            <div>
+                <select onChange={changeHandlerSearchName} className="selectSearchInput" name="companiesSearch" id="companiesSearch">
+                    <option value=''>Всі компанії</option>
+                    {
+                        list.map((company) => {
+                            return(
+                                <option value={company.name}>{company.name}</option>
+                            )
+                        })
+                    }
+                </select>
+            </div>
 
-            {
-                list.map((oneCompany)=>{
-                    return(
-                        <div className="companyElement">
-                            <p>Назва: {oneCompany.name}</p>
-                            <p>ЄДПРОУ: {oneCompany.edrpou}</p>
-                            <p>Список завдань: </p>
-                            <ol>
-                                {oneCompany.tasks.map((task)=>{
-                                    if (!task.ready && new Date(task.date) <= time) {
-                                        return(
-                                            <li className='taskElement' key={task.id}>
-                                                <p>Завдання: {task.title}</p>
-                                                <span>Дата: {new Date(task.date).toLocaleString('uk-UA', {year: 'numeric', month: 'numeric', day: 'numeric' })}</span>
-                                                <span>Готово: {(task.ready) ? "Так" : "Ні"}</span>
-                                                <button onClick={() => {updateHandler(oneCompany, task)}} disabled={loading}>виконано</button>
-                                            </li>
-                                        )
-                                    }  
-                                })}
-                            </ol>
-                        </div>)
-                   })}
+            <SearchCompany />
+            
         </div>
         )
 }

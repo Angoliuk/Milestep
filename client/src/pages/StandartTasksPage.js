@@ -3,7 +3,7 @@ import "./pages.css"
 import { useHttp } from '../hooks/http.hook'
 import { useCallback, useEffect, useState } from "react"
 
-export const StandartTasks = () => {
+export const StandartTasksPage = () => {
     
     const {request} = useHttp() 
     const [standartTasks, setStandartTasks] = useState({})
@@ -59,7 +59,6 @@ export const StandartTasks = () => {
             }
         })
         setStandartTasks({...standartTasks, info: newStandartTasks})
-        console.log(standartTasks)
     }
 
 
@@ -73,9 +72,10 @@ export const StandartTasks = () => {
                 {(standartTasks.info && standartTasks.info.length > 0) 
                 ?
                     standartTasks.info.map((standartTask) => {
+                        console.log(standartTask)
                         return(
                             <div>
-                                <p>{standartTask.text}</p>
+                                <p>{standartTask.id + 1}: {standartTask.text}</p>
                                 <button onClick={() => {deleteHandlerStandartTasks(standartTask.id)}} className="deleteButton">Видалити</button>
                             </div>
                         )

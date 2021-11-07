@@ -9,17 +9,7 @@ export const CompaniesPage = () => {
 
     const [list, setList] = useState([])
     const [searchName, setSearchName] = useState()
-    const {token,userId ,logout} = useContext(AuthContext)
-    const {loading, request} = useHttp()
-
-
-    const logoutHandler = async () => {
-        try {
-            logout()
-        } catch (e) {
-            
-        }
-    }
+    const {request} = useHttp()
 
     
     const deleteHandlerCompany = useCallback(async(id) => {
@@ -42,24 +32,18 @@ export const CompaniesPage = () => {
         let listForSearch = []
         let listCompletedTasks = []
         let sortedList = []
-        let period = ''
+        let period = ""
 
-        if (searchName) {
-                listForSearch = list.filter((company) => company.name === searchName)
-                listForSearch.forEach(company => {
-                listCompletedTasks = company.tasks.filter((task) => task.ready === true)
-                sortedList = company.tasks.filter((task) => task.ready === false)
-                sortedList = [...sortedList, ...listCompletedTasks]
-                company.tasks = sortedList
-                });
-            }else{
-                listForSearch = list
-                listForSearch.forEach(company => {
-                listCompletedTasks = company.tasks.filter((task) => task.ready === true)
-                sortedList = company.tasks.filter((task) => task.ready === false)
-                sortedList = [...sortedList, ...listCompletedTasks]
-                company.tasks = sortedList
-            })};
+        searchName 
+        ? listForSearch = list.filter((company) => company.name === searchName) 
+        : listForSearch = list
+
+        listForSearch.forEach(company => {
+            listCompletedTasks = company.tasks.filter((task) => task.ready === true)
+            sortedList = company.tasks.filter((task) => task.ready === false)
+            sortedList = [...sortedList, ...listCompletedTasks]
+            company.tasks = sortedList
+        })
 
         return(
             listForSearch.map((oneElem)=>{
@@ -140,7 +124,8 @@ export const CompaniesPage = () => {
         <div className="container">
             
             <NavBar />
-            <select onChange={changeHandlerSearchName} className="searchInput" name="companiesSearch" id="companiesSearch">
+            <select onChange={changeHandlerSearchName} name="companiesSearch" id="companiesSearch">
+                <option value=''>Всі компанії</option>
                 {
                     list.map((company) => {
                         return(

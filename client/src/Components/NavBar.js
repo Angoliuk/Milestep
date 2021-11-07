@@ -13,6 +13,7 @@ export const NavBar = () => {
                 <NavLink className="nav-elem" to="/create">Нова компанія</NavLink>
                 <NavLink className="nav-elem" to="/work">Завдання</NavLink>
                 <NavLink className="nav-elem" to="/companies">Всі компанії</NavLink>
+                <NavLink className="nav-elem" to="/history">Історія</NavLink>
                 <p className="name">{name}</p>
                 <button className="nav-button" onClick={logout}>logout</button>
             </nav>

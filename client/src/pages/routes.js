@@ -4,9 +4,10 @@ import {Switch, Route, Redirect} from 'react-router-dom'
 import { AuthPage } from './AuthPage'
 import { CreatePage } from './CreatePage'
 import { CompaniesPage } from './CompaniesPage'
-import { WorkPage } from './Work'
+import { WorkPage } from './WorkPage'
 import { EditPage } from './EditPage'
-import { StandartTasks } from './StandartTasks'
+import { StandartTasksPage } from './StandartTasksPage'
+import { HisotyPage } from './HistoryPage'
 
 export const useRoutes = isAuth => {
     if(isAuth){
@@ -25,7 +26,10 @@ export const useRoutes = isAuth => {
                     <EditPage />
                 </Route>
                 <Route path="/standartTasks" exact>
-                    <StandartTasks />
+                    <StandartTasksPage />
+                </Route>
+                <Route path="/history" exact>
+                    <HisotyPage />
                 </Route>
                 <Redirect to="/create" />
             </Switch>

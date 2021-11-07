@@ -20,13 +20,11 @@ export const CreatePage = () => {
 
 
     const changeHandlerForm = (event) => {
-        if(event.target.name === 'payerPDW'){
-            setEForm({...eForm, [event.target.name]: event.target.checked})
-            console.log(eForm)
-        }else{
-            setEForm({...eForm, [event.target.name]: event.target.value})
-            console.log(eForm)
-        }
+
+        (event.target.name === 'payerPDW') 
+        ? setEForm({...eForm, [event.target.name]: event.target.checked}) 
+        : setEForm({...eForm, [event.target.name]: event.target.value})
+
     }
 
 
@@ -50,11 +48,9 @@ export const CreatePage = () => {
 
 
     const changeHandlerTask = (event) => {
-        if (event.target.name === 'ready') {
-            setTaskParam({...taskParam, [event.target.name]: event.target.checked})
-        }else{
-            setTaskParam({...taskParam, [event.target.name]: event.target.value})
-        }
+        (event.target.name === 'ready') 
+        ? setTaskParam({...taskParam, [event.target.name]: event.target.checked}) 
+        : setTaskParam({...taskParam, [event.target.name]: event.target.value})
     }
 
 

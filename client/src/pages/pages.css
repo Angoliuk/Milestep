@@ -67,6 +67,10 @@ select{
     width: 60.5%
 }
 
+.selectSearchInput{
+    width: 40.4%;
+}
+
 .editButton{
     margin: 0;
     padding: 10px;

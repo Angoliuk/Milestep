@@ -7,47 +7,60 @@ import { useParams, useHistory } from 'react-router-dom'
 export const EditPage = () => {
 
     const companyId = useParams().id
-    const {loading, request} = useHttp() 
-    const {userId, token} = useContext(AuthContext)
+    const {request} = useHttp() 
     const [users, setUsers] = useState([])
     const [standartTasks, setStandartTasks] = useState({})
 
     
     const [eForm, setEForm] = useState({
-        name:'', edrpou:'', numOfWorkers: '', payerPDW: null, address: '', phoneNum:'', salary:'', responsible:'',  taxationSystem:'', tasks:[],
+        name:'',
+        edrpou:'',
+        numOfWorkers: '', 
+        payerPDW: null, 
+        address: '', 
+        phoneNum:'', 
+        salary:'', 
+        responsible:'',  
+        taxationSystem:'', 
+        tasks:[],
     })
 
-    const [taskParam, setTaskParam] = useState({title:'', date:'', period:'', id: 0,  ready: false})
+    const [taskParam, setTaskParam] = useState({
+        title:'',
+        date:'',
+        period:'',
+        id: 0,
+        ready: false
+    })
 
 
     const changeHandlerForm = (event) => {
-        if(event.target.name === 'payerPDW'){
-            setEForm({...eForm, [event.target.name]: event.target.checked})
-        }else{
-            setEForm({...eForm, [event.target.name]: event.target.value})
-        }
+
+        (event.target.name === 'payerPDW') 
+        ? setEForm({...eForm, [event.target.name]: event.target.checked}) 
+        : setEForm({...eForm, [event.target.name]: event.target.value})
+
     }
 
 
     const changeHandlerTask = (event) => {
-        if (event.target.name === 'ready') {
-            setTaskParam({...taskParam, [event.target.name]: event.target.checked})
-        }else{
-            setTaskParam({...taskParam, [event.target.name]: event.target.value})
-        }
+
+        (event.target.name === 'ready') 
+        ? setTaskParam({...taskParam, [event.target.name]: event.target.checked}) 
+        : setTaskParam({...taskParam, [event.target.name]: event.target.value})
+
     }
 
     let allTasks = eForm.tasks
 
-
     const changeHandlerCreatedTask = (position) => (event) => {
-        
-            if (event.target.name === 'ready') {
-                allTasks[position][event.target.name] = event.target.checked
-            } else {
-                allTasks[position][event.target.name] = event.target.value
-            }
-            setEForm({...eForm, tasks: allTasks})
+
+        (event.target.name === 'ready') 
+        ? allTasks[position][event.target.name] = event.target.checked 
+        : allTasks[position][event.target.name] = event.target.value
+
+        setEForm({...eForm, tasks: allTasks})
+
         }
 
 
