@@ -8,6 +8,7 @@ export const WorkPage = () => {
 
     const {token,userId, name ,logout} = useContext(AuthContext)
     const [list, setList] = useState([])
+    const [taskswHistory, setTaskswHistory] = useState({})
     const [numOfDays, setNumOfDays] = useState(5)
     const {loading, request} = useHttp()
     const [searchName, setSearchName] = useState()
@@ -24,24 +25,28 @@ export const WorkPage = () => {
         try {
             const data = await request("/api/auth/allCompanies", "GET", null)
             setList(data.filter((company) => company.responsible === name))
+
+            const staticInfos = await request("/api/auth/staticInfoGet", "GET", null) /// ???????????????????????????
+            console.log(staticInfos.find((info) => info.name === 'history')) /// ???????????????????????????
+            setTaskswHistory(staticInfos.find((info) => info.name === 'history')) /// ???????????????????????????
         } catch (e) {
             console.error(e);
             console.log("here")
         }
     } ,[request, name])
 
-    useEffect(() => {
-        dataRequest()
-    }, [dataRequest])
 
     const updateHandler = useCallback( async (companyInfo, task) => {
+        
         let currentTasksList = list.find(company => company._id === companyInfo._id).tasks
         let currentTask = currentTasksList.find(currentTask => currentTask.id === task.id)
-        currentTask.ready = true
+
+        // currentTask.ready = true
         let newDate = new Date(Date.parse(currentTask.date))
+ 
         switch (task.period) {
             case '2':
-                newDate.setDate(newDate.getDate()+14)
+                newDate.setDate(newDate.getDate()+7)
                 break;  
     
             case '3':
@@ -57,15 +62,31 @@ export const WorkPage = () => {
                 break;
 
             default:
-                newDate.setDate(newDate.getDate()+7)
+                currentTasksList.splice(currentTask.id, 1)
+                currentTasksList.map((task) => {
+                    if (task.id > currentTask.id) {
+                        task.id--
+                    }})
                 break;
             }
-        currentTask.date = `${newDate.getFullYear()}-${((newDate.getMonth()+1) >= 10) ? newDate.getMonth()+1 : '0' + (newDate.getMonth()+1)}-${(newDate.getDate() >= 10) ? newDate.getDate() : '0' + newDate.getDate() }`
 
-        let tasksList = list.find(company => company._id === companyInfo._id).tasks
+        (task.period) 
+        ?   currentTask.date = `${newDate.getFullYear()}-${((newDate.getMonth()+1) >= 10) ? newDate.getMonth()+1 : '0' + (newDate.getMonth()+1)}-${(newDate.getDate() >= 10) ? newDate.getDate() : '0' + newDate.getDate() }`
+        :   currentTask = null
+
+        // let test = tasksHistory
+        console.log(taskswHistory) /// ???????????????????????????
+        // console.log(companyInfo)
+        // console.log(test)
+        // console.log(test.info)
+        // console.log(companyInfo.name)
+        // console.log(companyInfo)
+        // test.info.find((company) => company.name === companyInfo.name)
+
 
         try {
-            await request("/api/auth/update", "POST", {id: companyInfo._id, tasksList: tasksList})
+            await request("/api/auth/update", "POST", {id: companyInfo._id, tasksList: currentTasksList})
+            await request("/api/auth/staticInfoUpdate", "POST", {id: companyInfo._id, tasksList: currentTasksList})
             alert("saved")
         } catch (e) {
             console.log(e)
@@ -91,7 +112,7 @@ export const WorkPage = () => {
         setSearchName(event.target.value)
     }
 
-    const SearchCompany = useCallback(() => {
+    const SearchTasks = useCallback(() => {
 
         let listForSearch = []
 
@@ -109,16 +130,16 @@ export const WorkPage = () => {
                 return(
                     <div className="companyElement">
                         <p>Назва: {oneCompany.name}</p>
-                        <p>ЄДПРОУ: {oneCompany.edrpou}</p>
+                        <p>ЄДРПОУ: {oneCompany.edrpou}</p>
                         <p>Список завдань: </p>
                         <ol>
                             {oneCompany.tasks.map((task)=>{
-                                if (!task.ready && new Date(task.date) <= time) {
+                                if (new Date(task.date) <= time) {
                                     return(
                                         <li className='taskElement' key={task.id}>
                                             <p>Завдання: {task.title}</p>
                                             <span>Дата: {new Date(task.date).toLocaleString('uk-UA', {year: 'numeric', month: 'numeric', day: 'numeric' })}</span>
-                                            <span>Готово: {(task.ready) ? "Так" : "Ні"}</span>
+                                            {/* <span>Готово: {(task.ready) ? "Так" : "Ні"}</span> */}
                                             <button onClick={() => {updateHandler(oneCompany, task)}}>виконано</button>
                                         </li>
                                     )
@@ -131,8 +152,12 @@ export const WorkPage = () => {
         }, [list, searchName, updateHandler, time])
 
     useEffect(() => {
-        SearchCompany()
+        SearchTasks()
     })
+
+        useEffect(() => {
+        dataRequest()
+    }, [dataRequest])
 
     return (
         <div className="container">
@@ -153,7 +178,7 @@ export const WorkPage = () => {
                 </select>
             </div>
 
-            <SearchCompany />
+            <SearchTasks />
             
         </div>
         )

@@ -12,18 +12,26 @@ export const CreatePage = () => {
 
 
     const [eForm, setEForm] = useState({
-        name:'', edrpou:'', numOfWorkers: '', payerPDW: null, address: '', phoneNum:'', salary:'', responsible:'',  taxationSystem:'', tasks:[],
+        name:'',
+        edrpou:null,
+        numOfWorkers: null, 
+        payerPDW: '', 
+        address: '', 
+        phoneNum:null, 
+        responsible:'',  
+        taxationSystem:'', 
+        kwed: '', 
+        infoESW: '', 
+        tasks:[]
     })
 
-    const [taskParam, setTaskParam] = useState({title:'', date: 0, period:'', id: 0,  ready: false})
+    const [taskParam, setTaskParam] = useState({title:'', date: 0, period:'', id: 0})
     const [standartTasks, setStandartTasks] = useState({})
 
 
     const changeHandlerForm = (event) => {
 
-        (event.target.name === 'payerPDW') 
-        ? setEForm({...eForm, [event.target.name]: event.target.checked}) 
-        : setEForm({...eForm, [event.target.name]: event.target.value})
+        setEForm({...eForm, [event.target.name]: event.target.value}) 
 
     }
 
@@ -34,7 +42,7 @@ export const CreatePage = () => {
             setUsers(data)
 
             const staticInfo = await request('/api/auth/staticInfoGet', 'GET', null)
-            setStandartTasks(staticInfo.find((info) => info.name === 'standartTasks'))
+            setStandartTasks({name: 'standartTasks', info: staticInfo.find((info) => info.name === 'standartTasks').info.sort((a, b) => a.text.localeCompare(b.text))})
 
         } catch (e) {
             console.log(e)
@@ -48,9 +56,9 @@ export const CreatePage = () => {
 
 
     const changeHandlerTask = (event) => {
-        (event.target.name === 'ready') 
-        ? setTaskParam({...taskParam, [event.target.name]: event.target.checked}) 
-        : setTaskParam({...taskParam, [event.target.name]: event.target.value})
+
+        setTaskParam({...taskParam, [event.target.name]: event.target.value})
+        
     }
 
 
@@ -59,7 +67,7 @@ export const CreatePage = () => {
         const list = eForm.tasks.map((task)=>{
             switch (task.period) {
                 case '2':
-                    period = 'Кожні 2 тижні'
+                    period = 'Щотижня'
                     break;  
     
                 case '3':
@@ -75,7 +83,7 @@ export const CreatePage = () => {
                     break;
     
                 default:
-                    period = 'Щотижня'
+                    period = 'Одноразове'
                     break;
             }
             return(
@@ -83,7 +91,7 @@ export const CreatePage = () => {
                     <p>Завдання: {task.title}</p>
                     <p>Періодичність: {period}</p>
                     <p>Дата: {new Date(task.date).toLocaleString('uk-UA', {year: 'numeric', month: 'numeric', day: 'numeric' })}</p>
-                    <p>Готово: {(task.ready) ? "Так" : "Ні"}</p>
+                    {/* <p>Готово: {(task.ready) ? "Так" : "Ні"}</p> */}
                 </div>
             )
         }) 
@@ -102,17 +110,18 @@ export const CreatePage = () => {
             title: taskParam.title,
             date: taskParam.date,
             period: taskParam.period,
-            ready: taskParam.ready,
+            // ready: taskParam.ready,
         })
         setEForm({...eForm, tasks: newTasksList})
-        setTaskParam({title: '', date:'', period:'', id: taskParam.id + 1, ready: false})
+        console.log(taskParam)
+        setTaskParam({title: '', date:'', period:'', id: taskParam.id + 1})
     }
 
 
     const addCompany = async () => {
         try {
                 await request('/api/auth/create', 'POST', eForm)
-                setEForm({name:'', edrpou:'', numOfWorkers: '', payerPDW: null, address: '', phoneNum:'', salary:'', responsible:'',  taxationSystem:'', tasks:[],})
+                setEForm({name:'', edrpou: null, numOfWorkers: null, payerPDW: null, address: '', phoneNum: null, responsible:'',  taxationSystem:'', kwed: '', infoESW: '', tasks:[]})
                 alert("event created")
             
         } catch (e) {
@@ -129,17 +138,31 @@ export const CreatePage = () => {
                     <h1>Інформація про компанію</h1>
                     <input onChange={changeHandlerForm} value={eForm.name} className="inputForCreate" name="name" id="name"/>
                     <label htmlFor="name">Назва</ label>
+
                     <input onChange={changeHandlerForm} value={eForm.edrpou} className="inputForCreate" name="edrpou" id="edrpou" type="number"/>
-                    <label htmlFor="date">ЄДПРОУ</ label>
+                    <label htmlFor="date">ЄДРПОУ</ label>
+
                     <input onChange={changeHandlerForm} value={eForm.address} className="inputForCreate" name="address" id="address"/>
                     <label htmlFor="address">Адреса</ label>
+
                     <input onChange={changeHandlerForm} value={eForm.phoneNum} className="inputForCreate" name="phoneNum" id="phoneNum" type="number"/>
                     <label htmlFor="phoneNum">Номер телефону</ label>
+
+                    <input onChange={changeHandlerForm} value={eForm.kwed} className="inputForCreate" name="kwed" id="kwed"/>
+                    <label htmlFor="kwed">Основний КВЕД</ label>
+
+                    <input onChange={changeHandlerForm} value={eForm.payerPDW} className="inputForCreate" name="payerPDW" id="payerPDW"/>
+                    <label htmlFor="payerPDW">Платник ПДВ</ label>
+
+                    <input onChange={changeHandlerForm} value={eForm.taxationSystem} className="inputForCreate" name="taxationSystem" id="taxationSystem"/>
+                    <label htmlFor="taxationSystem">Сиcтема оподаткування</ label>
+
+                    <input onChange={changeHandlerForm} value={eForm.infoESW} className="inputForCreate" name="infoESW" id="infoESW"/>
+                    <label htmlFor="infoESW">Інформація про сплату ЄСВ</ label>
+
                     <input onChange={changeHandlerForm} value={eForm.numOfWorkers} className="inputForCreate" name="numOfWorkers" id="numOfWorkers" type="number"/>
                     <label htmlFor="numOfWorkers">Всього робітників</ label>
-                    <input onChange={changeHandlerForm} value={eForm.salary} className="inputForCreate" name="salary" id="salary" type="number"/>
-                    <label htmlFor="salary">Сума оплати</ label>
-
+                
                     <div>
                         <select onChange={changeHandlerForm} value={eForm.responsible} name="responsible" id="responsible">
                             {users.map((user) => {
@@ -150,14 +173,7 @@ export const CreatePage = () => {
                         </select>
                         <label htmlFor="responsible">Відповідальний</ label>
                     </div>
-
-                        <input onChange={changeHandlerForm} value={eForm.taxationSystem} className="inputForCreate" name="taxationSystem" id="taxationSystem"/>
-                        <label htmlFor="taxationSystem">Сиcтема оподаткування</ label>
-
-                    <div className="checkboxBlock">
-                        <input onChange={changeHandlerForm} checked={eForm.payerPDW} className="inputForCreate checkboxForCreate" name="payerPDW" id="payerPDW" type="checkbox"/>
-                        <label htmlFor="payerPDW">Платник ПДВ</ label>
-                    </div>
+     
                 </div>
 
                 <div>
@@ -179,8 +195,8 @@ export const CreatePage = () => {
 
                     <div>
                         <select onChange={changeHandlerTask} value={taskParam.period} className="inputForCreate" name="period" id="period">
-                            <option value='1'>Щотижня</option>
-                            <option value='2'>Кожні 2 тижні</option>
+                            <option value='1'>Одноразове завдання</option>
+                            <option value='2'>Щотижня</option>
                             <option value='3'>Щомісяця</option>
                             <option value='4'>Раз у квартал</option>
                             <option value='5'>Раз у рік</option>
@@ -188,10 +204,10 @@ export const CreatePage = () => {
                         <label htmlFor="period">періодичність</ label>
                     </div>
 
-                    <div className="checkboxBlock">
+                    {/* <div className="checkboxBlock">
                         <input onChange={changeHandlerTask} checked={taskParam.ready} className="inputForCreate checkboxForCreate" name="ready" id="ready" type="checkbox"/>
                         <label htmlFor="ready">Готово</ label>
-                    </div>
+                    </div> */}
 
                     <button onClick={addTask}>Додати завдання</button>
                 </div>

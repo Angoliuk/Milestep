@@ -51,19 +51,20 @@ export const CompaniesPage = () => {
                 <div className="companyElement">
                     <p>Назва: {oneElem.name}</p>
                     <p>ЄДПРОУ: {oneElem.edrpou}</p>
-                    <p>Всього робітників: {oneElem.numOfWorkers}</p>
-                    <p>Платник ПДВ: {(oneElem.payerPDW) ? "Так" : "Ні"}</p>
                     <p>Адреса: {oneElem.address}</p>
                     <p>Номер Телефону: {oneElem.phoneNum}</p>
-                    <p>Сума оплати: {oneElem.salary}</p>
+                    <p>Основний КВЕД: {oneElem.kwed}</p>
+                    <p>Платник ПДВ: {oneElem.payerPDW}</p>
                     <p>Система оподаткування: {oneElem.taxationSystem}</p>
+                    <p>Всього робітників: {oneElem.numOfWorkers}</p>
+                    <p>Інформація про сплату ЄСВ: {oneElem.infoESW}</p>
                     <p>Відповідальний: {oneElem.responsible}</p>
                     <p>Список завдань: </p>
                     <ol>
                         {oneElem.tasks.map((task)=>{
                                 switch (task.period) {
                                     case '2':
-                                        period = 'Кожні 2 тижні'
+                                        period = 'Щотижня'
                                         break;  
                         
                                     case '3':
@@ -79,7 +80,7 @@ export const CompaniesPage = () => {
                                         break;
                         
                                     default:
-                                        period = 'Щотижня'
+                                        period = 'Одноразове'
                                         break;
                                 }
                                 return(
@@ -87,7 +88,7 @@ export const CompaniesPage = () => {
                                         <p>Завдання: {task.title}</p>
                                         <span>Періодичність: {period}</span>
                                         <span>Дата: {new Date(task.date).toLocaleString('uk-UA', {year: 'numeric', month: 'numeric', day: 'numeric' })}</span>
-                                        <span>Готово: {(task.ready) ? "Так" : "Ні"}</span>
+                                        {/* <span>Готово: {(task.ready) ? "Так" : "Ні"}</span> */}
                                     </li>
                                 )
                             })}
