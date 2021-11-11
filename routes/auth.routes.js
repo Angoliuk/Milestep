@@ -204,7 +204,7 @@ router.get(
 router.post(
     "/staticInfoUpdate",
     async(req, res) => {
-        const { name, info } = req.body
+        const { info, name } = req.body
 
         try {
             await StaticInfo.findOneAndUpdate({name: name}, {

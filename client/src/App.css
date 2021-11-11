@@ -1,3 +1,6 @@
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;500&display=swap');
+
+
 a{
     text-decoration: none;
     font-size: 18px;
@@ -23,11 +26,14 @@ input{
 .App{
     display: flex;
     justify-content: center;
+    font-family: 'Open Sans', sans-serif;
 }
 
 p{
     font-size: 18px;
     font-weight: 500;
 }
+
+
 
 

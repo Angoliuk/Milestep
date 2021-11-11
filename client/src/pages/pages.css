@@ -82,3 +82,7 @@ select{
         padding: 11px;
         background-color: #f44336;
 }
+
+table, td, th {
+    border: 2px solid black
+}

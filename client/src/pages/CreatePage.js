@@ -43,6 +43,7 @@ export const CreatePage = () => {
 
             const staticInfo = await request('/api/auth/staticInfoGet', 'GET', null)
             setStandartTasks({name: 'standartTasks', info: staticInfo.find((info) => info.name === 'standartTasks').info.sort((a, b) => a.text.localeCompare(b.text))})
+            
 
         } catch (e) {
             console.log(e)

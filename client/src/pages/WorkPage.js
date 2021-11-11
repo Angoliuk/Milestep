@@ -6,11 +6,11 @@ import "./pages.css"
 
 export const WorkPage = () => {
 
-    const {token,userId, name ,logout} = useContext(AuthContext)
+    const {token, userId, name ,logout} = useContext(AuthContext)
     const [list, setList] = useState([])
-    const [taskswHistory, setTaskswHistory] = useState({})
-    const [numOfDays, setNumOfDays] = useState(5)
     const {loading, request} = useHttp()
+    const [history, setHistory] = useState()
+    const [numOfDays, setNumOfDays] = useState(5)
     const [searchName, setSearchName] = useState()
 
     const logoutHandler = async () => {
@@ -26,14 +26,17 @@ export const WorkPage = () => {
             const data = await request("/api/auth/allCompanies", "GET", null)
             setList(data.filter((company) => company.responsible === name))
 
-            const staticInfos = await request("/api/auth/staticInfoGet", "GET", null) /// ???????????????????????????
-            console.log(staticInfos.find((info) => info.name === 'history')) /// ???????????????????????????
-            setTaskswHistory(staticInfos.find((info) => info.name === 'history')) /// ???????????????????????????
+            const staticInfo = await request('/api/auth/staticInfoGet', 'GET', null)
+            setHistory(staticInfo.find((info) => info.name === 'history'))
         } catch (e) {
             console.error(e);
             console.log("here")
         }
     } ,[request, name])
+
+    useEffect(() => {
+        dataRequest()
+    }, [dataRequest])
 
 
     const updateHandler = useCallback( async (companyInfo, task) => {
@@ -74,25 +77,24 @@ export const WorkPage = () => {
         ?   currentTask.date = `${newDate.getFullYear()}-${((newDate.getMonth()+1) >= 10) ? newDate.getMonth()+1 : '0' + (newDate.getMonth()+1)}-${(newDate.getDate() >= 10) ? newDate.getDate() : '0' + newDate.getDate() }`
         :   currentTask = null
 
-        // let test = tasksHistory
-        console.log(taskswHistory) /// ???????????????????????????
-        // console.log(companyInfo)
-        // console.log(test)
-        // console.log(test.info)
-        // console.log(companyInfo.name)
-        // console.log(companyInfo)
-        // test.info.find((company) => company.name === companyInfo.name)
+        let companyInHistory = history.info.find((company) => company.name === companyInfo.name)
+        let currentDate = new Date().toLocaleString('uk-UA', {year: 'numeric', month: 'numeric', day: 'numeric'})
 
+        console.log(history);
+        (companyInHistory)
+        ? companyInHistory.tasksHistory.push({task: currentTask.title, date: currentDate, author: name})
+        : history.info.push({name: companyInfo.name, edrpou: companyInfo.edrpou, tasksHistory: [{task: currentTask.title, date: currentDate, author: name}]})
+        console.log(history)
 
         try {
             await request("/api/auth/update", "POST", {id: companyInfo._id, tasksList: currentTasksList})
-            await request("/api/auth/staticInfoUpdate", "POST", {id: companyInfo._id, tasksList: currentTasksList})
+            await request("/api/auth/staticInfoUpdate", "POST", history)
             alert("saved")
         } catch (e) {
             console.log(e)
         }
 
-    }, [list, request])
+    }, [list, request, history, name])
 
     const handleChangeInput = (event) => {
 
@@ -155,13 +157,8 @@ export const WorkPage = () => {
         SearchTasks()
     })
 
-        useEffect(() => {
-        dataRequest()
-    }, [dataRequest])
-
     return (
         <div className="container">
-
             <NavBar />
             <input onChange={handleChangeInput} value={numOfDays} className="searchInput" name="numOfDays" max="735" id="numOfDays" type="number" />
             <label htmlFor="numOfDays">Кількість днів</label>
