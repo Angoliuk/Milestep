@@ -83,6 +83,12 @@ select{
         background-color: #f44336;
 }
 
-table, td, th {
+table, th {
     border: 2px solid black
+}
+th{
+    height: 22px;
+}
+table{
+    width: 100%
 }

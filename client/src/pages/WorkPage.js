@@ -78,12 +78,17 @@ export const WorkPage = () => {
         :   currentTask = null
 
         let companyInHistory = history.info.find((company) => company.name === companyInfo.name)
+        let taskInHistory
+        companyInHistory ? taskInHistory = companyInHistory.tasksHistory.find((task) => task.task === currentTask.title) : taskInHistory = false 
         let currentDate = new Date().toLocaleString('uk-UA', {year: 'numeric', month: 'numeric', day: 'numeric'})
 
         console.log(history);
         (companyInHistory)
-        ? companyInHistory.tasksHistory.push({task: currentTask.title, date: currentDate, author: name})
-        : history.info.push({name: companyInfo.name, edrpou: companyInfo.edrpou, tasksHistory: [{task: currentTask.title, date: currentDate, author: name}]})
+        // ? companyInHistory.tasksHistory.push({task: currentTask.title, date: currentDate, author: name})
+        ? (taskInHistory) 
+            ? taskInHistory.completeDates.push({date: currentDate}) 
+            : companyInHistory.tasksHistory.push({task: currentTask.title, completeDates: [{date: currentDate}]})
+        : history.info.push({name: companyInfo.name, edrpou: companyInfo.edrpou, tasksHistory: [{task: currentTask.title, completeDates: [{date: currentDate}]}]})
         console.log(history)
 
         try {

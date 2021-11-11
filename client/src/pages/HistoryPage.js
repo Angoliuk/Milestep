@@ -15,15 +15,40 @@ export const HisotyPage = () => {
     const dataRequest = useCallback( async () => {
         try {
             const staticInfo = await request('/api/auth/staticInfoGet', 'GET', null)
-            setHistory(staticInfo.find((info) => info.name === 'history'))
+            setHistory(staticInfo[1])
         } catch (e) {
             console.log(e)
         }
     }, [request])
 
-    // useEffect(() => {
-    //     dataRequest()
-    // })
+    useEffect(() => {
+        dataRequest()
+    }, [dataRequest])
+
+    const TableBlocks = useCallback((info, isTaskBlock) => {
+
+        let infoForEveryMonth = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+
+        if (info.isTaskBlock) {
+            if (info.info) {
+                info.info.forEach(task => {
+                    let month = new Date(task.date).getMonth()
+                    console.log(month)
+                    infoForEveryMonth[month]++
+                })
+            }
+        } else {
+            infoForEveryMonth = ['Січень', 'Лютий', 'Квітень', 'Березень', 'Травень', 'Червень', 'Липень', 'Серпень', 'Вересень', 'Жовтень', 'Листопад', 'Грудень']
+        }
+
+        return (
+            infoForEveryMonth.map((task) => {
+                return(
+                    <th>{task}</th>
+                    )            
+                })
+        )
+    }, [])
 
     const HistoryCompany = () => {
 
@@ -37,19 +62,8 @@ export const HisotyPage = () => {
         return(
             listForSearch.map((company) => {
 
-                // company.tasksHistory
-
-                // tasksForTable = []
-
-                const table = {};
-                console.log(table)
-                const res = company.tasksHistory.filter(({task}) => (!table[task] && (table[task] = 1)));
-                console.log(res)
-
-                // {
-                //     task: name,
-                //     Repeats: [0,0,0,0,0,0,0,0,0,0,0,0]
-                // }
+                // const table = {};
+                // const res = company.tasksHistory.filter(({task}) => (table[task]) ? table[task]++ : table[task] = 1)
 
                 return(
                     <div className="companyElement">
@@ -59,15 +73,18 @@ export const HisotyPage = () => {
                             <thead>
                                 <tr>
                                     <th>Звітність щодо виконання завдань</th>
+                                    <TableBlocks isTaskBlock={false} />
                                 </tr>
                             </thead>
                             <tbody>
                                 {company.tasksHistory.map((task) => {
                                     return(
                                         <tr>
-                                            <td>
+                                            <th>
                                                 {task.task}
-                                            </td>
+                                            </th>
+                                            {console.log(task.completeDates)}
+                                            <TableBlocks info={task.completeDates} isTaskBlock={true}/>
                                         </tr>
                                     )
                                 })}
@@ -98,7 +115,6 @@ export const HisotyPage = () => {
                     }
             </select>
 
-            <button onClick={dataRequest}>ijsd</button>
             {(history) ? <HistoryCompany /> : <div>В історії немає інформації про компанію</div>}
             
         </div>
