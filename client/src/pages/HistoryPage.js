@@ -1,6 +1,8 @@
 import { useHttp } from '../hooks/http.hook'
 import { useCallback, useEffect, useState } from "react"
 import { NavBar } from '../Components/NavBar'
+import printJS from 'print-js'
+
 import "./pages.css"
 
 
@@ -33,8 +35,7 @@ export const HisotyPage = () => {
         if (info.isTaskBlock) {
             if (info.info) {
                 info.info.forEach(task => {
-                    let month = new Date(task.date).getMonth()
-                    console.log(month)
+                    let month = new Date(task.completeToDate).getMonth()
                     infoForEveryMonth[month]++
                 })
             }
@@ -68,29 +69,34 @@ export const HisotyPage = () => {
 
                 return(
                     <div className="companyElement">
-                        <p>Назва: {company.name}</p>
-                        <p>ЄДРПОУ: {company.edrpou}</p>
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th>Звітність щодо виконання завдань</th>
-                                    <TableBlocks isTaskBlock={false} />
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {company.tasksHistory.map((task) => {
-                                    return(
-                                        <tr>
-                                            <th>
-                                                {task.task}
-                                            </th>
-                                            {console.log(task)}
-                                            <TableBlocks info={task.completeDates} isTaskBlock={true}/>
-                                        </tr>
-                                    )
-                                })}
-                            </tbody>
-                        </table>
+                        <div id='PrintTable'>
+                            <p>Назва: {company.name}</p>
+                            <p>ЄДРПОУ: {company.edrpou}</p>
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Звітність щодо виконання завдань</th>
+                                        <TableBlocks isTaskBlock={false} />
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {company.tasksHistory.map((task) => {
+                                        return(
+                                            <tr>
+                                                <th>
+                                                    {task.task}
+                                                </th>
+                                                {console.log(task)}
+                                                <TableBlocks info={task.completeDates} isTaskBlock={true}/>
+                                            </tr>
+                                        )
+                                    })}
+                                </tbody>
+                            </table>
+                        </div>
+                        <button onClick={() => {printJS({printable: 'PrintTable', type: 'html', targetStyles: ['*']})}}>
+                            Друк
+                        </button>
                     </div>
                 )
             })

@@ -88,6 +88,7 @@ table, th {
 }
 th{
     height: 22px;
+    padding: 3px;
 }
 table{
     width: 100%

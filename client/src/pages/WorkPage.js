@@ -76,19 +76,20 @@ export const WorkPage = () => {
         (task.period) 
         ?   currentTask.date = `${newDate.getFullYear()}-${((newDate.getMonth()+1) >= 10) ? newDate.getMonth()+1 : '0' + (newDate.getMonth()+1)}-${(newDate.getDate() >= 10) ? newDate.getDate() : '0' + newDate.getDate() }`
         :   currentTask = null
+        console.log(list)
 
         let companyInHistory = history.info.find((company) => company.name === companyInfo.name)
         let taskInHistory
         companyInHistory ? taskInHistory = companyInHistory.tasksHistory.find((task) => task.task === currentTask.title) : taskInHistory = false 
         let currentDate = new Date().toLocaleString('uk-UA', {year: 'numeric', month: 'numeric', day: 'numeric'})
 
-        console.log(companyInHistory);
+        console.log(task);
         (companyInHistory)
         // ? companyInHistory.tasksHistory.push({task: currentTask.title, date: currentDate, author: name})
         ? (taskInHistory) 
-            ? taskInHistory.completeDates.push({date: currentDate}) 
-            : companyInHistory.tasksHistory.push({task: currentTask.title, completeDates: [{date: currentDate}]})
-        : history.info.push({name: companyInfo.name, edrpou: companyInfo.edrpou, tasksHistory: [{task: currentTask.title, completeDates: [{date: currentDate}]}]})
+            ? taskInHistory.completeDates.push({date: currentDate, completeToDate: currentTask.date}) 
+            : companyInHistory.tasksHistory.push({task: currentTask.title, completeDates: [{date: currentDate, completeToDate: currentTask.date}]})
+        : history.info.push({name: companyInfo.name, edrpou: companyInfo.edrpou, tasksHistory: [{task: currentTask.title, completeDates: [{date: currentDate, completeToDate: currentTask.date}]}]})
         console.log(history)
 
         try {

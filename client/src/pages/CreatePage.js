@@ -36,7 +36,7 @@ export const CreatePage = () => {
     }
 
 
-    const dataRequest = useCallback(async () => {
+    const dataRequest = useCallback( async () => {
         try {
             const data = await request('/api/auth/allUsers', 'GET', null)
             setUsers(data)
@@ -166,11 +166,12 @@ export const CreatePage = () => {
                     <label htmlFor="numOfWorkers">Всього робітників</ label>
                 
                     <div>
-                        <select onChange={changeHandlerForm} value={eForm.responsible} name="responsible" id="responsible">
+                        <select onChange={changeHandlerForm} defaultValue={eForm.responsible} name="responsible" id="responsible">
+                            <option value=''>Ви не вибрали відповідального</option>
                             {users.map((user) => {
                                 return(
                                     <option value={user.name}>{user.name}</option>
-                            )
+                                )
                             })}
                         </select>
                         <label htmlFor="responsible">Відповідальний</ label>
