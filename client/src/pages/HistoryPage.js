@@ -28,6 +28,7 @@ export const HisotyPage = () => {
     const TableBlocks = useCallback((info, isTaskBlock) => {
 
         let infoForEveryMonth = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+        console.log(info.info)
 
         if (info.isTaskBlock) {
             if (info.info) {
@@ -83,7 +84,7 @@ export const HisotyPage = () => {
                                             <th>
                                                 {task.task}
                                             </th>
-                                            {console.log(task.completeDates)}
+                                            {console.log(task)}
                                             <TableBlocks info={task.completeDates} isTaskBlock={true}/>
                                         </tr>
                                     )

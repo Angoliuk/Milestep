@@ -82,7 +82,7 @@ export const WorkPage = () => {
         companyInHistory ? taskInHistory = companyInHistory.tasksHistory.find((task) => task.task === currentTask.title) : taskInHistory = false 
         let currentDate = new Date().toLocaleString('uk-UA', {year: 'numeric', month: 'numeric', day: 'numeric'})
 
-        console.log(history);
+        console.log(companyInHistory);
         (companyInHistory)
         // ? companyInHistory.tasksHistory.push({task: currentTask.title, date: currentDate, author: name})
         ? (taskInHistory) 
