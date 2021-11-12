@@ -121,6 +121,7 @@ export const CreatePage = () => {
 
     const addCompany = async () => {
         try {
+            console.log(eForm)
                 await request('/api/auth/create', 'POST', eForm)
                 setEForm({name:'', edrpou: null, numOfWorkers: null, payerPDW: null, address: '', phoneNum: null, responsible:'',  taxationSystem:'', kwed: '', infoESW: '', tasks:[]})
                 alert("event created")

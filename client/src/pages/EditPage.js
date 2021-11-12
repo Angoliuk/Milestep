@@ -92,6 +92,7 @@ export const EditPage = () => {
 
     const TaskList = (()=>{
         const list = eForm.tasks.map((task)=>{
+            console.log(task)
             return(
                 <form className='taskElement' key={task.id}>
                         <input onChange={changeHandlerCreatedTask(task.id)} value={task.title} name="title" id="title" className="inputForCreate" list="titleDatalist" />

@@ -38,15 +38,18 @@ export const CompaniesPage = () => {
         ? listForSearch = list.filter((company) => company.name === searchName) 
         : listForSearch = list
 
-        listForSearch.forEach(company => {
-            listCompletedTasks = company.tasks.filter((task) => task.ready === true)
-            sortedList = company.tasks.filter((task) => task.ready === false)
-            sortedList = [...sortedList, ...listCompletedTasks]
-            company.tasks = sortedList
-        })
+        // console.log(listForSearch)
+
+        // listForSearch.forEach(company => {
+        //     listCompletedTasks = company.tasks.filter((task) => task.ready === true)
+        //     sortedList = company.tasks.filter((task) => task.ready === false)
+        //     sortedList = [...sortedList, ...listCompletedTasks]
+        //     company.tasks = sortedList
+        // })
 
         return(
             listForSearch.map((oneElem)=>{
+                // console.log(oneElem)
                 return(
                 <div className="companyElement">
                     <p>Назва: {oneElem.name}</p>
@@ -129,6 +132,7 @@ export const CompaniesPage = () => {
                 <option value=''>Всі компанії</option>
                 {
                     list.map((company) => {
+                        console.log(company)
                         return(
                             <option value={company.name}>{company.name}</option>
                         )
