@@ -7,7 +7,8 @@ import { CompaniesPage } from './CompaniesPage'
 import { WorkPage } from './WorkPage'
 import { EditPage } from './EditPage'
 import { StandartTasksPage } from './StandartTasksPage'
-import { HisotyPage } from './HistoryPage'
+import { HistoryPage } from './HistoryPage'
+import { StatPage } from './StatPage'
 
 export const useRoutes = isAuth => {
     if(isAuth){
@@ -29,7 +30,10 @@ export const useRoutes = isAuth => {
                     <StandartTasksPage />
                 </Route>
                 <Route path="/history" exact>
-                    <HisotyPage />
+                    <HistoryPage />
+                </Route>
+                <Route path="/statistics" exact>
+                    <StatPage />
                 </Route>
                 <Redirect to="/create" />
             </Switch>

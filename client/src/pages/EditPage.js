@@ -31,7 +31,6 @@ export const EditPage = () => {
         date:'',
         period:'',
         id: 0,
-        ready: false
     })
 
 
@@ -76,17 +75,15 @@ export const EditPage = () => {
 
 
     const addTask = () => {
-        // console.log(taskParam.id)
         let newTasksList = eForm.tasks
         newTasksList.push({
             id: taskParam.id,
             title: taskParam.title,
             date: taskParam.date,
             period: taskParam.period,
-            ready: taskParam.ready,
         })
         setEForm({...eForm, tasks: newTasksList})
-        setTaskParam({title: '', date:'', period:'', id: eForm.tasks.length, ready: false})
+        setTaskParam({title: '', date:'', period:'', id: eForm.tasks.length})
     }
 
 

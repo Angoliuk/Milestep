@@ -73,24 +73,21 @@ export const WorkPage = () => {
                 break;
             }
 
-        (task.period) 
-        ?   currentTask.date = `${newDate.getFullYear()}-${((newDate.getMonth()+1) >= 10) ? newDate.getMonth()+1 : '0' + (newDate.getMonth()+1)}-${(newDate.getDate() >= 10) ? newDate.getDate() : '0' + newDate.getDate() }`
-        :   currentTask = null
-        console.log(list)
+        if (task.period && task.period !== 1) {
+            currentTask.date = `${newDate.getFullYear()}-${((newDate.getMonth()+1) >= 10) ? newDate.getMonth()+1 : '0' + (newDate.getMonth()+1)}-${(newDate.getDate() >= 10) ? newDate.getDate() : '0' + newDate.getDate() }`
 
-        let companyInHistory = history.info.find((company) => company.name === companyInfo.name)
-        let taskInHistory
-        companyInHistory ? taskInHistory = companyInHistory.tasksHistory.find((task) => task.task === currentTask.title) : taskInHistory = false 
-        let currentDate = new Date().toLocaleString('uk-UA', {year: 'numeric', month: 'numeric', day: 'numeric'})
+            let companyInHistory = history.info.find((company) => company.name === companyInfo.name)
+            let taskInHistory = companyInHistory ? companyInHistory.tasksHistory.find((task) => task.task === currentTask.title) : false 
+            let currentDate = new Date().toLocaleString('uk-UA', {year: 'numeric', month: 'numeric', day: 'numeric'})
 
-        console.log(task);
-        (companyInHistory)
-        // ? companyInHistory.tasksHistory.push({task: currentTask.title, date: currentDate, author: name})
-        ? (taskInHistory) 
-            ? taskInHistory.completeDates.push({date: currentDate, completeToDate: currentTask.date}) 
-            : companyInHistory.tasksHistory.push({task: currentTask.title, completeDates: [{date: currentDate, completeToDate: currentTask.date}]})
-        : history.info.push({name: companyInfo.name, edrpou: companyInfo.edrpou, tasksHistory: [{task: currentTask.title, completeDates: [{date: currentDate, completeToDate: currentTask.date}]}]})
-        console.log(history)
+            companyInHistory
+            ? taskInHistory
+                ? taskInHistory.completeDates.push({date: currentDate, completeToDate: currentTask.date}) 
+                : companyInHistory.tasksHistory.push({task: currentTask.title, completeDates: [{date: currentDate, completeToDate: currentTask.date}]})
+            : history.info.push({name: companyInfo.name, edrpou: companyInfo.edrpou, tasksHistory: [{task: currentTask.title, completeDates: [{date: currentDate, completeToDate: currentTask.date}]}]})
+
+        } 
+
 
         try {
             await request("/api/auth/update", "POST", {id: companyInfo._id, tasksList: currentTasksList})
@@ -100,13 +97,29 @@ export const WorkPage = () => {
             console.log(e)
         }
 
-    }, [list, request, history, name])
+        // (task.period) 
+        // ?   currentTask.date = `${newDate.getFullYear()}-${((newDate.getMonth()+1) >= 10) ? newDate.getMonth()+1 : '0' + (newDate.getMonth()+1)}-${(newDate.getDate() >= 10) ? newDate.getDate() : '0' + newDate.getDate() }`
+        // :   currentTask = null
+
+        // let companyInHistory = history.info.find((company) => company.name === companyInfo.name)
+        // let taskInHistory = companyInHistory ? companyInHistory.tasksHistory.find((task) => task.task === currentTask.title) : false 
+        // let currentDate = new Date().toLocaleString('uk-UA', {year: 'numeric', month: 'numeric', day: 'numeric'})
+
+        // companyInHistory
+        // ? taskInHistory
+        //     ? taskInHistory.completeDates.push({date: currentDate, completeToDate: currentTask.date}) 
+        //     : companyInHistory.tasksHistory.push({task: currentTask.title, completeDates: [{date: currentDate, completeToDate: currentTask.date}]})
+        // : history.info.push({name: companyInfo.name, edrpou: companyInfo.edrpou, tasksHistory: [{task: currentTask.title, completeDates: [{date: currentDate, completeToDate: currentTask.date}]}]})
+
+        
+
+    }, [list, request, history])
 
     const handleChangeInput = (event) => {
 
         let newNumOfDays = Number(event.target.value)
 
-        if (newNumOfDays < 0 || newNumOfDays > 735) {
+        if (newNumOfDays < -1 || newNumOfDays > 735) {
             setNumOfDays(5)
         }else{
             setNumOfDays(newNumOfDays)
@@ -166,7 +179,7 @@ export const WorkPage = () => {
     return (
         <div className="container">
             <NavBar />
-            <input onChange={handleChangeInput} value={numOfDays} className="searchInput" name="numOfDays" max="735" id="numOfDays" type="number" />
+            <input onChange={handleChangeInput} value={numOfDays} className="searchInput" name="numOfDays" min="-1" max="735" id="numOfDays" type="number" />
             <label htmlFor="numOfDays">Кількість днів</label>
             <div>
                 <select onChange={changeHandlerSearchName} className="selectSearchInput" name="companiesSearch" id="companiesSearch">

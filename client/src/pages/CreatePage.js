@@ -111,10 +111,8 @@ export const CreatePage = () => {
             title: taskParam.title,
             date: taskParam.date,
             period: taskParam.period,
-            // ready: taskParam.ready,
         })
         setEForm({...eForm, tasks: newTasksList})
-        console.log(taskParam)
         setTaskParam({title: '', date:'', period:'', id: taskParam.id + 1})
     }
 

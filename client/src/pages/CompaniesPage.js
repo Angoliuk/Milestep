@@ -30,8 +30,6 @@ export const CompaniesPage = () => {
     const SearchCompany = useCallback(() => {
 
         let listForSearch = []
-        let listCompletedTasks = []
-        let sortedList = []
         let period = ""
 
         searchName 
@@ -49,7 +47,6 @@ export const CompaniesPage = () => {
 
         return(
             listForSearch.map((oneElem)=>{
-                // console.log(oneElem)
                 return(
                 <div className="companyElement">
                     <p>Назва: {oneElem.name}</p>

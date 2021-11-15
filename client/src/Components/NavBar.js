@@ -14,6 +14,7 @@ export const NavBar = () => {
                 <NavLink className="nav-elem" to="/work">Завдання</NavLink>
                 <NavLink className="nav-elem" to="/companies">Всі компанії</NavLink>
                 <NavLink className="nav-elem" to="/history">Історія</NavLink>
+                <NavLink className="nav-elem" to="/statistics">Статистика</NavLink>
                 <p className="name">{name}</p>
                 <button className="nav-button" onClick={logout}>logout</button>
             </nav>

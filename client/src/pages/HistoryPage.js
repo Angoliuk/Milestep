@@ -6,7 +6,7 @@ import printJS from 'print-js'
 import "./pages.css"
 
 
-export const HisotyPage = () => {
+export const HistoryPage = () => {
 
     const {request} = useHttp() 
 
