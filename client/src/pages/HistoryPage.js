@@ -9,7 +9,7 @@ export const HistoryPage = () => {
     const {request} = useHttp() 
     const [history, setHistory] = useState()
     const [chosenCompany, setChosenCompany] = useState('')
-    const [historyYear, setHistoryYear] = useState(2020)
+    const [historyYear, setHistoryYear] = useState(new Date().getFullYear())
 
 
     const dataRequest = useCallback( async () => {
