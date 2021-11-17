@@ -1,6 +1,5 @@
-import React, { useCallback, useContext, useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import { NavBar } from '../Components/NavBar'
-import { AuthContext } from '../context/AuthContext'
 import { useHttp } from '../hooks/http.hook'
 import { useParams, useHistory } from 'react-router-dom'
 
@@ -11,7 +10,6 @@ export const EditPage = () => {
     const [users, setUsers] = useState([])
     const [standartTasks, setStandartTasks] = useState({})
 
-    
     const [eForm, setEForm] = useState({
         name:'',
         edrpou: null,
@@ -43,19 +41,16 @@ export const EditPage = () => {
 
     const changeHandlerTask = (event) => {
 
-        (event.target.name === 'ready') 
-        ? setTaskParam({...taskParam, [event.target.name]: event.target.checked}) 
-        : setTaskParam({...taskParam, [event.target.name]: event.target.value})
+        setTaskParam({...taskParam, [event.target.name]: event.target.value})
 
     }
 
-    let allTasks = eForm.tasks
 
     const changeHandlerCreatedTask = (position) => (event) => {
 
-        (event.target.name === 'ready') 
-        ? allTasks[position][event.target.name] = event.target.checked 
-        : allTasks[position][event.target.name] = event.target.value
+        let allTasks = eForm.tasks
+
+        allTasks[position][event.target.name] = event.target.value
 
         setEForm({...eForm, tasks: allTasks})
 
@@ -63,25 +58,31 @@ export const EditPage = () => {
 
 
     const deleteHandlerTask = (position) => {
+
         let newTasks = eForm.tasks
+
         newTasks.splice(position, 1)
         newTasks.map((task) => {
             if (task.id > position) {
                 task.id--
             }
         })
+
         setEForm({...eForm, tasks: newTasks})
     }
 
 
     const addTask = () => {
+
         let newTasksList = eForm.tasks
+
         newTasksList.push({
             id: taskParam.id,
             title: taskParam.title,
             date: taskParam.date,
             period: taskParam.period,
         })
+
         setEForm({...eForm, tasks: newTasksList})
         setTaskParam({title: '', date:'', period:'', id: eForm.tasks.length})
     }
@@ -89,7 +90,6 @@ export const EditPage = () => {
 
     const TaskList = (()=>{
         const list = eForm.tasks.map((task)=>{
-            console.log(task)
             return(
                 <form className='taskElement' key={task.id}>
                         <input onChange={changeHandlerCreatedTask(task.id)} value={task.title} name="title" id="title" className="inputForCreate" list="titleDatalist" />
@@ -103,11 +103,7 @@ export const EditPage = () => {
                         </select>
                         <label htmlFor="period">Періодичність</label>
                         <input onChange={changeHandlerCreatedTask(task.id)} value={task.date} name="date" id="date" className="inputForCreate" type="date" />
-                        <label htmlFor="date">Дата</label>  
-                        {/* <div className="checkboxBlock">
-                            <input onChange={changeHandlerCreatedTask(task.id)} checked={task.ready} name="ready" id="ready" className="inputForCreate checkboxForCreate" type="checkbox" />
-                            <label htmlFor="ready">Готово</label>
-                        </div> */}
+                        <label htmlFor="date">Дата</label> 
                         <div>
                             <button className="deleteButton" onClick={() => {deleteHandlerTask(task.id)}}>Видалити завдання</button>
                         </div>
@@ -123,6 +119,7 @@ export const EditPage = () => {
 
 
     const dataRequest = useCallback( async () => {
+
         try {
             const companyData = await request(`/api/auth/edit/${companyId}`, "GET", null)
             setEForm(companyData)
@@ -138,6 +135,7 @@ export const EditPage = () => {
             console.error(e);
             console.log("here")
         }
+
     } ,[request, companyId])
 
 
@@ -151,6 +149,7 @@ export const EditPage = () => {
 
     
     const saveChanges = async () => {
+
         try {
             await request('/api/auth/updateCompany', 'POST', eForm)
             alert('everything saved')
@@ -158,6 +157,7 @@ export const EditPage = () => {
         } catch (e) {
             console.log(e)
         }
+
     }
 
     
@@ -212,7 +212,6 @@ export const EditPage = () => {
                     <h1>Додати завдання</h1>
                     <input onChange={changeHandlerTask} value={taskParam.title} className="inputForCreate" name="title" id="title" list="titleDatalist"/>
                     <datalist id="titleDatalist">
-                        {/* {console.log(standartTasks)} */}
                         {(standartTasks && standartTasks.info)
                         ?
                         standartTasks.info.map((standartTask) => {
@@ -238,11 +237,6 @@ export const EditPage = () => {
                         </select>
                         <label htmlFor="period">періодичність</ label>
                     </div>
-
-                    {/* <div className="checkboxBlock">
-                        <input onChange={changeHandlerTask} checked={taskParam.ready} className="inputForCreate checkboxForCreate" name="ready" id="ready" type="checkbox"/>
-                        <label htmlFor="ready">Готово</ label>
-                    </div> */}
 
                     <button onClick={addTask}>Додати завдання</button>
                 </div>

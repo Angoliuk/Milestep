@@ -5,10 +5,11 @@ import { useHttp } from '../hooks/http.hook'
 export const StatPage = () => {
 
     const {request} = useHttp()
-
     const [companies, setCompanies] = useState()
 
+
     const dataRequest = useCallback( async () => {
+
         try {
 
             const data = await request('/api/auth/allCompanies', 'GET', null)
@@ -17,13 +18,17 @@ export const StatPage = () => {
         } catch (e) {
             console.log(e)
         }
+
     }, [request])
+
 
     useEffect(() => {
         dataRequest()
     }, [dataRequest])
 
+
     const Statistics = () => {
+
         return(
             <div className="companyElement">
                 
@@ -34,6 +39,7 @@ export const StatPage = () => {
                 <p>Робітників на всіх підприємствах: {companies.reduce((sum, company) => sum += company.numOfWorkers, 0)}</p>
             </div>
         )
+        
     }
 
     return(

@@ -2,46 +2,41 @@ import { useHttp } from '../hooks/http.hook'
 import { useCallback, useEffect, useState } from "react"
 import { NavBar } from '../Components/NavBar'
 import printJS from 'print-js'
-
 import "./pages.css"
-
 
 export const HistoryPage = () => {
 
     const {request} = useHttp() 
-
     const [history, setHistory] = useState()
-
     const [chosenCompany, setChosenCompany] = useState('')
 
+
     const dataRequest = useCallback( async () => {
+
         try {
             const staticInfo = await request('/api/auth/staticInfoGet', 'GET', null)
-            setHistory(staticInfo[1])
+            setHistory(staticInfo.find((info) => info.name === 'history'))
         } catch (e) {
             console.log(e)
         }
+        
     }, [request])
+
 
     useEffect(() => {
         dataRequest()
     }, [dataRequest])
 
+
     const TableBlocks = useCallback((info, isTaskBlock) => {
 
         let infoForEveryMonth = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-        console.log(info.info)
 
-        if (info.isTaskBlock) {
-            if (info.info) {
-                info.info.forEach(task => {
-                    let month = new Date(task.completeToDate).getMonth()
-                    infoForEveryMonth[month]++
-                })
-            }
-        } else {
-            infoForEveryMonth = ['Січень', 'Лютий', 'Квітень', 'Березень', 'Травень', 'Червень', 'Липень', 'Серпень', 'Вересень', 'Жовтень', 'Листопад', 'Грудень']
-        }
+        info.isTaskBlock && info.info 
+        ?   info.info.forEach(task => {
+            let month = new Date(task.completeToDate).getMonth()
+            infoForEveryMonth[month]++})
+        :   infoForEveryMonth = ['Січень', 'Лютий', 'Квітень', 'Березень', 'Травень', 'Червень', 'Липень', 'Серпень', 'Вересень', 'Жовтень', 'Листопад', 'Грудень']
 
         return (
             infoForEveryMonth.map((task) => {
@@ -52,6 +47,7 @@ export const HistoryPage = () => {
         )
     }, [])
 
+
     const HistoryCompany = () => {
 
         let listForSearch = []
@@ -60,12 +56,8 @@ export const HistoryPage = () => {
         ?   listForSearch = history.info.filter((company) => company.name === chosenCompany)
         :   listForSearch = history.info
 
-
         return(
             listForSearch.map((company) => {
-
-                // const table = {};
-                // const res = company.tasksHistory.filter(({task}) => (table[task]) ? table[task]++ : table[task] = 1)
 
                 return(
                     <div className="companyElement">
@@ -103,7 +95,9 @@ export const HistoryPage = () => {
         )
     }
 
+
     const chosenCompanyHandleChange = (event) => {
+
         setChosenCompany(event.target.value)
     }
 
@@ -122,7 +116,7 @@ export const HistoryPage = () => {
                     }
             </select>
 
-            {(history) ? <HistoryCompany /> : <div>В історії немає інформації про компанію</div>}
+            {history ? <HistoryCompany /> : <div>В історії немає інформації про компанію</div>}
             
         </div>
     )

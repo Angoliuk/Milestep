@@ -1,16 +1,12 @@
-import React, {useCallback, useContext, useEffect, useState} from 'react'
-import { AuthContext } from '../context/AuthContext'
+import React, {useCallback, useEffect, useState} from 'react'
 import { NavBar } from '../Components/NavBar'
 import { useHttp } from '../hooks/http.hook'
 import "./pages.css"
 
 export const CreatePage = () => {
 
-    const {loading, request} = useHttp() 
-    const {userId, token} = useContext(AuthContext)
+    const {request} = useHttp() 
     const [users, setUsers] = useState([])
-
-
     const [eForm, setEForm] = useState({
         name:'',
         edrpou:null,
@@ -24,7 +20,6 @@ export const CreatePage = () => {
         infoESW: '', 
         tasks:[]
     })
-
     const [taskParam, setTaskParam] = useState({title:'', date: 0, period:'', id: 0})
     const [standartTasks, setStandartTasks] = useState({})
 
@@ -37,17 +32,18 @@ export const CreatePage = () => {
 
 
     const dataRequest = useCallback( async () => {
+
         try {
             const data = await request('/api/auth/allUsers', 'GET', null)
             setUsers(data)
 
             const staticInfo = await request('/api/auth/staticInfoGet', 'GET', null)
             setStandartTasks({name: 'standartTasks', info: staticInfo.find((info) => info.name === 'standartTasks').info.sort((a, b) => a.text.localeCompare(b.text))})
-            
 
         } catch (e) {
             console.log(e)
         }
+
     }, [request])
 
 
@@ -64,6 +60,7 @@ export const CreatePage = () => {
 
 
     const TaskList = (()=>{
+
         let period = ''
         const list = eForm.tasks.map((task)=>{
             switch (task.period) {
@@ -92,7 +89,6 @@ export const CreatePage = () => {
                     <p>Завдання: {task.title}</p>
                     <p>Періодичність: {period}</p>
                     <p>Дата: {new Date(task.date).toLocaleString('uk-UA', {year: 'numeric', month: 'numeric', day: 'numeric' })}</p>
-                    {/* <p>Готово: {(task.ready) ? "Так" : "Ні"}</p> */}
                 </div>
             )
         }) 
@@ -105,6 +101,7 @@ export const CreatePage = () => {
 
 
     const addTask = () => {
+
         let newTasksList = eForm.tasks
         newTasksList.push({
             id: taskParam.id,
@@ -112,12 +109,15 @@ export const CreatePage = () => {
             date: taskParam.date,
             period: taskParam.period,
         })
+
         setEForm({...eForm, tasks: newTasksList})
         setTaskParam({title: '', date:'', period:'', id: taskParam.id + 1})
+
     }
 
 
     const addCompany = async () => {
+
         try {
             console.log(eForm)
                 await request('/api/auth/create', 'POST', eForm)
@@ -127,6 +127,7 @@ export const CreatePage = () => {
         } catch (e) {
             alert('error')
         }
+
     }
 
     return(
@@ -204,11 +205,6 @@ export const CreatePage = () => {
                         </select>
                         <label htmlFor="period">періодичність</ label>
                     </div>
-
-                    {/* <div className="checkboxBlock">
-                        <input onChange={changeHandlerTask} checked={taskParam.ready} className="inputForCreate checkboxForCreate" name="ready" id="ready" type="checkbox"/>
-                        <label htmlFor="ready">Готово</ label>
-                    </div> */}
 
                     <button onClick={addTask}>Додати завдання</button>
                 </div>

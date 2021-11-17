@@ -6,22 +6,16 @@ import "./pages.css"
 
 export const WorkPage = () => {
 
-    const {token, userId, name ,logout} = useContext(AuthContext)
     const [list, setList] = useState([])
-    const {loading, request} = useHttp()
+    const {name} = useContext(AuthContext)
+    const {request} = useHttp()
     const [history, setHistory] = useState()
     const [numOfDays, setNumOfDays] = useState(5)
     const [searchName, setSearchName] = useState()
 
-    const logoutHandler = async () => {
-        try {
-            logout()
-        } catch (e) {
-            
-        }
-    }
 
     const dataRequest = useCallback( async () => {
+
         try {
             const data = await request("/api/auth/allCompanies", "GET", null)
             setList(data.filter((company) => company.responsible === name))
@@ -32,6 +26,7 @@ export const WorkPage = () => {
             console.error(e);
             console.log("here")
         }
+
     } ,[request, name])
 
     useEffect(() => {
@@ -44,7 +39,6 @@ export const WorkPage = () => {
         let currentTasksList = list.find(company => company._id === companyInfo._id).tasks
         let currentTask = currentTasksList.find(currentTask => currentTask.id === task.id)
 
-        // currentTask.ready = true
         let newDate = new Date(Date.parse(currentTask.date))
  
         switch (task.period) {
@@ -88,7 +82,6 @@ export const WorkPage = () => {
 
         } 
 
-
         try {
             await request("/api/auth/update", "POST", {id: companyInfo._id, tasksList: currentTasksList})
             await request("/api/auth/staticInfoUpdate", "POST", history)
@@ -97,41 +90,28 @@ export const WorkPage = () => {
             console.log(e)
         }
 
-        // (task.period) 
-        // ?   currentTask.date = `${newDate.getFullYear()}-${((newDate.getMonth()+1) >= 10) ? newDate.getMonth()+1 : '0' + (newDate.getMonth()+1)}-${(newDate.getDate() >= 10) ? newDate.getDate() : '0' + newDate.getDate() }`
-        // :   currentTask = null
-
-        // let companyInHistory = history.info.find((company) => company.name === companyInfo.name)
-        // let taskInHistory = companyInHistory ? companyInHistory.tasksHistory.find((task) => task.task === currentTask.title) : false 
-        // let currentDate = new Date().toLocaleString('uk-UA', {year: 'numeric', month: 'numeric', day: 'numeric'})
-
-        // companyInHistory
-        // ? taskInHistory
-        //     ? taskInHistory.completeDates.push({date: currentDate, completeToDate: currentTask.date}) 
-        //     : companyInHistory.tasksHistory.push({task: currentTask.title, completeDates: [{date: currentDate, completeToDate: currentTask.date}]})
-        // : history.info.push({name: companyInfo.name, edrpou: companyInfo.edrpou, tasksHistory: [{task: currentTask.title, completeDates: [{date: currentDate, completeToDate: currentTask.date}]}]})
-
-        
-
     }, [list, request, history])
+
 
     const handleChangeInput = (event) => {
 
         let newNumOfDays = Number(event.target.value)
 
-        if (newNumOfDays < -1 || newNumOfDays > 735) {
-            setNumOfDays(5)
-        }else{
-            setNumOfDays(newNumOfDays)
-        }
+        newNumOfDays > 735 && newNumOfDays < -1
+        ?   setNumOfDays(5)
+        :   setNumOfDays(newNumOfDays)
 
     }
+
 
     let time = new Date()
 
     const changeHandlerSearchName = (event) => {
+
         setSearchName(event.target.value)
+
     }
+
 
     const SearchTasks = useCallback(() => {
 
@@ -160,7 +140,6 @@ export const WorkPage = () => {
                                         <li className='taskElement' key={task.id}>
                                             <p>Завдання: {task.title}</p>
                                             <span>Дата: {new Date(task.date).toLocaleString('uk-UA', {year: 'numeric', month: 'numeric', day: 'numeric' })}</span>
-                                            {/* <span>Готово: {(task.ready) ? "Так" : "Ні"}</span> */}
                                             <button onClick={() => {updateHandler(oneCompany, task)}}>виконано</button>
                                         </li>
                                     )
@@ -194,7 +173,7 @@ export const WorkPage = () => {
                 </select>
             </div>
 
-            <SearchTasks />
+            {list ? <SearchTasks /> : <p>Пусто...</p>}
             
         </div>
         )
