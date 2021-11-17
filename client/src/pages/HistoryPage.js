@@ -9,6 +9,7 @@ export const HistoryPage = () => {
     const {request} = useHttp() 
     const [history, setHistory] = useState()
     const [chosenCompany, setChosenCompany] = useState('')
+    const [historyYear, setHistoryYear] = useState(2020)
 
 
     const dataRequest = useCallback( async () => {
@@ -19,7 +20,7 @@ export const HistoryPage = () => {
         } catch (e) {
             console.log(e)
         }
-        
+
     }, [request])
 
 
@@ -34,8 +35,9 @@ export const HistoryPage = () => {
 
         info.isTaskBlock && info.info 
         ?   info.info.forEach(task => {
-            let month = new Date(task.completeToDate).getMonth()
-            infoForEveryMonth[month]++})
+                if (new Date(task.completeToDate).getFullYear() === Number(historyYear)) {
+                    let month = new Date(task.completeToDate).getMonth()
+                    infoForEveryMonth[month]++}})
         :   infoForEveryMonth = ['Січень', 'Лютий', 'Квітень', 'Березень', 'Травень', 'Червень', 'Липень', 'Серпень', 'Вересень', 'Жовтень', 'Листопад', 'Грудень']
 
         return (
@@ -45,7 +47,7 @@ export const HistoryPage = () => {
                     )            
                 })
         )
-    }, [])
+    }, [historyYear])
 
 
     const HistoryCompany = () => {
@@ -78,7 +80,6 @@ export const HistoryPage = () => {
                                                 <th>
                                                     {task.task}
                                                 </th>
-                                                {console.log(task)}
                                                 <TableBlocks info={task.completeDates} isTaskBlock={true}/>
                                             </tr>
                                         )
@@ -101,6 +102,12 @@ export const HistoryPage = () => {
         setChosenCompany(event.target.value)
     }
 
+    const historyYearHandleChange = (event) => {
+
+        setHistoryYear(event.target.value)
+
+    }
+
     return(
         <div className="container">
             <NavBar />
@@ -115,6 +122,7 @@ export const HistoryPage = () => {
                     :   <option value=''>Історія ваших компаній пуста</option>
                     }
             </select>
+            <input onChange={historyYearHandleChange} value={historyYear} min={2020} className="inputForCreate" name="historyYear" id="historyYear" type="number"/>
 
             {history ? <HistoryCompany /> : <div>В історії немає інформації про компанію</div>}
             
