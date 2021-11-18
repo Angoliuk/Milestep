@@ -121,7 +121,7 @@ export const CreatePage = () => {
         try {
             console.log(eForm)
                 await request('/api/auth/create', 'POST', eForm)
-                setEForm({name:'', edrpou: null, numOfWorkers: null, payerPDW: null, address: '', phoneNum: null, responsible:'',  taxationSystem:'', kwed: '', infoESW: '', tasks:[]})
+                setEForm({name:'', edrpou: '', numOfWorkers: '', payerPDW: '', address: '', phoneNum: '', responsible:'',  taxationSystem:'', kwed: '', infoESW: '', tasks:[]})
                 alert("event created")
             
         } catch (e) {
@@ -165,7 +165,7 @@ export const CreatePage = () => {
                     <label htmlFor="numOfWorkers">Всього робітників</ label>
                 
                     <div>
-                        <select onChange={changeHandlerForm} defaultValue={eForm.responsible} name="responsible" id="responsible">
+                        <select onChange={changeHandlerForm} value={eForm.responsible} name="responsible" id="responsible">
                             <option value=''>Ви не вибрали відповідального</option>
                             {users.map((user) => {
                                 return(

@@ -52,7 +52,6 @@ router.post(
     [
         check('email', 'wrong email').normalizeEmail().isEmail(),
         check('password', "wrong pass").exists(),
-        check('name', "wrong name").exists(),
     ] 
      , async (req, res) => {
     try {
@@ -66,7 +65,7 @@ router.post(
             })
         }
 
-        const {name, email, password} = req.body
+        const {email, password} = req.body
 
         const user = await User.findOne({email})
         // console.log(user)
@@ -87,7 +86,7 @@ router.post(
             {expiresIn: '10h'}
         )
 
-        res.json({name, token, userId: user.id })
+        res.json({name: user.name, token, userId: user.id })
 
     } catch (e) {
         res.status(500).json({message: "auth routes 500"})

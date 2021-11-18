@@ -19,8 +19,6 @@
 }
 
 .taskElement{
-    padding: 15px;
-    margin: 15px;
     background-color: rgb(169, 195, 250);
     border-radius: 10px;
 }
@@ -71,6 +69,8 @@ select{
     width: 40.4%;
 }
 
+/* .input */
+
 .editButton{
     margin: 0;
     padding: 10px;
@@ -92,4 +92,32 @@ th{
 }
 table{
     width: 100%
+}
+
+.standartTask{
+    margin-bottom: 15px;
+}
+
+.standartTaskText{
+    margin-right: 15px;
+}
+
+.taskContainer{
+    width: 70%;
+    display: flex;
+    justify-content: space-between;
+}
+
+.taskText{
+    width: 40%;
+}
+
+.taskPeriod{
+    width: 30%
+}
+
+.loginRegisterInputBlock{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }

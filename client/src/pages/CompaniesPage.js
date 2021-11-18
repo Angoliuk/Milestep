@@ -78,10 +78,11 @@ export const CompaniesPage = () => {
                                 }
                                 return(
                                     <li className='taskElement' key={task.id}>
-                                        <p>Завдання: {task.title}</p>
-                                        <span>Періодичність: {period}</span>
-                                        <span>Дата: {new Date(task.date).toLocaleString('uk-UA', {year: 'numeric', month: 'numeric', day: 'numeric' })}</span>
-                                        {/* <span>Готово: {(task.ready) ? "Так" : "Ні"}</span> */}
+                                        <div className="taskContainer">
+                                            <p className='taskText'>Завдання: {task.title}</p>
+                                            <p>Дата: {new Date(task.date).toLocaleString('uk-UA', {year: 'numeric', month: 'numeric', day: 'numeric' })}</p>
+                                            <p className="taskPeriod">Періодичність: {period}</p>
+                                        </div>
                                     </li>
                                 )
                             })}
@@ -97,7 +98,7 @@ export const CompaniesPage = () => {
 
         try {
             const data = await request("/api/auth/allCompanies", "GET", null)
-            setList(data)
+            setList(data.sort((a,b) => a.name.localeCompare(b.name)))
         } catch (e) {
             console.error(e);
             console.log("here")
@@ -124,7 +125,6 @@ export const CompaniesPage = () => {
                 <option value=''>Всі компанії</option>
                 {
                     list.map((company) => {
-                        console.log(company)
                         return(
                             <option value={company.name}>{company.name}</option>
                         )

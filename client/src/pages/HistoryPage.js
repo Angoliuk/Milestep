@@ -16,6 +16,7 @@ export const HistoryPage = () => {
 
         try {
             const staticInfo = await request('/api/auth/staticInfoGet', 'GET', null)
+            staticInfo.find((info) => info.name === 'history').info.sort((a,b) => a.name.localeCompare(b.name))
             setHistory(staticInfo.find((info) => info.name === 'history'))
         } catch (e) {
             console.log(e)
@@ -64,7 +65,7 @@ export const HistoryPage = () => {
 
                 return(
                     <div className="companyElement">
-                        <div id='PrintTable'>
+                        <div id={company.edrpou}>
                             <p>Назва: {company.name}</p>
                             <p>ЄДРПОУ: {company.edrpou}</p>
                             <table>
@@ -88,7 +89,7 @@ export const HistoryPage = () => {
                                 </tbody>
                             </table>
                         </div>
-                        <button onClick={() => {printJS({printable: 'PrintTable', type: 'html', targetStyles: ['*']})}}>
+                        <button onClick={() => {printJS({printable: company.edrpou, type: 'html', targetStyles: ['*']})}}>
                             Друк
                         </button>
                     </div>
@@ -98,7 +99,7 @@ export const HistoryPage = () => {
     }
 
 
-    const chosenCompanyHandleChange = (event) => {
+    const historyCompanyHandleChange = (event) => {
 
         setChosenCompany(event.target.value)
     }
@@ -112,18 +113,24 @@ export const HistoryPage = () => {
     return(
         <div className="container">
             <NavBar />
-            <select onChange={chosenCompanyHandleChange} value={chosenCompany} className="selectSearchInput" name="companiesSearch" id="companiesSearch">
-                    <option value=''>Всі компанії</option>
+            <div>
+                <select onChange={historyCompanyHandleChange} value={chosenCompany} className="selectSearchInput" name="historyCompany" id="historyCompany">
+                        <option value=''>Всі компанії</option>
 
-                    {(history && history.info)
-                    ?   history.info.map((company) => {
-                            return (
-                                <option value={company.name}>{company.name}</option>
-                            )})
-                    :   <option value=''>Історія ваших компаній пуста</option>
-                    }
-            </select>
-            <input onChange={historyYearHandleChange} value={historyYear} min={2020} className="inputForCreate" name="historyYear" id="historyYear" type="number"/>
+                        {(history && history.info)
+                        ?   history.info.map((company) => {
+                                return (
+                                    <option value={company.name}>{company.name}</option>
+                                )})
+                        :   <option value=''>Історія ваших компаній пуста</option>
+                        }
+                </select>
+                <label htmlFor="historyCompany">Компанія</label>
+            </div>
+            <div>
+                <input onChange={historyYearHandleChange} value={historyYear} min={2020} className="searchInput" name="historyYear" id="historyYear" type="number"/>
+                <label htmlFor="historyYear">Рік</label>
+            </div>
 
             {history ? <HistoryCompany /> : <div>В історії немає інформації про компанію</div>}
             

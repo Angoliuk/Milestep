@@ -11,14 +11,14 @@ export const WorkPage = () => {
     const {request} = useHttp()
     const [history, setHistory] = useState()
     const [numOfDays, setNumOfDays] = useState(5)
-    const [searchName, setSearchName] = useState()
+    const [searchName, setSearchName] = useState('')
 
 
     const dataRequest = useCallback( async () => {
 
         try {
             const data = await request("/api/auth/allCompanies", "GET", null)
-            setList(data.filter((company) => company.responsible === name))
+            setList(data.filter((company) => company.responsible === name).sort((a,b) => a.name.localeCompare(b.name)))
 
             const staticInfo = await request('/api/auth/staticInfoGet', 'GET', null)
             setHistory(staticInfo.find((info) => info.name === 'history'))
@@ -129,25 +129,29 @@ export const WorkPage = () => {
 
         return(
             listForSearch.map((oneCompany)=>{
-                return(
-                    <div className="companyElement">
-                        <p>Назва: {oneCompany.name}</p>
-                        <p>ЄДРПОУ: {oneCompany.edrpou}</p>
-                        <p>Список завдань: </p>
-                        <ol>
-                            {oneCompany.tasks.map((task)=>{
-                                if (new Date(task.date) <= time) {
-                                    return(
-                                        <li className='taskElement' key={task.id}>
-                                            <p>Завдання: {task.title}</p>
-                                            <span>Дата: {new Date(task.date).toLocaleString('uk-UA', {year: 'numeric', month: 'numeric', day: 'numeric' })}</span>
-                                            <button onClick={() => {updateHandler(oneCompany, task)}}>виконано</button>
-                                        </li>
-                                    )
-                                }  
-                            })}
-                        </ol>
-                    </div>)
+                if (searchName !== '' || oneCompany.tasks.filter((task) => new Date(task.date) <= time).length > 0) {
+                    return(
+                        <div className="companyElement">
+                            <p>Назва: {oneCompany.name}</p>
+                            <p>ЄДРПОУ: {oneCompany.edrpou}</p>
+                            <p>Список завдань: </p>
+                            <ol>
+                                {oneCompany.tasks.map((task)=>{
+                                    if (new Date(task.date) <= time) {
+                                        return(
+                                            <li className='taskElement' key={task.id}>
+                                                <div className="taskContainer">
+                                                    <p className='taskText'>Завдання: {task.title}</p>
+                                                    <p>Дата: {new Date(task.date).toLocaleString('uk-UA', {year: 'numeric', month: 'numeric', day: 'numeric' })}</p>
+                                                    <button onClick={() => {updateHandler(oneCompany, task)}}>виконано</button>
+                                                </div>
+                                            </li>
+                                        )
+                                    }  
+                                })}
+                            </ol>
+                        </div>)
+                }
                 })
         )
         }, [list, searchName, updateHandler, time])

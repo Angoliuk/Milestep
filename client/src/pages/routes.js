@@ -9,6 +9,7 @@ import { EditPage } from './EditPage'
 import { StandartTasksPage } from './StandartTasksPage'
 import { HistoryPage } from './HistoryPage'
 import { StatPage } from './StatPage'
+import { RegisterPage } from './RegisterPage'
 
 export const useRoutes = isAuth => {
     if(isAuth){
@@ -41,10 +42,13 @@ export const useRoutes = isAuth => {
 
         return(
             <Switch>
-                <Route path="/" exact>
+                <Route path="/login" exact>
                     <AuthPage />
                 </Route>
-                <Redirect to="/" />
+                <Route path="/register" exact>
+                    <RegisterPage />
+                </Route>
+                <Redirect to="/login" />
             </Switch>
         )
 }

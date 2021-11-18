@@ -9,7 +9,6 @@ export const useAuth = () => {
     const login = useCallback((name, jwtToken, id) => {
         setToken(jwtToken)
         setuserId(id)
-        console.log(name)
         setName(name)
         localStorage.setItem('userData', JSON.stringify({name: name, userId: id, token: jwtToken}))
     }, [])

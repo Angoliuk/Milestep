@@ -10,12 +10,15 @@ export const StandartTasksPage = () => {
     const [taskText, setTaskText] = useState('')
     
     const dataRequest = useCallback(async () => {
+
         try {
             const staticInfo = await request('/api/auth/staticInfoGet', 'GET', null) 
-            setStandartTasks(staticInfo.find((info) => info.name === 'standartTasks' ))
+            staticInfo.find((info) => info.name === 'standartTasks').info.sort((a, b) => a.text.localeCompare(b.text))
+            setStandartTasks(staticInfo.find((info) => info.name === 'standartTasks'))
         } catch (e) {
             console.log(e)
         }
+
     }, [request])
 
     useEffect(() => {
@@ -31,7 +34,6 @@ export const StandartTasksPage = () => {
                  id: (standartTasks.info.length > 0) ? standartTasks.info[standartTasks.info.length-1].id+1 : 0} ]
                 })
         setTaskText('')
-        console.log(standartTasks)
 
     }
 
@@ -72,10 +74,9 @@ export const StandartTasksPage = () => {
                 {(standartTasks.info && standartTasks.info.length > 0) 
                 ?
                     standartTasks.info.map((standartTask) => {
-                        console.log(standartTask)
                         return(
-                            <div>
-                                <p>{standartTask.id + 1}: {standartTask.text}</p>
+                            <div className="standartTask">
+                                <span className="standartTaskText">{standartTask.text}</span>
                                 <button onClick={() => {deleteHandlerStandartTasks(standartTask.id)}} className="deleteButton">Видалити</button>
                             </div>
                         )

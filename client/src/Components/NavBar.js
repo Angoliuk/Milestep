@@ -6,6 +6,7 @@ import './components.css';
 export const NavBar = () => {
     
     const {name, logout} = useContext(AuthContext)
+    
     return(
         <div className="container-nav">
             <nav>
