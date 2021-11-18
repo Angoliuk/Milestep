@@ -18,7 +18,7 @@ async function start() {
             useNewUrlParser: true,
             useUnifiedTopology: true,
         })
-        app.listen(PORT, () => {console.log(`${PORT}`)})
+        app.listen(PORT, () => {console.log(`${PORT}`)}, '0.0.0.0')
     } catch (e) {
         console.log(e)
         process.exit(1)
