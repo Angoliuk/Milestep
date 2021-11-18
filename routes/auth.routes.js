@@ -36,7 +36,7 @@ router.post(
         }
 
         const hashedPass = await bcrypt.hash(password, 12)
-        const user = new User({name, email, password: hashedPass})
+        const user = new User({name, email, password: hashedPass, isAdmin: false})
 
         await user.save()
 
@@ -86,7 +86,7 @@ router.post(
             {expiresIn: '10h'}
         )
 
-        res.json({name: user.name, token, userId: user.id })
+        res.json({name: user.name, token, userId: user.id, isAdmin: user.isAdmin })
 
     } catch (e) {
         res.status(500).json({message: "auth routes 500"})

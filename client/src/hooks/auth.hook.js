@@ -5,18 +5,21 @@ export const useAuth = () => {
     const [name, setName] = useState(null)
     const [ready, setReady] = useState(false)
     const [userId, setuserId] = useState(null)
+    const [isAdmin, setIsAdmin] = useState(null)
 
-    const login = useCallback((name, jwtToken, id) => {
+    const login = useCallback((name, jwtToken, id, isAdmin) => {
         setToken(jwtToken)
         setuserId(id)
         setName(name)
-        localStorage.setItem('userData', JSON.stringify({name: name, userId: id, token: jwtToken}))
+        setIsAdmin(isAdmin)
+        localStorage.setItem('userData', JSON.stringify({name: name, userId: id, token: jwtToken, isAdmin: isAdmin}))
     }, [])
 
     const logout = useCallback(() => {
         setToken(null)
         setuserId(null)
         setName(null)
+        setIsAdmin(null)
         localStorage.removeItem('userData')
     }, [])
 
@@ -29,5 +32,5 @@ export const useAuth = () => {
         setReady(true)
     }, [login])
 
-    return {name, login, logout, token, userId, ready}
+    return {name, login, logout, token, userId, ready, isAdmin}
 }

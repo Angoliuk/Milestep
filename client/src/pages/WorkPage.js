@@ -7,7 +7,7 @@ import "./pages.css"
 export const WorkPage = () => {
 
     const [list, setList] = useState([])
-    const {name} = useContext(AuthContext)
+    const {name, isAdmin} = useContext(AuthContext)
     const {request} = useHttp()
     const [history, setHistory] = useState()
     const [numOfDays, setNumOfDays] = useState(5)
@@ -18,7 +18,11 @@ export const WorkPage = () => {
 
         try {
             const data = await request("/api/auth/allCompanies", "GET", null)
-            setList(data.filter((company) => company.responsible === name).sort((a,b) => a.name.localeCompare(b.name)))
+
+            isAdmin
+            ?   setList(data.sort((a,b) => a.name.localeCompare(b.name)))
+            :   setList(data.filter((company) => company.responsible === name).sort((a,b) => a.name.localeCompare(b.name)))
+            
 
             const staticInfo = await request('/api/auth/staticInfoGet', 'GET', null)
             setHistory(staticInfo.find((info) => info.name === 'history'))
@@ -27,7 +31,7 @@ export const WorkPage = () => {
             console.log("here")
         }
 
-    } ,[request, name])
+    } ,[request, name, isAdmin])
 
     useEffect(() => {
         dataRequest()
@@ -125,10 +129,9 @@ export const WorkPage = () => {
         time = time.setDate(time.getDate() + numOfDays)
         time = new Date(time)
     
-
-
         return(
-            listForSearch.map((oneCompany)=>{
+            (listForSearch.length > 0)
+            ?   listForSearch.map((oneCompany)=>{
                 if (searchName !== '' || oneCompany.tasks.filter((task) => new Date(task.date) <= time).length > 0) {
                     return(
                         <div className="companyElement">
@@ -150,9 +153,10 @@ export const WorkPage = () => {
                                     }  
                                 })}
                             </ol>
-                        </div>)
-                }
-                })
+                        </div>
+                    )}})
+            :   <div>Завдань або компаній у вас немає</div>
+            
         )
         }, [list, searchName, updateHandler, time])
 

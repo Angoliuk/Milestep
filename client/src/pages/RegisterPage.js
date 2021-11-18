@@ -21,6 +21,8 @@ export const RegisterPage = () => {
         try {
             const data = await request('/api/auth/register', 'POST', {...form})
             alert('succesfully registered')
+            window.location.href = '/login'
+
         } catch (e) {
             alert("wrong data")
         }

@@ -22,8 +22,8 @@ export const AuthPage = () => {
 
         try {
             const data = await request('/api/auth/login', 'POST', {...form})
-            console.log('login button', data.name)
-            auth.login(data.name, data.token, data.userId)
+            console.log(data)
+            auth.login(data.name, data.token, data.userId, data.isAdmin)
         } catch (e) {
             alert("wrong data")
         }
