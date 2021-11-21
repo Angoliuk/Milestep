@@ -28,6 +28,7 @@ export const WorkPage = () => {
 
             const staticInfo = await request('/api/auth/staticInfoGet', 'GET', null)
             setHistory(staticInfo.find((info) => info.name === 'history'))
+            staticInfo.find((info) => info.name === 'standartTasks').info.sort((a,b) => a.text.localeCompare(b.text))
             setStandartTasks(staticInfo.find((info) => info.name === 'standartTasks'))
 
         } catch (e) {
@@ -165,11 +166,13 @@ export const WorkPage = () => {
                                     })}
                                 </ol>
                             </div>
-                        )}})
+                        )}
+                    })
             :   <div>Завдань або компаній у вас немає</div>
             
         )
         }, [list, searchCompanyName, updateHandler, searchTaskName, numOfDays])
+
 
     useEffect(() => {
         SearchTasks()
