@@ -38,7 +38,6 @@ export const HistoryPage = () => {
         ?   info.info.forEach(task => {
                 if (new Date(task.completeToDate).getFullYear() === Number(historyYear)) {
                     let month = new Date(task.completeToDate).getMonth()
-                    console.log(task)
                     infoForEveryMonth[month]++}})
         :   infoForEveryMonth = ['Січень', 'Лютий', 'Квітень', 'Березень', 'Травень', 'Червень', 'Липень', 'Серпень', 'Вересень', 'Жовтень', 'Листопад', 'Грудень']
 
