@@ -64,57 +64,58 @@ export const CompaniesPage = () => {
 
         return(
             (listForSearch.length > 0)
-            ?   listForSearch.map((oneElem)=>{
+            ?   listForSearch.map((oneElem, key)=>{
                     return(
-                    <div className="companyElement">
-                        <p>Назва: {oneElem.name}</p>
-                        <p>ЄДПРОУ: {oneElem.edrpou}</p>
-                        <p>Адреса: {oneElem.address}</p>
-                        <p>Номер Телефону: {oneElem.phoneNum}</p>
-                        <p>Основний КВЕД: {oneElem.kwed}</p>
-                        <p>Платник ПДВ: {oneElem.payerPDW}</p>
-                        <p>Система оподаткування: {oneElem.taxationSystem}</p>
-                        <p>Всього робітників: {oneElem.numOfWorkers}</p>
-                        <p>Інформація про сплату ЄСВ: {oneElem.infoESW}</p>
-                        <p>Відповідальний: {oneElem.responsible}</p>
-                        <p>Список завдань: </p>
-                        <ol>
-                            {oneElem.tasks.map((task)=>{
-                                    switch (task.period) {
-                                        case '2':
-                                            period = 'Щотижня'
-                                            break;  
-                            
-                                        case '3':
-                                            period = 'Щомісяця'
-                                            break;
-                            
-                                        case '4':
-                                            period = 'Раз у квартал'
-                                            break;
-                            
-                                        case '5':
-                                            period = 'Раз у рік'
-                                            break;
-                            
-                                        default:
-                                            period = 'Одноразове'
-                                            break;
-                                    }
-                                    return(
-                                        <li className='taskElement' key={task.id}>
-                                            <div className="taskContainer">
-                                                <p className='taskText'>Завдання: {task.title}</p>
-                                                <p>Дата: {new Date(task.date).toLocaleString('uk-UA', {year: 'numeric', month: 'numeric', day: 'numeric' })}</p>
-                                                <p className="taskPeriod">Періодичність: {period}</p>
-                                            </div>
-                                        </li>
-                                    )
-                                })}
-                        </ol>
-                        <button><NavLink className="editButton" to={`/edit/${oneElem._id}`}>Редагувати</NavLink></button>
-                        <button className="deleteButton" onClick={() => {deleteHandlerCompany(oneElem._id)}}>Видалити</button>
-                    </div>)
+                        <div key={key} className="companyElement">
+                            <p>Назва: {oneElem.name}</p>
+                            <p>ЄДПРОУ: {oneElem.edrpou}</p>
+                            <p>Адреса: {oneElem.address}</p>
+                            <p>Номер Телефону: {oneElem.phoneNum}</p>
+                            <p>Основний КВЕД: {oneElem.kwed}</p>
+                            <p>Платник ПДВ: {oneElem.payerPDW}</p>
+                            <p>Система оподаткування: {oneElem.taxationSystem}</p>
+                            <p>Всього робітників: {oneElem.numOfWorkers}</p>
+                            <p>Інформація про сплату ЄСВ: {oneElem.infoESW}</p>
+                            <p>Відповідальний: {oneElem.responsible}</p>
+                            <p>Список завдань: </p>
+                            <ol>
+                                {oneElem.tasks.map((task)=>{
+                                        switch (task.period) {
+                                            case '2':
+                                                period = 'Щотижня'
+                                                break;  
+                                
+                                            case '3':
+                                                period = 'Щомісяця'
+                                                break;
+                                
+                                            case '4':
+                                                period = 'Раз у квартал'
+                                                break;
+                                
+                                            case '5':
+                                                period = 'Раз у рік'
+                                                break;
+                                
+                                            default:
+                                                period = 'Одноразове'
+                                                break;
+                                        }
+                                        return(
+                                            <li className='taskElement' key={task.id}>
+                                                <div className="taskContainer">
+                                                    <p className='taskText'>Завдання: {task.title}</p>
+                                                    <p>Дата: {new Date(task.date).toLocaleString('uk-UA', {year: 'numeric', month: 'numeric', day: 'numeric' })}</p>
+                                                    <p className="taskPeriod">Періодичність: {period}</p>
+                                                </div>
+                                            </li>
+                                        )
+                                    })}
+                            </ol>
+                            <button><NavLink className="editButton" to={`/edit/${oneElem._id}`}>Редагувати</NavLink></button>
+                            <button className="deleteButton" onClick={() => {deleteHandlerCompany(oneElem._id)}}>Видалити</button>
+                        </div>
+                    )
                 })
             :   <p>Вам не присвоєно компаній</p>
 
@@ -133,9 +134,9 @@ export const CompaniesPage = () => {
             <select onChange={changeHandlerSearchName} name="companiesSearch" id="companiesSearch">
                 <option value=''>Всі компанії</option>
                 {
-                    list.map((company) => {
+                    list.map((company, key) => {
                         return(
-                            <option value={company.name}>{company.name}</option>
+                            <option key={key} value={company.name}>{company.name}</option>
                         )
                     })
                 }

@@ -9,18 +9,18 @@ export const CreatePage = () => {
     const [users, setUsers] = useState([])
     const [eForm, setEForm] = useState({
         name:'',
-        edrpou:null,
-        numOfWorkers: null, 
+        edrpou:'',
+        numOfWorkers: '', 
         payerPDW: '', 
         address: '', 
-        phoneNum:null, 
+        phoneNum:'', 
         responsible:'',  
         taxationSystem:'', 
         kwed: '', 
         infoESW: '', 
         tasks:[]
     })
-    const [taskParam, setTaskParam] = useState({title:'', date: 0, period:'', id: 0})
+    const [taskParam, setTaskParam] = useState({title:'', date: '', period:'', id: 0})
     const [standartTasks, setStandartTasks] = useState({})
 
 
@@ -62,7 +62,7 @@ export const CreatePage = () => {
     const TaskList = (()=>{
 
         let period = ''
-        const list = eForm.tasks.map((task)=>{
+        const list = eForm.tasks.map((task, key)=>{
             switch (task.period) {
                 case '2':
                     period = 'Щотижня'
@@ -85,7 +85,7 @@ export const CreatePage = () => {
                     break;
             }
             return(
-                <div className='taskElement' key={task.id}>
+                <div className='taskElement' key={key}>
                     <p>Завдання: {task.title}</p>
                     <p>Періодичність: {period}</p>
                     <p>Дата: {new Date(task.date).toLocaleString('uk-UA', {year: 'numeric', month: 'numeric', day: 'numeric' })}</p>
@@ -167,9 +167,9 @@ export const CreatePage = () => {
                     <div>
                         <select onChange={changeHandlerForm} value={eForm.responsible} name="responsible" id="responsible">
                             <option value=''>Ви не вибрали відповідального</option>
-                            {users.map((user) => {
+                            {users.map((user, key) => {
                                 return(
-                                    <option value={user.name}>{user.name}</option>
+                                    <option key={key} value={user.name}>{user.name}</option>
                                 )
                             })}
                         </select>
@@ -184,8 +184,8 @@ export const CreatePage = () => {
                     <datalist id="titleDatalist">
                         {(standartTasks && standartTasks.info)
                         ?
-                            standartTasks.info.map((standartTask) => {
-                                return <option value={standartTask.text}>{standartTask.text}</option>
+                            standartTasks.info.map((standartTask, key) => {
+                                return <option key={key} value={standartTask.text}>{standartTask.text}</option>
                             })
                         :
                             <option>Ви ще не додали стандартні завдання</option>

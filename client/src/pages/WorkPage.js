@@ -70,9 +70,12 @@ export const WorkPage = () => {
             default:
                 currentTasksList.splice(currentTask.id, 1)
                 currentTasksList.map((task) => {
-                    if (task.id > currentTask.id) {
-                        task.id--
-                    }})
+                    return(
+                        (task.id > currentTask.id)
+                        ?   task.id--
+                        :   null
+                    )
+                })
                 break;
             }
 
@@ -121,7 +124,6 @@ export const WorkPage = () => {
     }
 
 
-
     const changeHandlerSearchName = (event) => {
 
         setSearchCompanyName(event.target.value)
@@ -143,32 +145,32 @@ export const WorkPage = () => {
 
         return(
             (listForSearch && listForSearch.length > 0)
-            ?   listForSearch.map((oneCompany) => {
-                    if (searchCompanyName !== '' || oneCompany.tasks.filter((task) => searchTaskName ? task.title === searchTaskName && new Date(task.date) <= time : new Date(task.date) <= time).length > 0) {
-                        return(
-                            <div className="companyElement">
-                                <p>Назва: {oneCompany.name}</p>
-                                <p>ЄДРПОУ: {oneCompany.edrpou}</p>
-                                <p>Список завдань: </p>
-                                <ol>
-                                    {oneCompany.tasks.map((task)=>{
-                                        if (searchTaskName ? task.title === searchTaskName && new Date(task.date) <= time : new Date(task.date) <= time) {
-                                            return(
-                                                <li className='taskElement' key={task.id}>
-                                                    <div className="taskContainer">
-                                                        <p className='taskText'>Завдання: {task.title}</p>
-                                                        <p>Дата: {new Date(task.date).toLocaleString('uk-UA', {year: 'numeric', month: 'numeric', day: 'numeric' })}</p>
-                                                        <button onClick={() => {updateHandler(oneCompany, task)}}>виконано</button>
-                                                    </div>
-                                                </li>
-                                            )
-                                        }  
-                                    })}
-                                </ol>
-                            </div>
-                        )}
-                    })
-            :   <div>Завдань або компаній у вас немає</div>
+            ?   listForSearch.map((oneCompany, key) => {
+                return(
+                    (searchCompanyName !== '' || oneCompany.tasks.filter((task) => searchTaskName ? task.title === searchTaskName && new Date(task.date) <= time : new Date(task.date) <= time).length > 0)
+                    ?   <div key={key} className="companyElement">
+                            <p>Назва: {oneCompany.name}</p>
+                            <p>ЄДРПОУ: {oneCompany.edrpou}</p>
+                            <p>Список завдань: </p>
+                            <ol>
+                                {oneCompany.tasks.map((task)=>{
+                                    return(
+                                        (searchTaskName ? task.title === searchTaskName && new Date(task.date) <= time : new Date(task.date) <= time)
+                                        ?   <li className='taskElement' key={task.id}>
+                                                <div className="taskContainer">
+                                                    <p className='taskText'>Завдання: {task.title}</p>
+                                                    <p>Дата: {new Date(task.date).toLocaleString('uk-UA', {year: 'numeric', month: 'numeric', day: 'numeric' })}</p>
+                                                    <button onClick={() => {updateHandler(oneCompany, task)}}>виконано</button>
+                                                </div>
+                                            </li>
+                                        :   null
+                                    )
+                                })}
+                            </ol>
+                        </div>
+                    : null
+                )})
+            :   <div>Завдань або компаній у вас немає</div>   
             
         )
         }, [list, searchCompanyName, updateHandler, searchTaskName, numOfDays])
@@ -187,9 +189,9 @@ export const WorkPage = () => {
                 <select onChange={changeHandlerSearchName} className="selectSearchInput" name="companiesSearch" id="companiesSearch">
                     <option value=''>Всі компанії</option>
                     {
-                        list.map((company) => {
+                        list.map((company, key) => {
                             return(
-                                <option value={company.name}>{company.name}</option>
+                                <option key={key} value={company.name}>{company.name}</option>
                             )
                         })
                     }
@@ -200,9 +202,9 @@ export const WorkPage = () => {
                     <option value=''>Всі завдання</option>
                     {
                         (standartTasks && standartTasks.info)
-                            ?   standartTasks.info.map((task) => {
+                            ?   standartTasks.info.map((task, key) => {
                                     return(
-                                        <option value={task.text}>{task.text}</option>
+                                        <option key={key} value={task.text}>{task.text}</option>
                                 )})
                             :   <option value=''>Немає завдань</option>
                     }

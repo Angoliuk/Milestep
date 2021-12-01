@@ -13,7 +13,6 @@ export const StandartTasksPage = () => {
 
         try {
             const staticInfo = await request('/api/auth/staticInfoGet', 'GET', null) 
-            staticInfo.find((info) => info.name === 'standartTasks').info.sort((a, b) => a.text.localeCompare(b.text))
             setStandartTasks(staticInfo.find((info) => info.name === 'standartTasks'))
         } catch (e) {
             console.log(e)
@@ -31,8 +30,9 @@ export const StandartTasksPage = () => {
         setStandartTasks({...standartTasks,
              info: [...standartTasks.info, {
                  text: taskText, 
-                 id: (standartTasks.info.length > 0) ? standartTasks.info[standartTasks.info.length-1].id+1 : 0} ]
+                 id: (standartTasks.info.length > 0) ? standartTasks.info.length : 0} ]
                 })
+                
         setTaskText('')
 
     }
@@ -44,22 +44,29 @@ export const StandartTasksPage = () => {
     }
 
     const saveChanges = async () => {
+
         try {
             await request('/api/auth/staticInfoUpdate', 'POST', standartTasks)
             alert('saved changes')
         } catch (e) {
             console.log(e)
         }
+
     }
 
     const deleteHandlerStandartTasks = (position) => { 
+
         let newStandartTasks = standartTasks.info
-        newStandartTasks.splice(position, 1)
+
+        newStandartTasks.splice(newStandartTasks.findIndex((task) => task.id === position), 1)
         newStandartTasks.map((task) => {
-            if (task.id > position) {
-                task.id--
-            }
+            return(
+                (task.id > position)
+                ?   task.id--
+                :   null
+            )
         })
+        
         setStandartTasks({...standartTasks, info: newStandartTasks})
     }
 
@@ -73,9 +80,9 @@ export const StandartTasksPage = () => {
                 <button onClick={saveChanges}>Зберегти всі зміни</button>
                 {(standartTasks.info && standartTasks.info.length > 0) 
                 ?
-                    standartTasks.info.map((standartTask) => {
+                    standartTasks.info.sort((a, b) => a.text.localeCompare(b.text)).map((standartTask, key) => {
                         return(
-                            <div className="standartTask">
+                            <div key={key} className="standartTask">
                                 <span className="standartTaskText">{standartTask.text}</span>
                                 <button onClick={() => {deleteHandlerStandartTasks(standartTask.id)}} className="deleteButton">Видалити</button>
                             </div>

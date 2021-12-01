@@ -19,7 +19,7 @@ export const RegisterPage = () => {
     const registerHandler = async () => {
 
         try {
-            const data = await request('/api/auth/register', 'POST', {...form})
+            await request('/api/auth/register', 'POST', {...form})
             alert('succesfully registered')
             window.location.href = '/login'
 
@@ -36,7 +36,7 @@ export const RegisterPage = () => {
                 <div>
                     <h1>Реєстрація</h1>
                     <div>
-                        <input id="name" name="name" onChange={changeHandler} autocomplete="off"/>
+                        <input id="name" name="name" onChange={changeHandler} autoComplete="off"/>
                         <label htmlFor="name">Ім'я</label>
                     </div>
                     <div>

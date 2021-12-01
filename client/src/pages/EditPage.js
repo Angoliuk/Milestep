@@ -12,11 +12,11 @@ export const EditPage = () => {
 
     const [eForm, setEForm] = useState({
         name:'',
-        edrpou: null,
-        numOfWorkers: null, 
+        edrpou: '',
+        numOfWorkers: '', 
         payerPDW: '', 
         address: '', 
-        phoneNum: null, 
+        phoneNum: '', 
         responsible:'',  
         taxationSystem:'', 
         kwed: '', 
@@ -63,10 +63,13 @@ export const EditPage = () => {
 
         newTasks.splice(position, 1)
         newTasks.map((task) => {
-            if (task.id > position) {
-                task.id--
-            }
+            return(
+                (task.id > position)
+                ?   task.id--
+                :   null
+            )
         })
+        console.log(newTasks)
 
         setEForm({...eForm, tasks: newTasks})
     }
@@ -197,9 +200,9 @@ export const EditPage = () => {
                 
                     <div>
                         <select onChange={changeHandlerForm} value={eForm.responsible} name="responsible" id="responsible">
-                            {users.map((user) => {
+                            {users.map((user, key) => {
                                 return(
-                                    <option value={user.name}>{user.name}</option>
+                                    <option key={key} value={user.name}>{user.name}</option>
                             )
                             })}
                         </select>
@@ -214,9 +217,9 @@ export const EditPage = () => {
                     <datalist id="titleDatalist">
                         {(standartTasks && standartTasks.info)
                         ?
-                        standartTasks.info.map((standartTask) => {
+                        standartTasks.info.map((standartTask, key) => {
                             return(
-                                <option value={standartTask.text}>{standartTask.text}</option>
+                                <option key={key} value={standartTask.text}>{standartTask.text}</option>
                             )
                         })
                         : 

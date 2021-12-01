@@ -42,9 +42,9 @@ export const HistoryPage = () => {
         :   infoForEveryMonth = ['Січень', 'Лютий', 'Квітень', 'Березень', 'Травень', 'Червень', 'Липень', 'Серпень', 'Вересень', 'Жовтень', 'Листопад', 'Грудень']
 
         return (
-            infoForEveryMonth.map((task) => {
+            infoForEveryMonth.map((task, key) => {
                 return(
-                    <th>{task}</th>
+                    <th key={key}>{task}</th>
                     )            
                 })
         )
@@ -60,10 +60,9 @@ export const HistoryPage = () => {
         :   listForSearch = history.info
 
         return(
-            listForSearch.map((company) => {
-
+            listForSearch.map((company, key) => {
                 return(
-                    <div className="companyElement">
+                    <div key={key} className="companyElement">
                         <div id={company.edrpou}>
                             <p>Назва: {company.name}</p>
                             <p>ЄДРПОУ: {company.edrpou}</p>
@@ -75,9 +74,9 @@ export const HistoryPage = () => {
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {company.tasksHistory.map((task) => {
+                                    {company.tasksHistory.map((task, key) => {
                                         return(
-                                            <tr>
+                                            <tr key={key}>
                                                 <th>
                                                     {task.task}
                                                 </th>
@@ -117,9 +116,9 @@ export const HistoryPage = () => {
                         <option value=''>Всі компанії</option>
 
                         {(history && history.info)
-                        ?   history.info.map((company) => {
+                        ?   history.info.map((company, key) => {
                                 return (
-                                    <option value={company.name}>{company.name}</option>
+                                    <option key={key} value={company.name}>{company.name}</option>
                                 )})
                         :   <option value=''>Історія ваших компаній пуста</option>
                         }
