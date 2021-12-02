@@ -78,14 +78,15 @@ export const StandartTasksPage = () => {
                 <input onChange={changeHandlerTaskText} value={taskText} className="inputForCreate" />
                 <button onClick={addHandlerStandartTasks}>Додати завдання</button>
                 <button onClick={saveChanges}>Зберегти всі зміни</button>
+                <ol>
                 {(standartTasks.info && standartTasks.info.length > 0) 
                 ?
                     standartTasks.info.sort((a, b) => a.text.localeCompare(b.text)).map((standartTask, key) => {
                         return(
-                            <div key={key} className="standartTask">
+                            <li key={key} className="standartTask">
                                 <span className="standartTaskText">{standartTask.text}</span>
                                 <button onClick={() => {deleteHandlerStandartTasks(standartTask.id)}} className="deleteButton">Видалити</button>
-                            </div>
+                            </li>
                         )
                     })
                 : 
@@ -93,6 +94,7 @@ export const StandartTasksPage = () => {
                         <p>Немає стандартних завдань</p>
                     </div>
                 }
+                </ol>
             </div>
         </div>
     )

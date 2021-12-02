@@ -136,7 +136,7 @@ export const CompaniesPage = () => {
                 {
                     list.map((company, key) => {
                         return(
-                            <option key={key} value={company.name}>{company.name}</option>
+                            <option key={key} value={company.name}>{key+1}. {company.name}</option>
                         )
                     })
                 }
