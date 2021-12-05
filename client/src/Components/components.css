@@ -1,19 +1,25 @@
-.container-nav{
-    display:flex;
+.container-nav {
+    display: flex;
     justify-content: space-around;
 }
 
-.name{
+.name {
     font-size: 25px;
 }
-.nav-elem{
+
+.nav-elem {
     margin: 33px;
+    color: rgb(32 75 216);
 }
 
-nav{
+nav {
     width: 90%;
     display: flex;
     justify-content: space-around;
     align-items: center;
 }
 
+a.active{
+    color: seagreen;
+    font-size: 20px;
+}
