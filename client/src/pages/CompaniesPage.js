@@ -1,7 +1,7 @@
 import React, { useCallback, useContext, useEffect, useState } from 'react'
 import { NavBar } from '../Components/NavBar'
 import { useHttp } from '../hooks/http.hook'
-import {NavLink} from 'react-router-dom'
+import {Link, NavLink} from 'react-router-dom'
 import "./pages.css"
 import { AuthContext } from '../context/AuthContext'
 
@@ -112,7 +112,9 @@ export const CompaniesPage = () => {
                                         )
                                     })}
                             </ol>
-                            <button><NavLink className="editButton" to={`/edit/${oneElem._id}`}>Редагувати</NavLink></button>
+                            <Link className="editButton" to={`/edit/${oneElem._id}`}>
+                                <button>Редагувати</button>
+                            </Link>
                             <button className="deleteButton" onClick={() => {deleteHandlerCompany(oneElem._id)}}>Видалити</button>
                         </div>
                     )
