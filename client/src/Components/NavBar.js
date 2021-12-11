@@ -8,7 +8,7 @@ export const NavBar = () => {
     const {name, isAdmin, logout} = useContext(AuthContext)
 
     if (isAdmin) {
-        return(
+        return( 
             <div className="container-nav">
                 <nav>
                     <NavLink className="nav-elem" to="/standartTasks">Стандартні завдання</NavLink>

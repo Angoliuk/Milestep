@@ -1,20 +1,16 @@
 import React, { useCallback, useContext, useEffect, useState } from 'react'
+import { connect } from 'react-redux'
 import { NavBar } from '../Components/NavBar'
 import { AuthContext } from '../context/AuthContext'
 import { useHttp } from '../hooks/http.hook'
+import { setCompaniesList, setNumOfDays, setSearchCompanyName, setSearchTaskName, setStandartTasks } from '../reduxStorage/actions/actions'
 import "./pages.css"
 
-export const WorkPage = () => {
+function WorkPage (props) {
 
-    const [list, setList] = useState([])
     const {name, isAdmin} = useContext(AuthContext)
     const {request} = useHttp()
     const [history, setHistory] = useState()
-    const [standartTasks, setStandartTasks] = useState([])
-    const [numOfDays, setNumOfDays] = useState(5)
-    const [searchCompanyName, setSearchCompanyName] = useState('')
-    const [searchTaskName, setSearchTaskName] = useState('')
-
 
     const dataRequest = useCallback( async () => {
 
@@ -22,14 +18,14 @@ export const WorkPage = () => {
             const data = await request("/api/auth/allCompanies", "GET", null)
 
             isAdmin
-            ?   setList(data.sort((a,b) => a.name.localeCompare(b.name)))
-            :   setList(data.filter((company) => company.responsible === name).sort((a,b) => a.name.localeCompare(b.name)))
+            ?   props.setList(data.sort((a,b) => a.name.localeCompare(b.name)))
+            :   props.setList(data.filter((company) => company.responsible === name).sort((a,b) => a.name.localeCompare(b.name)))
             
 
             const staticInfo = await request('/api/auth/staticInfoGet', 'GET', null)
             setHistory(staticInfo.find((info) => info.name === 'history'))
             staticInfo.find((info) => info.name === 'standartTasks').info.sort((a,b) => a.text.localeCompare(b.text))
-            setStandartTasks(staticInfo.find((info) => info.name === 'standartTasks'))
+            props.setStandartTasks(staticInfo.find((info) => info.name === 'standartTasks'))
 
         } catch (e) {
             console.error(e);
@@ -45,7 +41,7 @@ export const WorkPage = () => {
 
     const updateHandler = useCallback( async (companyInfo, task) => {
         
-        let currentTasksList = list.find(company => company._id === companyInfo._id).tasks
+        let currentTasksList = props.list.find(company => company._id === companyInfo._id).tasks
         let currentTask = currentTasksList.find(currentTask => currentTask.id === task.id)
 
         let newDate = new Date(Date.parse(currentTask.date))
@@ -103,7 +99,7 @@ export const WorkPage = () => {
             console.log(e)
         }
 
-    }, [list, request, history])
+    }, [props.list, request, history])
 
 
     const handleChangeInputNumOfDays = (event) => {
@@ -111,22 +107,21 @@ export const WorkPage = () => {
         let newNumOfDays = Number(event.target.value)
 
         newNumOfDays > 735 && newNumOfDays < -1
-        ?   setNumOfDays(5)
-        :   setNumOfDays(newNumOfDays)
+        ?   props.setNumOfDays(5)
+        :   props.setNumOfDays(newNumOfDays)
 
     }
 
-
     const handleChangeInputTaskName = (event) => {
 
-        setSearchTaskName(event.target.value)
+        props.setSearchTaskName(event.target.value)
 
     }
 
 
     const changeHandlerSearchName = (event) => {
 
-        setSearchCompanyName(event.target.value)
+        props.setSearchCompanyName(event.target.value)
 
     }
 
@@ -135,19 +130,19 @@ export const WorkPage = () => {
 
         let listForSearch = []
 
-        searchCompanyName 
-        ? listForSearch = list.filter((company) => company.name === searchCompanyName)
-        : listForSearch = list
+        props.searchCompanyName 
+        ? listForSearch = props.list.filter((company) => company.name === props.searchCompanyName)
+        : listForSearch = props.list
 
         let time = new Date()
-        time = time.setDate(time.getDate() + numOfDays)
+        time = time.setDate(time.getDate() + props.numOfDays)
         time = new Date(time)
 
         return(
             (listForSearch && listForSearch.length > 0)
             ?   listForSearch.map((oneCompany, key) => {
                 return(
-                    (searchCompanyName !== '' || oneCompany.tasks.filter((task) => searchTaskName ? task.title === searchTaskName && new Date(task.date) <= time : new Date(task.date) <= time).length > 0)
+                    (props.searchCompanyName !== '' || oneCompany.tasks.filter((task) => props.searchTaskName ? task.title === props.searchTaskName && new Date(task.date) <= time : new Date(task.date) <= time).length > 0)
                     ?   <div key={key} className="companyElement">
                             <p>Назва: {oneCompany.name}</p>
                             <p>ЄДРПОУ: {oneCompany.edrpou}</p>
@@ -155,7 +150,7 @@ export const WorkPage = () => {
                             <ol>
                                 {oneCompany.tasks.map((task)=>{
                                     return(
-                                        (searchTaskName ? task.title === searchTaskName && new Date(task.date) <= time : new Date(task.date) <= time)
+                                        (props.searchTaskName ? task.title === props.searchTaskName && new Date(task.date) <= time : new Date(task.date) <= time)
                                         ?   <li className='taskElement' key={task.id}>
                                                 <div className="taskContainer">
                                                     <p className='taskText'>Завдання: {task.title}</p>
@@ -173,7 +168,7 @@ export const WorkPage = () => {
             :   <div>Завдань або компаній у вас немає</div>   
             
         )
-        }, [list, searchCompanyName, updateHandler, searchTaskName, numOfDays])
+        }, [props.list, props.searchCompanyName, updateHandler, props.searchTaskName, props.numOfDays])
 
 
     useEffect(() => {
@@ -183,17 +178,19 @@ export const WorkPage = () => {
     return (
         <div className="container">
             <NavBar />
-            <input onChange={handleChangeInputNumOfDays} value={numOfDays} className="searchInput" name="numOfDays" min="-1" max="735" id="numOfDays" type="number" />
+            <input onChange={handleChangeInputNumOfDays} value={props.numOfDays} className="searchInput" name="numOfDays" min="-1" max="735" id="numOfDays" type="number" />
             <label htmlFor="numOfDays">Кількість днів</label>
             <div>
                 <select onChange={changeHandlerSearchName} className="selectSearchInput" name="companiesSearch" id="companiesSearch">
                     <option value=''>Всі компанії</option>
                     {
-                        list.map((company, key) => {
-                            return(
-                                <option key={key} value={company.name}>{company.name}</option>
-                            )
-                        })
+                        (props.list)
+                        ?   props.list.map((company, key) => {
+                                return(
+                                    <option key={key} value={company.name}>{company.name}</option>
+                                )
+                            })
+                        :   <option value=''>Немає компаній</option>
                     }
                 </select>
             </div>
@@ -201,8 +198,8 @@ export const WorkPage = () => {
                 <select onChange={handleChangeInputTaskName} className="selectSearchInput" name="tasksSearch" id="tasksSearch">
                     <option value=''>Всі завдання</option>
                     {
-                        (standartTasks && standartTasks.info)
-                            ?   standartTasks.info.map((task, key) => {
+                        (props.standartTasks && props.standartTasks.info)
+                            ?   props.standartTasks.info.map((task, key) => {
                                     return(
                                         <option key={key} value={task.text}>{task.text}</option>
                                 )})
@@ -210,9 +207,31 @@ export const WorkPage = () => {
                     }
                 </select>
             </div>
-
-            {list ? <SearchTasks /> : <p>Пусто...</p>}
+{/* props.list */}
+            {props.list ? <SearchTasks /> : <p>Пусто...</p>}
             
         </div>
         )
 }
+
+function mapStateToProps(state) {
+    return{
+        list: state.workPageReducers.list,
+        standartTasks: state.workPageReducers.standartTasks,
+        numOfDays: state.workPageReducers.numOfDays,
+        searchCompanyName: state.workPageReducers.searchCompanyName,
+        searchTaskName: state.workPageReducers.searchTaskName,
+    }
+}
+
+function mapDispatchToProps(dispatch) {
+    return{
+        setList: (list) => dispatch(setCompaniesList(list)),
+        setNumOfDays: (numOfDays) => dispatch(setNumOfDays(numOfDays)),
+        setStandartTasks: (standartTasks) => dispatch(setStandartTasks(standartTasks)),
+        setSearchTaskName: (searchTaskName) => dispatch(setSearchTaskName(searchTaskName)),
+        setSearchCompanyName: (searchCompanyName) => dispatch(setSearchCompanyName(searchCompanyName))
+    }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(WorkPage)
