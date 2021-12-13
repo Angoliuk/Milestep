@@ -3,7 +3,8 @@ import { connect } from 'react-redux'
 import { NavBar } from '../Components/NavBar'
 import { AuthContext } from '../context/AuthContext'
 import { useHttp } from '../hooks/http.hook'
-import { setCompaniesList, setHistory, setStandartTasks } from '../reduxStorage/actions/actions'
+import { setCompaniesList, setHistory } from '../reduxStorage/actions/companies'
+import { setStandartTasks } from '../reduxStorage/actions/tasks'
 import "./pages.css"
 
 function WorkPage (props) {

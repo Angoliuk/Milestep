@@ -5,7 +5,7 @@ import {Link} from 'react-router-dom'
 import "./pages.css"
 import { AuthContext } from '../context/AuthContext'
 import { connect } from 'react-redux'
-import { setCompaniesList } from '../reduxStorage/actions/actions'
+import { setCompaniesList } from '../reduxStorage/actions/companies'
 
 function CompaniesPage (props) {
 

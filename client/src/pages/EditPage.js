@@ -3,7 +3,7 @@ import { NavBar } from '../Components/NavBar'
 import { useHttp } from '../hooks/http.hook'
 import { useParams, useHistory } from 'react-router-dom'
 import { connect } from 'react-redux'
-import { setStandartTasks } from '../reduxStorage/actions/actions'
+import { setStandartTasks } from '../reduxStorage/actions/tasks'
 
 function EditPage (props) {
 

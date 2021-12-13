@@ -2,7 +2,7 @@ import { connect } from "react-redux"
 import { useCallback, useEffect} from "react"
 import { NavBar } from "../Components/NavBar"
 import { useHttp } from '../hooks/http.hook'
-import { setCompaniesList } from "../reduxStorage/actions/actions"
+import { setCompaniesList } from "../reduxStorage/actions/companies"
 
 function StatPage (props) {
 

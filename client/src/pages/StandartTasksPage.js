@@ -3,7 +3,7 @@ import "./pages.css"
 import { useHttp } from '../hooks/http.hook'
 import { useCallback, useEffect, useState } from "react"
 import { connect } from "react-redux"
-import { setStandartTasks } from "../reduxStorage/actions/actions"
+import { setStandartTasks } from "../reduxStorage/actions/tasks"
 
 function StandartTasksPage (props) {
     

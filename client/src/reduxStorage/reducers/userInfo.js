@@ -4,6 +4,8 @@ const initialState = {
   name: '',
   userId: '',
   isAdmin: false,
+  token: null,
+  ready: false,
 }
 
 export default function userInfo(state = initialState, action) {
