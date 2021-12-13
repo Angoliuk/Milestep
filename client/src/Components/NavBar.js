@@ -16,7 +16,7 @@ function NavBar (props) {
                     <NavLink className="nav-elem" to="/history">Історія</NavLink>
                     <NavLink className="nav-elem" to="/statistics">Статистика</NavLink>
                     <p className="name">{props.name}</p>
-                    <button className="nav-button" onClick={(logout => props.logout())}>logout</button>
+                    <button className="nav-button" onClick={(() => props.logout())}>logout</button>
                 </nav>
             </div>
         )

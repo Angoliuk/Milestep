@@ -81,13 +81,13 @@ router.post(
             return res.status(400).json({message: "wrong pass"})
         }
 
-        const token = jwt.sign(
-            {userId : user.id},
-            config.get('jwtSecret'),
-            {expiresIn: '10h'}
-        )
+        // const token = jwt.sign(
+        //     {userId : user.id},
+        //     config.get('jwtSecret'),
+        //     {expiresIn: '10h'}
+        // )
 
-        res.json({name: user.name, token, userId: user.id, isAdmin: user.isAdmin })
+        res.json({name: user.name, userId: user.id, isAdmin: user.isAdmin })
 
     } catch (e) {
         res.status(500).json({message: "auth routes 500"})

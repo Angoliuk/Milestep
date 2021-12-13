@@ -26,6 +26,7 @@ function WorkPage (props) {
 
             const staticInfo = await request('/api/auth/staticInfoGet', 'GET', null)
             props.setHistory(staticInfo.find((info) => info.name === 'history'))
+            
             staticInfo.find((info) => info.name === 'standartTasks').info.sort((a,b) => a.text.localeCompare(b.text))
             props.setStandartTasks(staticInfo.find((info) => info.name === 'standartTasks'))
 

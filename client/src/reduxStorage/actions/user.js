@@ -1,12 +1,22 @@
-import {loginUser, logoutUser, setInfoAboutUser} from './actionTypes'
+import {loginUser, logoutUser} from './actionTypes'
 
-export function setUser() {
-    return {
-      type: setInfoAboutUser,
+export function autoLogin() {
+    const userFromLocalStorage = JSON.parse(localStorage.getItem('userData'))
+    if (!!userFromLocalStorage && !!userFromLocalStorage.userId) {
+        return{
+            type: loginUser,
+            payload: userFromLocalStorage
+        }
     }
-  }
+    else{
+        return{
+            type: logoutUser
+        }
+    }
+}
 
 export function login(userInfo) {
+    localStorage.setItem('userData', JSON.stringify(userInfo))
     return{
         type: loginUser,
         payload: userInfo,
@@ -14,6 +24,7 @@ export function login(userInfo) {
 }
 
 export function logout() {
+    localStorage.removeItem('userData')
     return{
         type: logoutUser,
     }
