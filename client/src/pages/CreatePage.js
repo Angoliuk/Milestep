@@ -23,6 +23,7 @@ function CreatePage(props) {
         tasks:[]
     })
     const [taskParam, setTaskParam] = useState({title:'', date: '', period:'', id: 0})
+    const {standartTasks, setStandartTasks} = props
 
 
     const changeHandlerForm = (event) => {
@@ -39,13 +40,13 @@ function CreatePage(props) {
             setUsers(data)
 
             const staticInfo = await request('/api/auth/staticInfoGet', 'GET', null)
-            props.setStandartTasks({name: 'standartTasks', info: staticInfo.find((info) => info.name === 'standartTasks').info.sort((a, b) => a.text.localeCompare(b.text))})
+            setStandartTasks({name: 'standartTasks', info: staticInfo.find((info) => info.name === 'standartTasks').info.sort((a, b) => a.text.localeCompare(b.text))})
 
         } catch (e) {
             console.log(e)
         }
 
-    }, [request])
+    }, [request, setStandartTasks])
 
 
     useEffect(() => {
@@ -182,9 +183,9 @@ function CreatePage(props) {
                     <h1>Додати завдання</h1>
                     <input onChange={changeHandlerTask} value={taskParam.title} className="inputForCreate" name="title" id="title" list="titleDatalist"/>
                     <datalist id="titleDatalist">
-                        {(props.standartTasks && props.standartTasks.info)
+                        {(standartTasks && standartTasks.info)
                         ?
-                            props.standartTasks.info.map((standartTask, key) => {
+                            standartTasks.info.map((standartTask, key) => {
                                 return <option key={key} value={standartTask.text}>{standartTask.text}</option>
                             })
                         :

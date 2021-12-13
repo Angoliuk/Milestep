@@ -10,6 +10,7 @@ function EditPage (props) {
     const companyId = useParams().id
     const {request} = useHttp() 
     const [users, setUsers] = useState([])
+    const {standartTasks, setStandartTasks} = props
 
     const [eForm, setEForm] = useState({
         name:'',
@@ -133,14 +134,14 @@ function EditPage (props) {
             setUsers(usersData)
 
             const staticInfo = await request('/api/auth/staticInfoGet', 'GET', null) 
-            props.setStandartTasks({name: 'standartTasks', info: staticInfo.find((info) => info.name === 'standartTasks').info.sort((a, b) => a.text.localeCompare(b.text))})
+            setStandartTasks({name: 'standartTasks', info: staticInfo.find((info) => info.name === 'standartTasks').info.sort((a, b) => a.text.localeCompare(b.text))})
             
         } catch (e) {
             console.error(e);
             console.log("here")
         }
 
-    } ,[request, companyId])
+    } ,[request, companyId, setStandartTasks])
 
 
     useEffect(() => {
@@ -149,7 +150,7 @@ function EditPage (props) {
 
 
     const history = useHistory()
-    const goBackAfterEdition = () => { history.push('/companies') }
+    const goBackAfterEdit = () => { history.push('/companies') }
 
     
     const saveChanges = async () => {
@@ -157,7 +158,7 @@ function EditPage (props) {
         try {
             await request('/api/auth/updateCompany', 'POST', eForm)
             alert('everything saved')
-            goBackAfterEdition()
+            goBackAfterEdit()
         } catch (e) {
             console.log(e)
         }
@@ -216,9 +217,9 @@ function EditPage (props) {
                     <h1>Додати завдання</h1>
                     <input onChange={changeHandlerTask} value={taskParam.title} className="inputForCreate" name="title" id="title" list="titleDatalist"/>
                     <datalist id="titleDatalist">
-                        {(props.standartTasks && props.standartTasks.info)
+                        {(standartTasks && standartTasks.info)
                         ?
-                        props.standartTasks.info.map((standartTask, key) => {
+                        standartTasks.info.map((standartTask, key) => {
                             return(
                                 <option key={key} value={standartTask.text}>{standartTask.text}</option>
                             )

@@ -8,7 +8,7 @@ import "./pages.css"
 
 function WorkPage (props) {
 
-    // const {name, isAdmin} = useContext(AuthContext)
+    const {name, isAdmin, list, history, standartTasks, setList, setHistory} = props
     const {request} = useHttp()
     const [numOfDays, setNumOfDays] = useState(5)
     const [searchCompanyName, setSearchCompanyName] = useState('')
@@ -19,23 +19,23 @@ function WorkPage (props) {
         try {
             const data = await request("/api/auth/allCompanies", "GET", null)
 
-            props.isAdmin
-            ?   props.setList(data.sort((a,b) => a.name.localeCompare(b.name)))
-            :   props.setList(data.filter((company) => company.responsible === props.name).sort((a,b) => a.name.localeCompare(b.name)))
+            isAdmin
+            ?   setList(data.sort((a,b) => a.name.localeCompare(b.name)))
+            :   setList(data.filter((company) => company.responsible === name).sort((a,b) => a.name.localeCompare(b.name)))
             
 
             const staticInfo = await request('/api/auth/staticInfoGet', 'GET', null)
-            props.setHistory(staticInfo.find((info) => info.name === 'history'))
-            
+            setHistory(staticInfo.find((info) => info.name === 'history'))
+
             staticInfo.find((info) => info.name === 'standartTasks').info.sort((a,b) => a.text.localeCompare(b.text))
-            props.setStandartTasks(staticInfo.find((info) => info.name === 'standartTasks'))
+            setStandartTasks(staticInfo.find((info) => info.name === 'standartTasks'))
 
         } catch (e) {
             console.error(e);
             console.log("here")
         }
 
-    } ,[request, props.name, props.isAdmin])
+    } ,[isAdmin, name, setHistory, setList, request])
 
     useEffect(() => {
         dataRequest()
@@ -44,7 +44,7 @@ function WorkPage (props) {
 
     const updateHandler = useCallback( async (companyInfo, task) => {
         
-        let currentTasksList = props.list.find(company => company._id === companyInfo._id).tasks
+        let currentTasksList = list.find(company => company._id === companyInfo._id).tasks
         let currentTask = currentTasksList.find(currentTask => currentTask.id === task.id)
 
         let newDate = new Date(Date.parse(currentTask.date))
@@ -80,7 +80,7 @@ function WorkPage (props) {
 
         if (task.period && task.period !== 1) {
 
-            let companyInHistory = props.history.info.find((company) => company.name === companyInfo.name)
+            let companyInHistory =history.info.find((company) => company.name === companyInfo.name)
             let taskInHistory = companyInHistory ? companyInHistory.tasksHistory.find((task) => task.task === currentTask.title) : false 
             let currentDate = new Date().toLocaleString('uk-UA', {year: 'numeric', month: 'numeric', day: 'numeric'})
 
@@ -88,7 +88,7 @@ function WorkPage (props) {
             ? taskInHistory
                 ? taskInHistory.completeDates.push({date: currentDate, completeToDate: currentTask.date}) 
                 : companyInHistory.tasksHistory.push({task: currentTask.title, completeDates: [{date: currentDate, completeToDate: currentTask.date}]})
-            : props.history.info.push({name: companyInfo.name, edrpou: companyInfo.edrpou, tasksHistory: [{task: currentTask.title, completeDates: [{date: currentDate, completeToDate: currentTask.date}]}]})
+            : history.info.push({name: companyInfo.name, edrpou: companyInfo.edrpou, tasksHistory: [{task: currentTask.title, completeDates: [{date: currentDate, completeToDate: currentTask.date}]}]})
 
             currentTask.date = `${newDate.getFullYear()}-${((newDate.getMonth()+1) >= 10) ? newDate.getMonth()+1 : '0' + (newDate.getMonth()+1)}-${(newDate.getDate() >= 10) ? newDate.getDate() : '0' + newDate.getDate() }`
 
@@ -96,13 +96,13 @@ function WorkPage (props) {
 
         try {
             await request("/api/auth/update", "POST", {id: companyInfo._id, tasksList: currentTasksList})
-            await request("/api/auth/staticInfoUpdate", "POST", props.history)
+            await request("/api/auth/staticInfoUpdate", "POST", history)
             alert("saved")
         } catch (e) {
             console.log(e)
         }
 
-    }, [props.list, request, props.history])
+    }, [list, request, history])
 
 
     const handleChangeInputNumOfDays = (event) => {
@@ -134,8 +134,8 @@ function WorkPage (props) {
         let listForSearch = []
 
         searchCompanyName 
-        ? listForSearch = props.list.filter((company) => company.name === searchCompanyName)
-        : listForSearch = props.list
+        ? listForSearch = list.filter((company) => company.name === searchCompanyName)
+        : listForSearch = list
 
         let time = new Date()
         time = time.setDate(time.getDate() + numOfDays)
@@ -171,7 +171,7 @@ function WorkPage (props) {
             :   <div>Завдань або компаній у вас немає</div>   
             
         )
-        }, [props.list, searchCompanyName, updateHandler, searchTaskName, numOfDays])
+        }, [list, searchCompanyName, updateHandler, searchTaskName, numOfDays])
 
 
     useEffect(() => {
@@ -187,8 +187,8 @@ function WorkPage (props) {
                 <select onChange={changeHandlerSearchName} className="selectSearchInput" name="companiesSearch" id="companiesSearch">
                     <option value=''>Всі компанії</option>
                     {
-                        (props.list)
-                        ?   props.list.map((company, key) => {
+                        (list)
+                        ?   list.map((company, key) => {
                                 return(
                                     <option key={key} value={company.name}>{company.name}</option>
                                 )
@@ -201,8 +201,8 @@ function WorkPage (props) {
                 <select onChange={handleChangeInputTaskName} className="selectSearchInput" name="tasksSearch" id="tasksSearch">
                     <option value=''>Всі завдання</option>
                     {
-                        (props.standartTasks && props.standartTasks.info)
-                            ?   props.standartTasks.info.map((task, key) => {
+                        (standartTasks && standartTasks.info)
+                            ?   standartTasks.info.map((task, key) => {
                                     return(
                                         <option key={key} value={task.text}>{task.text}</option>
                                 )})
@@ -211,7 +211,7 @@ function WorkPage (props) {
                 </select>
             </div>
 {/* props.list */}
-            {props.list ? <SearchTasks /> : <p>Пусто...</p>}
+            {list ? <SearchTasks /> : <p>Пусто...</p>}
             
         </div>
         )

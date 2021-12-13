@@ -9,17 +9,18 @@ function StandartTasksPage (props) {
     
     const {request} = useHttp() 
     const [taskText, setTaskText] = useState('')
+    const {standartTasks, setStandartTasks} = props
     
     const dataRequest = useCallback(async () => {
 
         try {
             const staticInfo = await request('/api/auth/staticInfoGet', 'GET', null) 
-            props.setStandartTasks(staticInfo.find((info) => info.name === 'standartTasks'))
+            setStandartTasks(staticInfo.find((info) => info.name === 'standartTasks'))
         } catch (e) {
             console.log(e)
         }
 
-    }, [request])
+    }, [request, setStandartTasks])
 
     useEffect(() => {
         dataRequest()
@@ -28,10 +29,10 @@ function StandartTasksPage (props) {
 
     const addHandlerStandartTasks = async () => {
 
-        props.setStandartTasks({...props.standartTasks,
-             info: [...props.standartTasks.info, {
+        setStandartTasks({...standartTasks,
+             info: [...standartTasks.info, {
                  text: taskText, 
-                 id: (props.standartTasks.info.length > 0) ? props.standartTasks.info.length : 0} ]
+                 id: (standartTasks.info.length > 0) ? standartTasks.info.length : 0} ]
                 })
                 
         setTaskText('')
@@ -47,7 +48,7 @@ function StandartTasksPage (props) {
     const saveChanges = async () => {
 
         try {
-            await request('/api/auth/staticInfoUpdate', 'POST', props.standartTasks)
+            await request('/api/auth/staticInfoUpdate', 'POST', standartTasks)
             alert('saved changes')
         } catch (e) {
             console.log(e)
@@ -57,7 +58,7 @@ function StandartTasksPage (props) {
 
     const deleteHandlerStandartTasks = (position) => { 
 
-        let newStandartTasks = props.standartTasks.info
+        let newStandartTasks = standartTasks.info
 
         newStandartTasks.splice(newStandartTasks.findIndex((task) => task.id === position), 1)
         newStandartTasks.map((task) => {
@@ -68,7 +69,7 @@ function StandartTasksPage (props) {
             )
         })
         
-        props.setStandartTasks({...props.standartTasks, info: newStandartTasks})
+        setStandartTasks({...standartTasks, info: newStandartTasks})
     }
 
 
@@ -80,9 +81,9 @@ function StandartTasksPage (props) {
                 <button onClick={addHandlerStandartTasks}>Додати завдання</button>
                 <button onClick={saveChanges}>Зберегти всі зміни</button>
                 <ol>
-                {(props.standartTasks.info && props.standartTasks.info.length > 0) 
+                {(standartTasks.info && standartTasks.info.length > 0) 
                 ?
-                    props.standartTasks.info.sort((a, b) => a.text.localeCompare(b.text)).map((standartTask, key) => {
+                    standartTasks.info.sort((a, b) => a.text.localeCompare(b.text)).map((standartTask, key) => {
                         return(
                             <li key={key} className="standartTask">
                                 <span className="standartTaskText">{standartTask.text}</span>

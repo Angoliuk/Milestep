@@ -7,7 +7,7 @@ import { setCompaniesList } from "../reduxStorage/actions/companies"
 function StatPage (props) {
 
     const {request} = useHttp()
-    // const [companies, setCompanies] = useState()
+    const {companies, setCompanies} = props
 
 
     const dataRequest = useCallback( async () => {
@@ -15,13 +15,13 @@ function StatPage (props) {
         try {
 
             const data = await request('/api/auth/allCompanies', 'GET', null)
-            props.setCompanies(data)
+            setCompanies(data)
 
         } catch (e) {
             console.log(e)
         }
 
-    }, [request])
+    }, [request, setCompanies])
 
 
     useEffect(() => {
@@ -34,11 +34,11 @@ function StatPage (props) {
         return(
             <div className="companyElement">
                 
-                <p>Всього платників: {props.companies.length}</p>
-                <p>Всього ФОПів: {props.companies.filter((company) => company.edrpou.toString().length === 10).length}</p>
-                <p>Всього Юридичних осіб: {props.companies.filter((company) => company.edrpou.toString().length === 8).length}</p>
-                <p>Всього платників ПДВ: {props.companies.filter((company) => company.payerPDW).length}</p>
-                <p>Робітників на всіх підприємствах: {props.companies.reduce((sum, company) => sum += company.numOfWorkers, 0)}</p>
+                <p>Всього платників: {companies.length}</p>
+                <p>Всього ФОПів: {companies.filter((company) => company.edrpou.toString().length === 10).length}</p>
+                <p>Всього Юридичних осіб: {companies.filter((company) => company.edrpou.toString().length === 8).length}</p>
+                <p>Всього платників ПДВ: {companies.filter((company) => company.payerPDW).length}</p>
+                <p>Робітників на всіх підприємствах: {companies.reduce((sum, company) => sum += company.numOfWorkers, 0)}</p>
             </div>
         )
         
@@ -47,7 +47,7 @@ function StatPage (props) {
     return(
         <div className="container">
             <NavBar />
-            {props.companies ? <Statistics /> : <div>Пусто...</div>}
+            {companies ? <Statistics /> : <div>Пусто...</div>}
         </div>
     )
 

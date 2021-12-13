@@ -12,6 +12,7 @@ function HistoryPage (props) {
     // const [history, setHistory] = useState()
     const [chosenCompany, setChosenCompany] = useState('')
     const [historyYear, setHistoryYear] = useState(new Date().getFullYear())
+    const {history, setHistory} = props
 
 
     const dataRequest = useCallback( async () => {
@@ -19,12 +20,12 @@ function HistoryPage (props) {
         try {
             const staticInfo = await request('/api/auth/staticInfoGet', 'GET', null)
             staticInfo.find((info) => info.name === 'history').info.sort((a,b) => a.name.localeCompare(b.name))
-            props.setHistory(staticInfo.find((info) => info.name === 'history'))
+            setHistory(staticInfo.find((info) => info.name === 'history'))
         } catch (e) {
             console.log(e)
         }
 
-    }, [request])
+    }, [request, setHistory])
 
 
     useEffect(() => {
@@ -58,8 +59,8 @@ function HistoryPage (props) {
         let listForSearch = []
 
         chosenCompany
-        ?   listForSearch = props.history.info.filter((company) => company.name === chosenCompany)
-        :   listForSearch = props.history.info
+        ?   listForSearch = history.info.filter((company) => company.name === chosenCompany)
+        :   listForSearch = history.info
 
         return(
             listForSearch.map((company, key) => {
@@ -117,8 +118,8 @@ function HistoryPage (props) {
                 <select onChange={historyCompanyHandleChange} value={chosenCompany} className="selectSearchInput" name="historyCompany" id="historyCompany">
                         <option value=''>Всі компанії</option>
 
-                        {(props.history && props.history.info)
-                        ?   props.history.info.map((company, key) => {
+                        {(history && history.info)
+                        ?   history.info.map((company, key) => {
                                 return (
                                     <option key={key} value={company.name}>{company.name}</option>
                                 )})
@@ -132,7 +133,7 @@ function HistoryPage (props) {
                 <label htmlFor="historyYear">Рік</label>
             </div>
 
-            {props.history ? <HistoryCompany /> : <div>В історії немає інформації про компанію</div>}
+            {history ? <HistoryCompany /> : <div>В історії немає інформації про компанію</div>}
             
         </div>
     )

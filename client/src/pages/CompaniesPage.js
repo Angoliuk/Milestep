@@ -10,7 +10,7 @@ function CompaniesPage (props) {
 
     const [searchName, setSearchName] = useState()
     const {request} = useHttp()
-    // const {name, isAdmin} = useContext(AuthContext)
+    const {name, list, isAdmin, setList} = props
 
 
     const dataRequest = useCallback( async () => {
@@ -18,16 +18,16 @@ function CompaniesPage (props) {
         try {
             const data = await request("/api/auth/allCompanies", "GET", null)
 
-            props.isAdmin
-            ?   props.setList(data.sort((a,b) => a.name.localeCompare(b.name)))
-            :   props.setList(data.filter((company) => company.responsible === props.name).sort((a,b) => a.name.localeCompare(b.name)))
+            isAdmin
+            ?   setList(data.sort((a,b) => a.name.localeCompare(b.name)))
+            :   setList(data.filter((company) => company.responsible === name).sort((a,b) => a.name.localeCompare(b.name)))
             
         } catch (e) {
             console.error(e);
             console.log("here")
         }
 
-    } ,[request, props.isAdmin, props.name])
+    } ,[request, isAdmin, name, setList])
 
 
     useEffect(() => {
@@ -59,8 +59,8 @@ function CompaniesPage (props) {
         let period = ""
 
         searchName 
-        ? listForSearch = props.list.filter((company) => company.name === searchName) 
-        : listForSearch = props.list
+        ? listForSearch = list.filter((company) => company.name === searchName) 
+        : listForSearch = list
 
         return(
             (listForSearch.length > 0)
@@ -121,7 +121,7 @@ function CompaniesPage (props) {
                 })
             :   <p>Вам не присвоєно компаній</p>
 
-    )}, [props.list, searchName, deleteHandlerCompany])
+    )}, [list, searchName, deleteHandlerCompany])
 
 
     useEffect(() => {
@@ -136,7 +136,7 @@ function CompaniesPage (props) {
             <select onChange={changeHandlerSearchName} name="companiesSearch" id="companiesSearch">
                 <option value=''>Всі компанії</option>
                 {
-                    props.list.map((company, key) => {
+                    list.map((company, key) => {
                         return(
                             <option key={key} value={company.name}>{key+1}. {company.name}</option>
                         )
@@ -145,7 +145,7 @@ function CompaniesPage (props) {
             </select>
             <label htmlFor="companiesSearch">Назва компанії</label>
 
-            {props.list ? <SearchCompany /> : <p>Пусто...</p>}
+            {list ? <SearchCompany /> : <p>Пусто...</p>}
         </div>
         )
 }
