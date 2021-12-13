@@ -1,7 +1,7 @@
 
 import React from 'react'
 import {Switch, Route, Redirect} from 'react-router-dom'
-import { AuthPage } from './AuthPage'
+import AuthPage from './AuthPage'
 import CreatePage from './CreatePage'
 import CompaniesPage from './CompaniesPage'
 import WorkPage from './WorkPage'
@@ -10,10 +10,11 @@ import StandartTasksPage from './StandartTasksPage'
 import HistoryPage from './HistoryPage'
 import StatPage from './StatPage'
 import { RegisterPage } from './RegisterPage'
+import { connect } from 'react-redux'
 
-export const useRoutes = (isAuth, isAdmin) => {
+function Routes (props) {
     
-    if(isAuth && isAdmin){
+    if(props.isAuth && props.isAdmin){
         return(
             <Switch>
                 <Route path="/companies" exact>
@@ -40,7 +41,7 @@ export const useRoutes = (isAuth, isAdmin) => {
                 <Redirect to="/create" />
             </Switch>
         )}
-    else if(isAuth){
+    else if(props.isAuth){
         return(
             <Switch>
                 <Route path="/companies" exact>
@@ -76,3 +77,12 @@ export const useRoutes = (isAuth, isAdmin) => {
         </Switch>
     )
 }
+
+function mapStateToProps(state) {
+    return{
+        isAdmin: state.userReducers.isAdmin,
+        isAuth: state.userReducers.isAuth,
+    }
+}
+
+export default connect(mapStateToProps)(Routes)

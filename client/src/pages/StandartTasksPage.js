@@ -1,4 +1,4 @@
-import { NavBar } from "../Components/NavBar"
+import NavBar from '../Components/NavBar'
 import "./pages.css"
 import { useHttp } from '../hooks/http.hook'
 import { useCallback, useEffect, useState } from "react"

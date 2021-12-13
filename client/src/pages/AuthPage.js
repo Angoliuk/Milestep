@@ -1,12 +1,12 @@
-import React, {  useState, useContext } from 'react'
+import { connect } from 'react-redux'
+import React, {  useState  } from 'react'
 import { LoginRegisterNavBar } from '../Components/LoginRegisterNavBar'
-import { AuthContext } from '../context/AuthContext'
 import { useHttp } from '../hooks/http.hook'
 import './pages.css'
+import { login } from '../reduxStorage/actions/user'
 
-export const AuthPage = () => {
+function AuthPage (props) {
 
-    const auth = useContext(AuthContext)
     const {loading, request} = useHttp()  
     const [form, setForm] = useState({
         email:'', password:'',
@@ -22,14 +22,12 @@ export const AuthPage = () => {
 
         try {
             const data = await request('/api/auth/login', 'POST', {...form})
-            console.log(data)
-            auth.login(data.name, data.token, data.userId, data.isAdmin)
+            props.login({name: data.name, token: data.token, isAdmin: data.isAdmin, userId: data.userId })
         } catch (e) {
             alert("wrong data")
         }
 
     }
-
 
     return(
         <div className="container">
@@ -53,3 +51,17 @@ export const AuthPage = () => {
         </div>
         )
 }
+
+function mapStateToProps(state) {
+    return{
+
+    }
+}
+
+function mapDispatchToProps(dispatch) {
+    return{
+        login: (userInfo) => dispatch(login(userInfo))
+    }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(AuthPage)

@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react'
-import { NavBar } from '../Components/NavBar'
+import NavBar from '../Components/NavBar'
 import { useHttp } from '../hooks/http.hook'
 import { useParams, useHistory } from 'react-router-dom'
 import { connect } from 'react-redux'

@@ -1,7 +1,6 @@
-import React, { useCallback, useContext, useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import { connect } from 'react-redux'
-import { NavBar } from '../Components/NavBar'
-import { AuthContext } from '../context/AuthContext'
+import NavBar from '../Components/NavBar'
 import { useHttp } from '../hooks/http.hook'
 import { setCompaniesList, setHistory } from '../reduxStorage/actions/companies'
 import { setStandartTasks } from '../reduxStorage/actions/tasks'
@@ -9,7 +8,7 @@ import "./pages.css"
 
 function WorkPage (props) {
 
-    const {name, isAdmin} = useContext(AuthContext)
+    // const {name, isAdmin} = useContext(AuthContext)
     const {request} = useHttp()
     const [numOfDays, setNumOfDays] = useState(5)
     const [searchCompanyName, setSearchCompanyName] = useState('')
@@ -20,9 +19,9 @@ function WorkPage (props) {
         try {
             const data = await request("/api/auth/allCompanies", "GET", null)
 
-            isAdmin
+            props.isAdmin
             ?   props.setList(data.sort((a,b) => a.name.localeCompare(b.name)))
-            :   props.setList(data.filter((company) => company.responsible === name).sort((a,b) => a.name.localeCompare(b.name)))
+            :   props.setList(data.filter((company) => company.responsible === props.name).sort((a,b) => a.name.localeCompare(b.name)))
             
 
             const staticInfo = await request('/api/auth/staticInfoGet', 'GET', null)
@@ -35,7 +34,7 @@ function WorkPage (props) {
             console.log("here")
         }
 
-    } ,[request, name, isAdmin])
+    } ,[request, props.name, props.isAdmin])
 
     useEffect(() => {
         dataRequest()
@@ -221,7 +220,9 @@ function mapStateToProps(state) {
     return{
         list: state.companiesInfoReducers.list,
         standartTasks: state.tasksInfoReducers.standartTasks,
-        history: state.companiesInfoReducers.history
+        history: state.companiesInfoReducers.history,
+        name: state.userReducers.name,
+        isAdmin: state.userReducers.isAdmin,
     }
 }
 

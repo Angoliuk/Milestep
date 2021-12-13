@@ -1,9 +1,8 @@
-import React, { useCallback, useContext, useEffect, useState } from 'react'
-import { NavBar } from '../Components/NavBar'
+import React, { useCallback, useEffect, useState } from 'react'
+import NavBar from '../Components/NavBar'
 import { useHttp } from '../hooks/http.hook'
 import {Link} from 'react-router-dom'
 import "./pages.css"
-import { AuthContext } from '../context/AuthContext'
 import { connect } from 'react-redux'
 import { setCompaniesList } from '../reduxStorage/actions/companies'
 
@@ -11,7 +10,7 @@ function CompaniesPage (props) {
 
     const [searchName, setSearchName] = useState()
     const {request} = useHttp()
-    const {name, isAdmin} = useContext(AuthContext)
+    // const {name, isAdmin} = useContext(AuthContext)
 
 
     const dataRequest = useCallback( async () => {
@@ -19,16 +18,16 @@ function CompaniesPage (props) {
         try {
             const data = await request("/api/auth/allCompanies", "GET", null)
 
-            isAdmin
+            props.isAdmin
             ?   props.setList(data.sort((a,b) => a.name.localeCompare(b.name)))
-            :   props.setList(data.filter((company) => company.responsible === name).sort((a,b) => a.name.localeCompare(b.name)))
+            :   props.setList(data.filter((company) => company.responsible === props.name).sort((a,b) => a.name.localeCompare(b.name)))
             
         } catch (e) {
             console.error(e);
             console.log("here")
         }
 
-    } ,[request, isAdmin, name])
+    } ,[request, props.isAdmin, props.name])
 
 
     useEffect(() => {
@@ -153,13 +152,15 @@ function CompaniesPage (props) {
 
 function mapStateToProps(state) {
     return{
-        list: state.companiesInfoReducers.list
+        list: state.companiesInfoReducers.list,
+        name: state.userReducers.name,
+        isAdmin: state.userReducers.isAdmin,
     }
 }
 
 function mapDispatchToProps(dispatch) {
     return{
-        setList: (list) => dispatch(setCompaniesList(list))
+        setList: (list) => dispatch(setCompaniesList(list)),
     }
 }
 

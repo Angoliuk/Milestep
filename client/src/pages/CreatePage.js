@@ -1,6 +1,6 @@
 import React, {useCallback, useEffect, useState} from 'react'
 import { connect } from 'react-redux'
-import { NavBar } from '../Components/NavBar'
+import NavBar from '../Components/NavBar'
 import { useHttp } from '../hooks/http.hook'
 import { setStandartTasks } from '../reduxStorage/actions/tasks'
 import "./pages.css"

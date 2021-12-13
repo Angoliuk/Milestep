@@ -1,6 +1,6 @@
 import { useHttp } from '../hooks/http.hook'
 import { useCallback, useEffect, useState } from "react"
-import { NavBar } from '../Components/NavBar'
+import NavBar from '../Components/NavBar'
 import printJS from 'print-js'
 import "./pages.css"
 import { setHistory } from '../reduxStorage/actions/companies'

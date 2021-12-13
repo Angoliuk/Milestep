@@ -1,14 +1,14 @@
 // const initialState = {
 //     name: 'Dmytro'
 // }
-import userInfo from "./reducers/userInfo"
+import userReducers from "./reducers/userReducers"
 import companiesInfoReducers from "./reducers/companiesInfoReducers"
 import tasksInfoReducers from "./reducers/tasksInfoReducers"
 
 import { combineReducers } from "redux"
 
 export default combineReducers({
-    userInfo,
+    userReducers,
     companiesInfoReducers,
     tasksInfoReducers,
     
