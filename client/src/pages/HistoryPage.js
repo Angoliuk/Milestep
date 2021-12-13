@@ -3,11 +3,13 @@ import { useCallback, useEffect, useState } from "react"
 import { NavBar } from '../Components/NavBar'
 import printJS from 'print-js'
 import "./pages.css"
+import { setHistory } from '../reduxStorage/actions/actions'
+import { connect } from 'react-redux'
 
-export const HistoryPage = () => {
+function HistoryPage (props) {
 
     const {request} = useHttp() 
-    const [history, setHistory] = useState()
+    // const [history, setHistory] = useState()
     const [chosenCompany, setChosenCompany] = useState('')
     const [historyYear, setHistoryYear] = useState(new Date().getFullYear())
 
@@ -17,7 +19,7 @@ export const HistoryPage = () => {
         try {
             const staticInfo = await request('/api/auth/staticInfoGet', 'GET', null)
             staticInfo.find((info) => info.name === 'history').info.sort((a,b) => a.name.localeCompare(b.name))
-            setHistory(staticInfo.find((info) => info.name === 'history'))
+            props.setHistory(staticInfo.find((info) => info.name === 'history'))
         } catch (e) {
             console.log(e)
         }
@@ -56,8 +58,8 @@ export const HistoryPage = () => {
         let listForSearch = []
 
         chosenCompany
-        ?   listForSearch = history.info.filter((company) => company.name === chosenCompany)
-        :   listForSearch = history.info
+        ?   listForSearch = props.history.info.filter((company) => company.name === chosenCompany)
+        :   listForSearch = props.history.info
 
         return(
             listForSearch.map((company, key) => {
@@ -115,8 +117,8 @@ export const HistoryPage = () => {
                 <select onChange={historyCompanyHandleChange} value={chosenCompany} className="selectSearchInput" name="historyCompany" id="historyCompany">
                         <option value=''>Всі компанії</option>
 
-                        {(history && history.info)
-                        ?   history.info.map((company, key) => {
+                        {(props.history && props.history.info)
+                        ?   props.history.info.map((company, key) => {
                                 return (
                                     <option key={key} value={company.name}>{company.name}</option>
                                 )})
@@ -130,9 +132,23 @@ export const HistoryPage = () => {
                 <label htmlFor="historyYear">Рік</label>
             </div>
 
-            {history ? <HistoryCompany /> : <div>В історії немає інформації про компанію</div>}
+            {props.history ? <HistoryCompany /> : <div>В історії немає інформації про компанію</div>}
             
         </div>
     )
 
 }
+
+function mapStateToProps(state) {
+    return{
+        history: state.companiesInfoReducers.history
+    }
+}
+
+function mapDispatchToProps(dispatch) {
+    return{
+        setHistory: history => dispatch(setHistory(history))
+    }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(HistoryPage)

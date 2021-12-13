@@ -3,14 +3,16 @@ import { connect } from 'react-redux'
 import { NavBar } from '../Components/NavBar'
 import { AuthContext } from '../context/AuthContext'
 import { useHttp } from '../hooks/http.hook'
-import { setCompaniesList, setNumOfDays, setSearchCompanyName, setSearchTaskName, setStandartTasks } from '../reduxStorage/actions/actions'
+import { setCompaniesList, setHistory, setStandartTasks } from '../reduxStorage/actions/actions'
 import "./pages.css"
 
 function WorkPage (props) {
 
     const {name, isAdmin} = useContext(AuthContext)
     const {request} = useHttp()
-    const [history, setHistory] = useState()
+    const [numOfDays, setNumOfDays] = useState(5)
+    const [searchCompanyName, setSearchCompanyName] = useState('')
+    const [searchTaskName, setSearchTaskName] = useState('')
 
     const dataRequest = useCallback( async () => {
 
@@ -23,7 +25,7 @@ function WorkPage (props) {
             
 
             const staticInfo = await request('/api/auth/staticInfoGet', 'GET', null)
-            setHistory(staticInfo.find((info) => info.name === 'history'))
+            props.setHistory(staticInfo.find((info) => info.name === 'history'))
             staticInfo.find((info) => info.name === 'standartTasks').info.sort((a,b) => a.text.localeCompare(b.text))
             props.setStandartTasks(staticInfo.find((info) => info.name === 'standartTasks'))
 
@@ -77,7 +79,7 @@ function WorkPage (props) {
 
         if (task.period && task.period !== 1) {
 
-            let companyInHistory = history.info.find((company) => company.name === companyInfo.name)
+            let companyInHistory = props.history.info.find((company) => company.name === companyInfo.name)
             let taskInHistory = companyInHistory ? companyInHistory.tasksHistory.find((task) => task.task === currentTask.title) : false 
             let currentDate = new Date().toLocaleString('uk-UA', {year: 'numeric', month: 'numeric', day: 'numeric'})
 
@@ -85,7 +87,7 @@ function WorkPage (props) {
             ? taskInHistory
                 ? taskInHistory.completeDates.push({date: currentDate, completeToDate: currentTask.date}) 
                 : companyInHistory.tasksHistory.push({task: currentTask.title, completeDates: [{date: currentDate, completeToDate: currentTask.date}]})
-            : history.info.push({name: companyInfo.name, edrpou: companyInfo.edrpou, tasksHistory: [{task: currentTask.title, completeDates: [{date: currentDate, completeToDate: currentTask.date}]}]})
+            : props.history.info.push({name: companyInfo.name, edrpou: companyInfo.edrpou, tasksHistory: [{task: currentTask.title, completeDates: [{date: currentDate, completeToDate: currentTask.date}]}]})
 
             currentTask.date = `${newDate.getFullYear()}-${((newDate.getMonth()+1) >= 10) ? newDate.getMonth()+1 : '0' + (newDate.getMonth()+1)}-${(newDate.getDate() >= 10) ? newDate.getDate() : '0' + newDate.getDate() }`
 
@@ -93,13 +95,13 @@ function WorkPage (props) {
 
         try {
             await request("/api/auth/update", "POST", {id: companyInfo._id, tasksList: currentTasksList})
-            await request("/api/auth/staticInfoUpdate", "POST", history)
+            await request("/api/auth/staticInfoUpdate", "POST", props.history)
             alert("saved")
         } catch (e) {
             console.log(e)
         }
 
-    }, [props.list, request, history])
+    }, [props.list, request, props.history])
 
 
     const handleChangeInputNumOfDays = (event) => {
@@ -107,21 +109,21 @@ function WorkPage (props) {
         let newNumOfDays = Number(event.target.value)
 
         newNumOfDays > 735 && newNumOfDays < -1
-        ?   props.setNumOfDays(5)
-        :   props.setNumOfDays(newNumOfDays)
+        ?   setNumOfDays(5)
+        :   setNumOfDays(newNumOfDays)
 
     }
 
     const handleChangeInputTaskName = (event) => {
 
-        props.setSearchTaskName(event.target.value)
+        setSearchTaskName(event.target.value)
 
     }
 
 
     const changeHandlerSearchName = (event) => {
 
-        props.setSearchCompanyName(event.target.value)
+        setSearchCompanyName(event.target.value)
 
     }
 
@@ -130,19 +132,19 @@ function WorkPage (props) {
 
         let listForSearch = []
 
-        props.searchCompanyName 
-        ? listForSearch = props.list.filter((company) => company.name === props.searchCompanyName)
+        searchCompanyName 
+        ? listForSearch = props.list.filter((company) => company.name === searchCompanyName)
         : listForSearch = props.list
 
         let time = new Date()
-        time = time.setDate(time.getDate() + props.numOfDays)
+        time = time.setDate(time.getDate() + numOfDays)
         time = new Date(time)
 
         return(
             (listForSearch && listForSearch.length > 0)
             ?   listForSearch.map((oneCompany, key) => {
                 return(
-                    (props.searchCompanyName !== '' || oneCompany.tasks.filter((task) => props.searchTaskName ? task.title === props.searchTaskName && new Date(task.date) <= time : new Date(task.date) <= time).length > 0)
+                    (searchCompanyName !== '' || oneCompany.tasks.filter((task) => searchTaskName ? task.title === searchTaskName && new Date(task.date) <= time : new Date(task.date) <= time).length > 0)
                     ?   <div key={key} className="companyElement">
                             <p>Назва: {oneCompany.name}</p>
                             <p>ЄДРПОУ: {oneCompany.edrpou}</p>
@@ -150,7 +152,7 @@ function WorkPage (props) {
                             <ol>
                                 {oneCompany.tasks.map((task)=>{
                                     return(
-                                        (props.searchTaskName ? task.title === props.searchTaskName && new Date(task.date) <= time : new Date(task.date) <= time)
+                                        (searchTaskName ? task.title === searchTaskName && new Date(task.date) <= time : new Date(task.date) <= time)
                                         ?   <li className='taskElement' key={task.id}>
                                                 <div className="taskContainer">
                                                     <p className='taskText'>Завдання: {task.title}</p>
@@ -168,7 +170,7 @@ function WorkPage (props) {
             :   <div>Завдань або компаній у вас немає</div>   
             
         )
-        }, [props.list, props.searchCompanyName, updateHandler, props.searchTaskName, props.numOfDays])
+        }, [props.list, searchCompanyName, updateHandler, searchTaskName, numOfDays])
 
 
     useEffect(() => {
@@ -178,7 +180,7 @@ function WorkPage (props) {
     return (
         <div className="container">
             <NavBar />
-            <input onChange={handleChangeInputNumOfDays} value={props.numOfDays} className="searchInput" name="numOfDays" min="-1" max="735" id="numOfDays" type="number" />
+            <input onChange={handleChangeInputNumOfDays} value={numOfDays} className="searchInput" name="numOfDays" min="-1" max="735" id="numOfDays" type="number" />
             <label htmlFor="numOfDays">Кількість днів</label>
             <div>
                 <select onChange={changeHandlerSearchName} className="selectSearchInput" name="companiesSearch" id="companiesSearch">
@@ -216,21 +218,17 @@ function WorkPage (props) {
 
 function mapStateToProps(state) {
     return{
-        list: state.workPageReducers.list,
-        standartTasks: state.workPageReducers.standartTasks,
-        numOfDays: state.workPageReducers.numOfDays,
-        searchCompanyName: state.workPageReducers.searchCompanyName,
-        searchTaskName: state.workPageReducers.searchTaskName,
+        list: state.companiesInfoReducers.list,
+        standartTasks: state.tasksInfoReducers.standartTasks,
+        history: state.companiesInfoReducers.history
     }
 }
 
 function mapDispatchToProps(dispatch) {
     return{
         setList: (list) => dispatch(setCompaniesList(list)),
-        setNumOfDays: (numOfDays) => dispatch(setNumOfDays(numOfDays)),
+        setHistory: (history) => dispatch(setHistory(history)),
         setStandartTasks: (standartTasks) => dispatch(setStandartTasks(standartTasks)),
-        setSearchTaskName: (searchTaskName) => dispatch(setSearchTaskName(searchTaskName)),
-        setSearchCompanyName: (searchCompanyName) => dispatch(setSearchCompanyName(searchCompanyName))
     }
 }
 

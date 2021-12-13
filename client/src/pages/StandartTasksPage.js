@@ -2,18 +2,19 @@ import { NavBar } from "../Components/NavBar"
 import "./pages.css"
 import { useHttp } from '../hooks/http.hook'
 import { useCallback, useEffect, useState } from "react"
+import { connect } from "react-redux"
+import { setStandartTasks } from "../reduxStorage/actions/actions"
 
-export const StandartTasksPage = () => {
+function StandartTasksPage (props) {
     
     const {request} = useHttp() 
-    const [standartTasks, setStandartTasks] = useState({})
     const [taskText, setTaskText] = useState('')
     
     const dataRequest = useCallback(async () => {
 
         try {
             const staticInfo = await request('/api/auth/staticInfoGet', 'GET', null) 
-            setStandartTasks(staticInfo.find((info) => info.name === 'standartTasks'))
+            props.setStandartTasks(staticInfo.find((info) => info.name === 'standartTasks'))
         } catch (e) {
             console.log(e)
         }
@@ -27,10 +28,10 @@ export const StandartTasksPage = () => {
 
     const addHandlerStandartTasks = async () => {
 
-        setStandartTasks({...standartTasks,
-             info: [...standartTasks.info, {
+        props.setStandartTasks({...props.standartTasks,
+             info: [...props.standartTasks.info, {
                  text: taskText, 
-                 id: (standartTasks.info.length > 0) ? standartTasks.info.length : 0} ]
+                 id: (props.standartTasks.info.length > 0) ? props.standartTasks.info.length : 0} ]
                 })
                 
         setTaskText('')
@@ -46,7 +47,7 @@ export const StandartTasksPage = () => {
     const saveChanges = async () => {
 
         try {
-            await request('/api/auth/staticInfoUpdate', 'POST', standartTasks)
+            await request('/api/auth/staticInfoUpdate', 'POST', props.standartTasks)
             alert('saved changes')
         } catch (e) {
             console.log(e)
@@ -56,7 +57,7 @@ export const StandartTasksPage = () => {
 
     const deleteHandlerStandartTasks = (position) => { 
 
-        let newStandartTasks = standartTasks.info
+        let newStandartTasks = props.standartTasks.info
 
         newStandartTasks.splice(newStandartTasks.findIndex((task) => task.id === position), 1)
         newStandartTasks.map((task) => {
@@ -67,7 +68,7 @@ export const StandartTasksPage = () => {
             )
         })
         
-        setStandartTasks({...standartTasks, info: newStandartTasks})
+        props.setStandartTasks({...props.standartTasks, info: newStandartTasks})
     }
 
 
@@ -79,9 +80,9 @@ export const StandartTasksPage = () => {
                 <button onClick={addHandlerStandartTasks}>Додати завдання</button>
                 <button onClick={saveChanges}>Зберегти всі зміни</button>
                 <ol>
-                {(standartTasks.info && standartTasks.info.length > 0) 
+                {(props.standartTasks.info && props.standartTasks.info.length > 0) 
                 ?
-                    standartTasks.info.sort((a, b) => a.text.localeCompare(b.text)).map((standartTask, key) => {
+                    props.standartTasks.info.sort((a, b) => a.text.localeCompare(b.text)).map((standartTask, key) => {
                         return(
                             <li key={key} className="standartTask">
                                 <span className="standartTaskText">{standartTask.text}</span>
@@ -99,3 +100,17 @@ export const StandartTasksPage = () => {
         </div>
     )
 }
+
+function mapStateToProps(state) {
+    return{
+        standartTasks: state.tasksInfoReducers.standartTasks
+    }
+}
+
+function mapDispatchToProps(dispatch) {
+    return{
+        setStandartTasks: (standartTasks) => dispatch(setStandartTasks(standartTasks)) 
+    }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(StandartTasksPage)

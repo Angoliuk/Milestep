@@ -1,4 +1,4 @@
-import {numOfDays, searchCompanyName, searchTaskName, setInfoAboutUser, list, standartTasks} from './actionTypes'
+import {history, setInfoAboutUser, list, standartTasks} from './actionTypes'
 
 export function setUser() {
   return {
@@ -15,24 +15,10 @@ export function setCompaniesList(newList) {
   }
 }
 
-export function setNumOfDays(newNumOfDays) {
+export function setHistory(newHistory) {
   return {
-    type: numOfDays,
-    payload: newNumOfDays,
-  }
-}
-
-export function setSearchTaskName(newSearchTaskName) {
-  return {
-    type: searchTaskName,
-    payload: newSearchTaskName,
-  }
-}
-
-export function setSearchCompanyName(newSearchCompanyName) {
-  return {
-    type: searchCompanyName,
-    payload: newSearchCompanyName,
+    type: history,
+    payload: newHistory,
   }
 }
 

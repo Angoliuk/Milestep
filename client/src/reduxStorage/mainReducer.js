@@ -2,13 +2,15 @@
 //     name: 'Dmytro'
 // }
 import userInfo from "./reducers/userInfo"
-import workPageReducers from "./reducers/workPageReducers"
+import companiesInfoReducers from "./reducers/companiesInfoReducers"
+import tasksInfoReducers from "./reducers/tasksInfoReducers"
 
 import { combineReducers } from "redux"
 
 export default combineReducers({
     userInfo,
-    workPageReducers,
+    companiesInfoReducers,
+    tasksInfoReducers,
     
 })
 // export default function mainReducer(state = initialState, action) {

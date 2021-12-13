@@ -1,9 +1,11 @@
 import React, {useCallback, useEffect, useState} from 'react'
+import { connect } from 'react-redux'
 import { NavBar } from '../Components/NavBar'
 import { useHttp } from '../hooks/http.hook'
+import { setStandartTasks } from '../reduxStorage/actions/actions'
 import "./pages.css"
 
-export const CreatePage = () => {
+function CreatePage(props) {
 
     const {request} = useHttp() 
     const [users, setUsers] = useState([])
@@ -21,7 +23,6 @@ export const CreatePage = () => {
         tasks:[]
     })
     const [taskParam, setTaskParam] = useState({title:'', date: '', period:'', id: 0})
-    const [standartTasks, setStandartTasks] = useState({})
 
 
     const changeHandlerForm = (event) => {
@@ -38,7 +39,7 @@ export const CreatePage = () => {
             setUsers(data)
 
             const staticInfo = await request('/api/auth/staticInfoGet', 'GET', null)
-            setStandartTasks({name: 'standartTasks', info: staticInfo.find((info) => info.name === 'standartTasks').info.sort((a, b) => a.text.localeCompare(b.text))})
+            props.setStandartTasks({name: 'standartTasks', info: staticInfo.find((info) => info.name === 'standartTasks').info.sort((a, b) => a.text.localeCompare(b.text))})
 
         } catch (e) {
             console.log(e)
@@ -181,9 +182,9 @@ export const CreatePage = () => {
                     <h1>Додати завдання</h1>
                     <input onChange={changeHandlerTask} value={taskParam.title} className="inputForCreate" name="title" id="title" list="titleDatalist"/>
                     <datalist id="titleDatalist">
-                        {(standartTasks && standartTasks.info)
+                        {(props.standartTasks && props.standartTasks.info)
                         ?
-                            standartTasks.info.map((standartTask, key) => {
+                            props.standartTasks.info.map((standartTask, key) => {
                                 return <option key={key} value={standartTask.text}>{standartTask.text}</option>
                             })
                         :
@@ -214,3 +215,17 @@ export const CreatePage = () => {
         </div>
     )
 }
+
+function mapStateToProps(state) {
+    return{
+        standartTasks: state.tasksInfoReducers.standartTasks
+    }
+}
+
+function mapDispatchToProps(dispatch) {
+    return{
+        setStandartTasks: (standartTasks) => dispatch(setStandartTasks(standartTasks))
+    }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(CreatePage)

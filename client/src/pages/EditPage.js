@@ -2,13 +2,14 @@ import React, { useCallback, useEffect, useState } from 'react'
 import { NavBar } from '../Components/NavBar'
 import { useHttp } from '../hooks/http.hook'
 import { useParams, useHistory } from 'react-router-dom'
+import { connect } from 'react-redux'
+import { setStandartTasks } from '../reduxStorage/actions/actions'
 
-export const EditPage = () => {
+function EditPage (props) {
 
     const companyId = useParams().id
     const {request} = useHttp() 
     const [users, setUsers] = useState([])
-    const [standartTasks, setStandartTasks] = useState({})
 
     const [eForm, setEForm] = useState({
         name:'',
@@ -132,7 +133,7 @@ export const EditPage = () => {
             setUsers(usersData)
 
             const staticInfo = await request('/api/auth/staticInfoGet', 'GET', null) 
-            setStandartTasks({name: 'standartTasks', info: staticInfo.find((info) => info.name === 'standartTasks').info.sort((a, b) => a.text.localeCompare(b.text))})
+            props.setStandartTasks({name: 'standartTasks', info: staticInfo.find((info) => info.name === 'standartTasks').info.sort((a, b) => a.text.localeCompare(b.text))})
             
         } catch (e) {
             console.error(e);
@@ -215,9 +216,9 @@ export const EditPage = () => {
                     <h1>Додати завдання</h1>
                     <input onChange={changeHandlerTask} value={taskParam.title} className="inputForCreate" name="title" id="title" list="titleDatalist"/>
                     <datalist id="titleDatalist">
-                        {(standartTasks && standartTasks.info)
+                        {(props.standartTasks && props.standartTasks.info)
                         ?
-                        standartTasks.info.map((standartTask, key) => {
+                        props.standartTasks.info.map((standartTask, key) => {
                             return(
                                 <option key={key} value={standartTask.text}>{standartTask.text}</option>
                             )
@@ -250,3 +251,17 @@ export const EditPage = () => {
         </div>
         )
 }
+
+function mapStateToProps(state) {
+    return{
+        standartTasks: state.tasksInfoReducers.standartTasks
+    }
+}
+
+function mapDispatchToProps(dispatch) {
+    return{
+        setStandartTasks: (standartTasks) => dispatch(setStandartTasks(standartTasks))
+    }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(EditPage)

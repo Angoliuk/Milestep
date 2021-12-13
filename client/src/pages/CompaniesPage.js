@@ -1,13 +1,14 @@
 import React, { useCallback, useContext, useEffect, useState } from 'react'
 import { NavBar } from '../Components/NavBar'
 import { useHttp } from '../hooks/http.hook'
-import {Link, NavLink} from 'react-router-dom'
+import {Link} from 'react-router-dom'
 import "./pages.css"
 import { AuthContext } from '../context/AuthContext'
+import { connect } from 'react-redux'
+import { setCompaniesList } from '../reduxStorage/actions/actions'
 
-export const CompaniesPage = () => {
+function CompaniesPage (props) {
 
-    const [list, setList] = useState([])
     const [searchName, setSearchName] = useState()
     const {request} = useHttp()
     const {name, isAdmin} = useContext(AuthContext)
@@ -19,8 +20,8 @@ export const CompaniesPage = () => {
             const data = await request("/api/auth/allCompanies", "GET", null)
 
             isAdmin
-            ?   setList(data.sort((a,b) => a.name.localeCompare(b.name)))
-            :   setList(data.filter((company) => company.responsible === name).sort((a,b) => a.name.localeCompare(b.name)))
+            ?   props.setList(data.sort((a,b) => a.name.localeCompare(b.name)))
+            :   props.setList(data.filter((company) => company.responsible === name).sort((a,b) => a.name.localeCompare(b.name)))
             
         } catch (e) {
             console.error(e);
@@ -59,8 +60,8 @@ export const CompaniesPage = () => {
         let period = ""
 
         searchName 
-        ? listForSearch = list.filter((company) => company.name === searchName) 
-        : listForSearch = list
+        ? listForSearch = props.list.filter((company) => company.name === searchName) 
+        : listForSearch = props.list
 
         return(
             (listForSearch.length > 0)
@@ -121,7 +122,7 @@ export const CompaniesPage = () => {
                 })
             :   <p>Вам не присвоєно компаній</p>
 
-    )}, [list, searchName, deleteHandlerCompany])
+    )}, [props.list, searchName, deleteHandlerCompany])
 
 
     useEffect(() => {
@@ -136,7 +137,7 @@ export const CompaniesPage = () => {
             <select onChange={changeHandlerSearchName} name="companiesSearch" id="companiesSearch">
                 <option value=''>Всі компанії</option>
                 {
-                    list.map((company, key) => {
+                    props.list.map((company, key) => {
                         return(
                             <option key={key} value={company.name}>{key+1}. {company.name}</option>
                         )
@@ -145,7 +146,21 @@ export const CompaniesPage = () => {
             </select>
             <label htmlFor="companiesSearch">Назва компанії</label>
 
-            {list ? <SearchCompany /> : <p>Пусто...</p>}
+            {props.list ? <SearchCompany /> : <p>Пусто...</p>}
         </div>
         )
 }
+
+function mapStateToProps(state) {
+    return{
+        list: state.companiesInfoReducers.list
+    }
+}
+
+function mapDispatchToProps(dispatch) {
+    return{
+        setList: (list) => dispatch(setCompaniesList(list))
+    }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(CompaniesPage)
