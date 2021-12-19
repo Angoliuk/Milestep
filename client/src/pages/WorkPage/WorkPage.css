@@ -1,0 +1,26 @@
+.taskContainerWork{
+    width: 70%;
+    display: flex;
+    justify-content: space-between;
+}
+
+.taskTextWork{
+    width: 40%;
+}
+
+.taskElementWork{
+    background-color: rgb(169, 195, 250);
+    border-radius: 10px;
+}
+
+.taskElementWork span,p{
+    font-size: 16px;
+    margin-right: 5%;
+}
+
+.elementForWork{
+    padding: 15px;
+    margin: 15px 15px 15px 5px;
+    background-color: rgb(169, 195, 250);
+    border-radius: 10px;
+}

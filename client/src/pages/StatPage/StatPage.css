@@ -1,0 +1,26 @@
+.elementForStat{
+    height: fit-content;
+}
+
+.tableForStat{
+    border: 2px solid black;
+    width: 100%;
+    margin-bottom: 20px;
+}
+
+.thForStat{
+    border: 2px solid black;
+    height: 22px;
+    padding: 8px;
+}
+
+.tablesForStat{
+    display: flex;
+    justify-content: space-around;
+    flex-wrap: wrap;
+}
+
+.printForStat{
+    width: 100%;
+    margin-left: 0px;
+}

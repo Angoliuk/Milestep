@@ -1,0 +1,12 @@
+.tableForLicenses{
+    margin-top: 20px;
+    border: 2px solid black;
+    width: 100%;
+    margin-bottom: 20px;
+}
+
+.thForLicenses{
+    border: 2px solid black;
+    height: 22px;
+    padding: 8px;
+}

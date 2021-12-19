@@ -1,0 +1,16 @@
+.navElemLoginRegister {
+    color: rgb(32, 75, 216);
+}
+
+.navLoginRegister {
+    margin-top: 20px;
+    width: 100%;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+}
+
+a.active{
+    color: seagreen;
+    font-size: 20px;
+}

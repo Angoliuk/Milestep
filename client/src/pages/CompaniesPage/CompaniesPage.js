@@ -1,10 +1,12 @@
 import React, { useCallback, useEffect, useState } from 'react'
-import NavBar from '../Components/NavBar'
-import { useHttp } from '../hooks/http.hook'
+import { useHttp } from '../../hooks/http.hook'
 import {Link} from 'react-router-dom'
-import "./pages.css"
+import "./CompaniesPage.css"
 import { connect } from 'react-redux'
-import { setCompaniesList } from '../reduxStorage/actions/companies'
+import { setCompaniesList } from '../../reduxStorage/actions/companies'
+import { Select } from '../../Components/select/Select'
+import CompaniesOptions from '../../Components/options/CompaniesOptions'
+import { PagesWrapping } from '../../hoc/PagesWrapping'
 
 function CompaniesPage (props) {
 
@@ -35,10 +37,12 @@ function CompaniesPage (props) {
     }, [dataRequest])
 
     
-    const deleteHandlerCompany = useCallback(async(id) => {
-
+    const deleteHandlerCompany = useCallback(async(companyToDelete) => {
         try {
-            await request('/api/auth/deleteCompany', 'POST', {id})
+            await request('/api/auth/deleteCompany', 'POST', {id: companyToDelete._id})
+            if  (companyToDelete.haveLicenses === true){
+                await request('/api/auth/LicensesDelete', 'POST', {companyName: companyToDelete.name})
+            }
             window.location.reload()
         } catch (e) {
             console.log(e)
@@ -66,11 +70,12 @@ function CompaniesPage (props) {
             (listForSearch.length > 0)
             ?   listForSearch.map((oneElem, key)=>{
                     return(
-                        <div key={key} className="companyElement">
+                        <div key={key} className="elementForCompanies">
                             <p>Назва: {oneElem.name}</p>
                             <p>ЄДПРОУ: {oneElem.edrpou}</p>
                             <p>Адреса: {oneElem.address}</p>
                             <p>Номер Телефону: {oneElem.phoneNum}</p>
+                            <p>Ліцензування: {oneElem.haveLicenses ? 'Так' : 'Ні'}</p>
                             <p>Основний КВЕД: {oneElem.kwed}</p>
                             <p>Платник ПДВ: {oneElem.payerPDW}</p>
                             <p>Система оподаткування: {oneElem.taxationSystem}</p>
@@ -102,11 +107,11 @@ function CompaniesPage (props) {
                                                 break;
                                         }
                                         return(
-                                            <li className='taskElement' key={task.id}>
-                                                <div className="taskContainer">
-                                                    <p className='taskText'>Завдання: {task.title}</p>
+                                            <li className='taskElementCompanies' key={task.id}>
+                                                <div className="taskContainerCompanies">
+                                                    <p className='taskTextCompanies'>Завдання: {task.title}</p>
                                                     <p>Дата: {new Date(task.date).toLocaleString('uk-UA', {year: 'numeric', month: 'numeric', day: 'numeric' })}</p>
-                                                    <p className="taskPeriod">Періодичність: {period}</p>
+                                                    <p className="taskPeriodCompanies">Періодичність: {period}</p>
                                                 </div>
                                             </li>
                                         )
@@ -115,38 +120,26 @@ function CompaniesPage (props) {
                             <Link className="editButton" to={`/edit/${oneElem._id}`}>
                                 <button>Редагувати</button>
                             </Link>
-                            <button className="deleteButton" onClick={() => {deleteHandlerCompany(oneElem._id)}}>Видалити</button>
+                            <button className="deleteButton" onClick={() => {deleteHandlerCompany(oneElem)}}>Видалити</button>
                         </div>
                     )
                 })
             :   <p>Вам не присвоєно компаній</p>
 
     )}, [list, searchName, deleteHandlerCompany])
-
-
-    useEffect(() => {
-        SearchCompany()
-    })
     
-
     return (
-        <div className="container">
-            
-            <NavBar />
-            <select onChange={changeHandlerSearchName} name="companiesSearch" id="companiesSearch">
-                <option value=''>Всі компанії</option>
-                {
-                    list.map((company, key) => {
-                        return(
-                            <option key={key} value={company.name}>{key+1}. {company.name}</option>
-                        )
-                    })
-                }
-            </select>
-            <label htmlFor="companiesSearch">Назва компанії</label>
+        <>
+            <Select 
+                onChange={changeHandlerSearchName} 
+                name="companiesSearch"
+                OptionsList={CompaniesOptions} 
+                value={searchName}
+                label='Назва компанії' 
+            />  
 
-            {list ? <SearchCompany /> : <p>Пусто...</p>}
-        </div>
+            {list ? <SearchCompany />  : <p>Пусто...</p>}
+        </> 
         )
 }
 
@@ -164,4 +157,4 @@ function mapDispatchToProps(dispatch) {
     }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(CompaniesPage)
+export default connect(mapStateToProps, mapDispatchToProps)(PagesWrapping(CompaniesPage))

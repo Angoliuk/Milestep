@@ -7,12 +7,12 @@ const schema = new Schema({
     payerPDW: {type: String},
     address: {type: String},
     phoneNum: {type: Number},
-    // salary: {type: Number},
+    haveLicenses: {type: Boolean},
     responsible: {type: String},
     taxationSystem: {type: String},
     kwed: {type: String},
     infoESW: {type: String},
-    tasks: {type: Array}
+    tasks: {type: Array},
 })
 
 module.exports = model('Company', schema)

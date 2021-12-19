@@ -1,10 +1,10 @@
 const {Router} = require('express')
 const bcrypt = require('bcryptjs')
 const config = require('config')
-const jwt = require('jsonwebtoken')
 const {check, validationResult} = require('express-validator')
 const User = require('../models/User')
 const StaticInfo = require('../models/StaticInformation')
+const Licenses = require('../models/Licenses')
 const Company = require('../models/Company')
 const { isValidObjectId } = require('mongoose')
 const router = Router()
@@ -120,8 +120,8 @@ router.post(
     "/create",
     async (req, res) => {
         try {
-            const {name, edrpou, numOfWorkers, payerPDW, address, phoneNum, salary, responsible, taxationSystem, tasks} = req.body
-            const company = new Company({name, edrpou, numOfWorkers, payerPDW, address, phoneNum, salary, responsible, taxationSystem, tasks})
+            const {name, edrpou, numOfWorkers, payerPDW, address, phoneNum, haveLicenses, responsible, taxationSystem, tasks} = req.body
+            const company = new Company({name, edrpou, numOfWorkers, payerPDW, address, phoneNum, haveLicenses, responsible, taxationSystem, tasks})
             await company.save()
             res.status(201).json({message: "ok"})
         } catch (e) {
@@ -147,15 +147,15 @@ router.post(
     "/updateCompany",
     async (req, res) => {
         try {
-            const {_id, name, edrpou, numOfWorkers, payerPDW, address, phoneNum, salary, responsible, taxationSystem, tasks} = req.body
+            const {_id, name, edrpou, numOfWorkers, payerPDW, address, phoneNum, haveLicenses, responsible, taxationSystem, tasks} = req.body
             await Company.findOneAndUpdate( {_id: _id}, {
                 name: name,
                 edrpou: edrpou, 
                 numOfWorkers: numOfWorkers, 
                 address: address, 
                 payerPDW: payerPDW, 
-                phoneNum: phoneNum, 
-                salary: salary, 
+                phoneNum: phoneNum,
+                haveLicenses: haveLicenses, 
                 responsible: responsible, 
                 taxationSystem: taxationSystem,  
                 tasks: tasks})
@@ -213,6 +213,60 @@ router.post(
             res.status(201).json({message: "successful updated"})
         } catch (e) {
             res.status(500).json({message: 'auth routes error'})
+        }
+    }
+)
+
+router.post(
+    "/LicensesPost",
+    async(req, res) => {
+        try {
+            const {companyName, licensesList} = req.body
+            const companyWithLicenses = new Licenses({companyName, licensesList})
+            await companyWithLicenses.save()
+            res.status(201).json({massage: 'added successfully '})
+        } catch (e) {
+            console.log(e)
+        }
+    }
+)
+
+router.post(
+    "/LicensesUpdate",
+    async(req, res) => {
+        try {
+            const {companyName, licensesList} = req.body
+            await Licenses.findOneAndUpdate({companyName: companyName}, {
+                licensesList: licensesList
+            })
+            res.status(201).json({massage: 'added successfully '})
+        } catch (e) {
+            console.log(e)
+        }
+    }
+)
+
+router.post(
+    "/LicensesDelete",
+    async (req, res) => {
+        try {
+            const {companyName} = req.body
+            await Licenses.findOneAndDelete({'companyName': companyName})
+            res.status(201).json({messgae: 'deleted'})
+        } catch (e) {
+            console.log(e)
+        }
+    }
+)
+
+router.get(
+    "/LicensesGet",
+    async(req, res) => {
+        try {
+            const allLicenses = await Licenses.find()
+            res.json(allLicenses)
+        } catch (e) {
+            console.log(e)
         }
     }
 )

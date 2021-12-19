@@ -1,0 +1,13 @@
+.standartTask{
+    margin-bottom: 15px;
+}
+
+.standartTaskText{
+    margin-right: 15px;
+}
+
+.standartTaskDelete{
+    margin: 0;
+    padding: 11px;
+    background-color: #f44336;
+}

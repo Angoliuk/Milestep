@@ -1,3 +1,5 @@
+/* 
+
 .container{
     width: 80%;
 }
@@ -7,11 +9,6 @@
         width: 100%;
         margin: 0px 30px;
     }
-}
-
-.searchInput{
-    height: 30px;
-    width: 40%;
 }
 
 .textarea-block{
@@ -39,37 +36,6 @@
     border-radius: 10px;
 }
 
-.inputForCreate{
-    width: 60%;
-    height: 30px;
-}
-
-.checkboxForCreate{
-    width: 5%;
-}
-
-.checkboxBlock{
-    display: flex;
-    align-items: center;
-    margin-bottom: 5px;
-}
-
-input, select{
-    border-radius: 5px;
-    border: 1px solid gray
-}
-
-select{
-    margin: 7px;
-    height: 35px;
-    width: 60.5%
-}
-
-.selectSearchInput{
-    width: 40.4%;
-}
-
-/* .input */
 
 .editButton{
     margin: 0;
@@ -91,7 +57,8 @@ th{
     padding: 3px;
 }
 table{
-    width: 100%
+    width: 100%;
+    margin-bottom: 20px;
 }
 
 .standartTask{
@@ -121,3 +88,38 @@ table{
     flex-direction: column;
     align-items: center;
 }
+
+.tablesStatistics{
+    display: flex;
+    justify-content: space-around;
+    flex-wrap: wrap;
+}
+
+.tableInStatistics{
+    width: auto;
+    height: fit-content;
+}
+
+    .tableInStatistics th{
+        padding: 10px 20px;
+    }
+
+.statElement{
+    height: fit-content;
+}
+
+.tableInLicenses{
+    width: auto;
+    height: fit-content;
+    margin-top: 30px;
+}
+
+    .tableInLicenses th{
+        padding: 10px 20px;
+    }
+
+.printWorkersTable{
+    width: 100%;
+    margin-left: 0;
+}
+ */

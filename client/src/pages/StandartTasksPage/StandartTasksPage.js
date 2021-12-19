@@ -1,9 +1,10 @@
-import NavBar from '../Components/NavBar'
-import "./pages.css"
-import { useHttp } from '../hooks/http.hook'
+import "./StandartTasksPage.css"
+import { useHttp } from '../../hooks/http.hook'
 import { useCallback, useEffect, useState } from "react"
 import { connect } from "react-redux"
-import { setStandartTasks } from "../reduxStorage/actions/tasks"
+import { setStandartTasks } from "../../reduxStorage/actions/tasks"
+import { Input } from '../../Components/input/Input'
+import { PagesWrapping } from '../../hoc/PagesWrapping'
 
 function StandartTasksPage (props) {
     
@@ -74,30 +75,32 @@ function StandartTasksPage (props) {
 
 
     return(
-        <div className="container">
-            <NavBar />
-            <div className="companyElement">
-                <input onChange={changeHandlerTaskText} value={taskText} className="inputForCreate" />
-                <button onClick={addHandlerStandartTasks}>Додати завдання</button>
-                <button onClick={saveChanges}>Зберегти всі зміни</button>
-                <ol>
-                {(standartTasks.info && standartTasks.info.length > 0) 
-                ?
-                    standartTasks.info.sort((a, b) => a.text.localeCompare(b.text)).map((standartTask, key) => {
-                        return(
-                            <li key={key} className="standartTask">
-                                <span className="standartTaskText">{standartTask.text}</span>
-                                <button onClick={() => {deleteHandlerStandartTasks(standartTask.id)}} className="deleteButton">Видалити</button>
-                            </li>
-                        )
-                    })
-                : 
-                    <div>
-                        <p>Немає стандартних завдань</p>
-                    </div>
-                }
-                </ol>
-            </div>
+        <div className="element">
+            <Input 
+                name='email' 
+                onChange={changeHandlerTaskText} 
+                value={taskText} 
+                htmlFor='Нове завдання'
+            />
+            <button onClick={addHandlerStandartTasks}>Додати завдання</button>
+            <button onClick={saveChanges}>Зберегти всі зміни</button>
+            <ol>
+            {(standartTasks.info && standartTasks.info.length > 0) 
+            ?
+                standartTasks.info.sort((a, b) => a.text.localeCompare(b.text)).map((standartTask, key) => {
+                    return(
+                        <li key={key} className="standartTask">
+                            <span className="standartTaskText">{standartTask.text}</span>
+                            <button onClick={() => {deleteHandlerStandartTasks(standartTask.id)}} className="standartTaskDelete">Видалити</button>
+                        </li>
+                    )
+                })
+            : 
+                <div>
+                    <p>Немає стандартних завдань</p>
+                </div>
+            }
+            </ol>
         </div>
     )
 }
@@ -114,4 +117,4 @@ function mapDispatchToProps(dispatch) {
     }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(StandartTasksPage)
+export default connect(mapStateToProps, mapDispatchToProps)(PagesWrapping(StandartTasksPage))

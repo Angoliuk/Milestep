@@ -1,0 +1,25 @@
+.input{
+    width: 60%;
+    height: 30px;
+}
+
+.inputDate{
+    height: 35px;
+    width: 60.3%;
+}
+
+.checkbox{
+    width: 3%;
+    height: 30px;
+}
+
+.checkboxBlock{
+    display: flex;
+    align-items: center;
+    margin-bottom: 5px;
+}
+
+input{
+    border-radius: 5px;
+    border: 1px solid gray
+}

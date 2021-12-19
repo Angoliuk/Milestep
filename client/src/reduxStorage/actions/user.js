@@ -17,6 +17,7 @@ export function autoLogin() {
 
 export function login(userInfo) {
     localStorage.setItem('userData', JSON.stringify(userInfo))
+    console.log(userInfo)
     return{
         type: loginUser,
         payload: userInfo,

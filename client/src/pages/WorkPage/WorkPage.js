@@ -1,15 +1,20 @@
 import React, { useCallback, useEffect, useState } from 'react'
 import { connect } from 'react-redux'
-import NavBar from '../Components/NavBar'
-import { useHttp } from '../hooks/http.hook'
-import { setCompaniesList, setHistory } from '../reduxStorage/actions/companies'
-import { setStandartTasks } from '../reduxStorage/actions/tasks'
-import "./pages.css"
+import { Input } from '../../Components/input/Input'
+import { Loader } from '../../Components/Loader'
+import { Select } from '../../Components/select/Select'
+import { useHttp } from '../../hooks/http.hook'
+import { setCompaniesList, setHistory } from '../../reduxStorage/actions/companies'
+import { setStandartTasks } from '../../reduxStorage/actions/tasks'
+import CompaniesOptions from '../../Components/options/CompaniesOptions'
+import standartTasksOptions from "../../Components/options/StandartTasksOptions";
+import "./WorkPage.css"
+import { PagesWrapping } from '../../hoc/PagesWrapping'
 
 function WorkPage (props) {
 
-    const {name, isAdmin, list, history, standartTasks, setList, setHistory} = props
-    const {request} = useHttp()
+    const {name, isAdmin, list, history, setList, setHistory} = props
+    const {request, loading} = useHttp()
     const [numOfDays, setNumOfDays] = useState(5)
     const [searchCompanyName, setSearchCompanyName] = useState('')
     const [searchTaskName, setSearchTaskName] = useState('')
@@ -80,7 +85,7 @@ function WorkPage (props) {
 
         if (task.period && task.period !== 1) {
 
-            let companyInHistory =history.info.find((company) => company.name === companyInfo.name)
+            let companyInHistory = history.info.find((company) => company.name === companyInfo.name)
             let taskInHistory = companyInHistory ? companyInHistory.tasksHistory.find((task) => task.task === currentTask.title) : false 
             let currentDate = new Date().toLocaleString('uk-UA', {year: 'numeric', month: 'numeric', day: 'numeric'})
 
@@ -129,7 +134,7 @@ function WorkPage (props) {
     }
 
 
-    const SearchTasks = useCallback(() => {
+    const Search = useCallback(() => {
 
         let listForSearch = []
 
@@ -146,7 +151,7 @@ function WorkPage (props) {
             ?   listForSearch.map((oneCompany, key) => {
                 return(
                     (searchCompanyName !== '' || oneCompany.tasks.filter((task) => searchTaskName ? task.title === searchTaskName && new Date(task.date) <= time : new Date(task.date) <= time).length > 0)
-                    ?   <div key={key} className="companyElement">
+                    ?   <div key={key} className="elementForWork">
                             <p>Назва: {oneCompany.name}</p>
                             <p>ЄДРПОУ: {oneCompany.edrpou}</p>
                             <p>Список завдань: </p>
@@ -154,9 +159,9 @@ function WorkPage (props) {
                                 {oneCompany.tasks.map((task)=>{
                                     return(
                                         (searchTaskName ? task.title === searchTaskName && new Date(task.date) <= time : new Date(task.date) <= time)
-                                        ?   <li className='taskElement' key={task.id}>
-                                                <div className="taskContainer">
-                                                    <p className='taskText'>Завдання: {task.title}</p>
+                                        ?   <li className='taskElementWork' key={task.id}>
+                                                <div className="taskContainerWork">
+                                                    <p className='taskTextWork'>Завдання: {task.title}</p>
                                                     <p>Дата: {new Date(task.date).toLocaleString('uk-UA', {year: 'numeric', month: 'numeric', day: 'numeric' })}</p>
                                                     <button onClick={() => {updateHandler(oneCompany, task)}}>виконано</button>
                                                 </div>
@@ -173,47 +178,38 @@ function WorkPage (props) {
         )
         }, [list, searchCompanyName, updateHandler, searchTaskName, numOfDays])
 
-
-    useEffect(() => {
-        SearchTasks()
-    })
-
     return (
-        <div className="container">
-            <NavBar />
-            <input onChange={handleChangeInputNumOfDays} value={numOfDays} className="searchInput" name="numOfDays" min="-1" max="735" id="numOfDays" type="number" />
-            <label htmlFor="numOfDays">Кількість днів</label>
-            <div>
-                <select onChange={changeHandlerSearchName} className="selectSearchInput" name="companiesSearch" id="companiesSearch">
-                    <option value=''>Всі компанії</option>
-                    {
-                        (list)
-                        ?   list.map((company, key) => {
-                                return(
-                                    <option key={key} value={company.name}>{company.name}</option>
-                                )
-                            })
-                        :   <option value=''>Немає компаній</option>
-                    }
-                </select>
-            </div>
-            <div>
-                <select onChange={handleChangeInputTaskName} className="selectSearchInput" name="tasksSearch" id="tasksSearch">
-                    <option value=''>Всі завдання</option>
-                    {
-                        (standartTasks && standartTasks.info)
-                            ?   standartTasks.info.map((task, key) => {
-                                    return(
-                                        <option key={key} value={task.text}>{task.text}</option>
-                                )})
-                            :   <option value=''>Немає завдань</option>
-                    }
-                </select>
-            </div>
-{/* props.list */}
-            {list ? <SearchTasks /> : <p>Пусто...</p>}
+        <>
+
+            <Input 
+                name='numOfDays' 
+                onChange={handleChangeInputNumOfDays} 
+                value={numOfDays} 
+                htmlFor='Кількість днів'
+                min={-1}
+                max={735}
+                type="number"
+            />
+
+            <Select 
+                onChange={changeHandlerSearchName} 
+                value={searchCompanyName} 
+                name="companiesSearch"
+                OptionsList={CompaniesOptions} 
+                label='Компанії' 
+            /> 
+
+            <Select 
+                onChange={handleChangeInputTaskName} 
+                value={searchTaskName} 
+                name="tasksSearch"
+                OptionsList={standartTasksOptions} 
+                label='Завдання' 
+            /> 
+
+            {loading ? <Loader loading={loading} /> : <Search />}
             
-        </div>
+        </>
         )
 }
 
@@ -235,4 +231,4 @@ function mapDispatchToProps(dispatch) {
     }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(WorkPage)
+export default connect(mapStateToProps, mapDispatchToProps)(PagesWrapping(WorkPage))

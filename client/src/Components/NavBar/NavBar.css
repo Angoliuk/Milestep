@@ -1,0 +1,21 @@
+.nameNavBar {
+    font-size: 25px;
+    margin: 0%;
+}
+
+.navElemNavBar {
+    color: rgb(32, 75, 216);
+}
+
+.navNavBar {
+    width: 100%;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+}
+
+a.active{
+    color: seagreen;
+    font-size: 20px;
+}
+

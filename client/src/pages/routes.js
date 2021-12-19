@@ -1,16 +1,17 @@
 
 import React from 'react'
 import {Switch, Route, Redirect} from 'react-router-dom'
-import AuthPage from './AuthPage'
-import CreatePage from './CreatePage'
-import CompaniesPage from './CompaniesPage'
-import WorkPage from './WorkPage'
-import EditPage from './EditPage'
-import StandartTasksPage from './StandartTasksPage'
-import HistoryPage from './HistoryPage'
-import StatPage from './StatPage'
-import { RegisterPage } from './RegisterPage'
+import AuthPage from './AuthPage/AuthPage'
+import CreatePage from './CreatePage/CreatePage'
+import CompaniesPage from './CompaniesPage/CompaniesPage'
+import WorkPage from './WorkPage/WorkPage'
+import EditPage from './EditPage/EditPage'
+import StandartTasksPage from './StandartTasksPage/StandartTasksPage'
+import HistoryPage from './HistoryPage/HistoryPage'
+import StatPage from './StatPage/StatPage'
+import { RegisterPage } from './RegisterPage/RegisterPage'
 import { connect } from 'react-redux'
+import LicensesPage from './LicensesPage/LicensesPage'
 
 function Routes (props) {
     
@@ -38,6 +39,9 @@ function Routes (props) {
                 <Route path="/statistics" exact>
                     <StatPage />
                 </Route>
+                <Route path="/licenses" exact>
+                    <LicensesPage />
+                </Route>
                 <Redirect to="/create" />
             </Switch>
         )}
@@ -58,6 +62,9 @@ function Routes (props) {
                 </Route>
                 <Route path="/standartTasks" exact>
                     <StandartTasksPage />
+                </Route>
+                <Route path="/licenses" exact>
+                    <LicensesPage />
                 </Route>
                 <Redirect to="/create" />
             </Switch>
