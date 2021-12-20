@@ -24,9 +24,6 @@ function Routes (props) {
                 <Route path="/work" exact>
                     <WorkPage />
                 </Route>
-                <Route path="/create" exact>
-                    <CreatePage />
-                </Route>
                 <Route path="/edit/:id" exact>
                     <EditPage />
                 </Route>
@@ -42,6 +39,9 @@ function Routes (props) {
                 <Route path="/licenses" exact>
                     <LicensesPage />
                 </Route>
+                <Route path="/create" exact>
+                    <CreatePage />
+                </Route>
                 <Redirect to="/create" />
             </Switch>
         )}
@@ -54,9 +54,6 @@ function Routes (props) {
                 <Route path="/work" exact>
                     <WorkPage />
                 </Route>
-                <Route path="/create" exact>
-                    <CreatePage />
-                </Route>
                 <Route path="/edit/:id" exact>
                     <EditPage />
                 </Route>
@@ -65,6 +62,9 @@ function Routes (props) {
                 </Route>
                 <Route path="/licenses" exact>
                     <LicensesPage />
+                </Route>
+                <Route path="/create" exact>
+                    <CreatePage />
                 </Route>
                 <Redirect to="/create" />
             </Switch>

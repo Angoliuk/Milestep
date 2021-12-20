@@ -3,13 +3,19 @@ import Routes from './pages/routes';
 import './App.css';
 import { connect } from 'react-redux';
 import { autoLogin } from './reduxStorage/actions/user';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
 function App(props) {
 
-  useEffect(() => {
+  const [loaded, setLoaded] = useState(false)
+
+  if (loaded === false) {
     props.autoLogin()
-  })
+  }
+
+  useEffect(() => {
+    setLoaded(true)
+  }, [])
 
   return (
       <div className="App">

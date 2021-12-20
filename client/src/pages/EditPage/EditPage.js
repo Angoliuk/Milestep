@@ -59,7 +59,6 @@ function EditPage (props) {
 
 
     const changeHandlerCreatedTask = (position) => (event) => {
-        console.log(2)
 
         let allTasks = eForm.tasks
 
@@ -117,7 +116,7 @@ function EditPage (props) {
                     />
                     <Input 
                         name='date' 
-                        onChange={changeHandlerTask} 
+                        onChange={changeHandlerCreatedTask(task.id)} 
                         value={task.date} 
                         classes='inputDate'
                         htmlFor='Дата'
@@ -149,7 +148,6 @@ function EditPage (props) {
         try {
             const companyData = await request(`/api/auth/edit/${companyId}`, "GET", null)
             setEForm(companyData)
-            console.log(companyData)
             setTaskParam({...taskParam, id: companyData.tasks.length})
 
             const usersData = await request('/api/auth/allUsers', 'GET', null)

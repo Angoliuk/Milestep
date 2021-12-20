@@ -132,6 +132,7 @@ function CreatePage(props) {
                 await request('/api/auth/LicensesPost', 'POST', {companyName: eForm.name, licensesList: []})
             }
             setEForm({name:'', edrpou: '', numOfWorkers: '', payerPDW: '', address: '', phoneNum: '', haveLicenses:false, responsible:'',  taxationSystem:'', kwed: '', infoESW: '', tasks:[]})
+            setTaskParam({title: '', date:'', period:'', id: 0})
             alert("event created")
             
         } catch (e) {
