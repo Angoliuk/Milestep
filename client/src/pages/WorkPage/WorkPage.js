@@ -102,7 +102,6 @@ function WorkPage (props) {
         try {
             await request("/api/auth/update", "POST", {id: companyInfo._id, tasksList: currentTasksList})
             await request("/api/auth/staticInfoUpdate", "POST", history)
-            alert("saved")
         } catch (e) {
             console.log(e)
         }
@@ -207,8 +206,8 @@ function WorkPage (props) {
                 label='Завдання' 
             /> 
 
-            {loading ? <Loader loading={loading} /> : <Search />}
-            
+            {/* {loading ? <Loader loading={loading} /> : <Search />} */}
+            <Search />
         </>
         )
 }

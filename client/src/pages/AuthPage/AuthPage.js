@@ -35,7 +35,7 @@ function AuthPage (props) {
     return(
         <div className="container">
             <LoginRegisterNavBar />
-            <div className="loginRegisterInputBlock">
+            <div className="loginInputBlock">
                 <div>
                     <h1>Вхід в акаунт</h1>
                     <Input name='email' onChange={changeHandler} type='email' htmlFor='Email' />

@@ -33,7 +33,7 @@ export const RegisterPage = () => {
     return(
         <div className="container">
             <LoginRegisterNavBar />
-            <div className="loginRegisterInputBlock">
+            <div className="registerInputBlock">
                 <div>
                     <h1>Реєстрація</h1>
                     <form autoComplete='off'>

@@ -1,5 +1,5 @@
 import './components.css'
-export const Loader = ({loading}) => {
+export const Loader = () => {
     return (
             <div className="loader">
                 <div className="lds-facebook">
