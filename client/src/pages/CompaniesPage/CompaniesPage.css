@@ -28,3 +28,33 @@
     background-color: rgb(169, 195, 250);
     border-radius: 10px;
 }
+
+.companiesButtonDelete{
+    margin: 0;
+    padding: 11px;
+    background-color: #f44336;
+}
+
+@media screen and (max-width: 1515px){
+    .taskContainerCompanies{
+        width: 100%
+    }
+}
+
+@media screen and (max-width: 680px){
+    .taskTextCompanies{
+        width: 100%;
+    }
+    .taskContainerCompanies{
+        flex-wrap: wrap;
+    }
+    .taskPeriodCompanies{
+        margin-right: 8%;
+    }
+}
+
+@media screen and (max-width: 460px){
+    .taskPeriodCompanies{
+        margin-right: 15%;
+    }
+}

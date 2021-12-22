@@ -4,23 +4,21 @@ import { useHttp } from '../../hooks/http.hook'
 import { setCompaniesList } from "../../reduxStorage/actions/companies"
 import printJS from "print-js"
 import './StatPage.css'
-import { PagesWrapping } from "../../hoc/PagesWrapping"
+import { PagesWrapping } from "../../hoc/PagesWrapping/PagesWrapping"
 
 function StatPage (props) {
 
     const {request} = useHttp()
-    const {companies, setCompanies} = props
+    const {companies, setCompanies, alertShowFunc} = props
 
 
     const dataRequest = useCallback( async () => {
         
         try {
-
             const data = await request('/api/auth/allCompanies', 'GET', null)
             setCompanies(data)
-
         } catch (e) {
-            console.log(e)
+            alertShowFunc({show: true, type:'error', text:'Невдалося завантажити данні'})
         }
 
     }, [request, setCompanies])

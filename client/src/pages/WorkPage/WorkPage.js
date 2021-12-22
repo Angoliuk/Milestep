@@ -1,7 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react'
 import { connect } from 'react-redux'
 import { Input } from '../../Components/input/Input'
-import { Loader } from '../../Components/Loader'
 import { Select } from '../../Components/select/Select'
 import { useHttp } from '../../hooks/http.hook'
 import { setCompaniesList, setHistory } from '../../reduxStorage/actions/companies'
@@ -9,12 +8,12 @@ import { setStandartTasks } from '../../reduxStorage/actions/tasks'
 import CompaniesOptions from '../../Components/options/CompaniesOptions'
 import standartTasksOptions from "../../Components/options/StandartTasksOptions";
 import "./WorkPage.css"
-import { PagesWrapping } from '../../hoc/PagesWrapping'
+import { PagesWrapping } from '../../hoc/PagesWrapping/PagesWrapping'
 
 function WorkPage (props) {
 
-    const {name, isAdmin, list, history, setList, setHistory} = props
-    const {request, loading} = useHttp()
+    const {name, isAdmin, list, history, setList, setHistory, alertShowFunc} = props
+    const {request} = useHttp()
     const [numOfDays, setNumOfDays] = useState(5)
     const [searchCompanyName, setSearchCompanyName] = useState('')
     const [searchTaskName, setSearchTaskName] = useState('')
@@ -36,8 +35,7 @@ function WorkPage (props) {
             setStandartTasks(staticInfo.find((info) => info.name === 'standartTasks'))
 
         } catch (e) {
-            console.error(e);
-            console.log("here")
+            alertShowFunc({show: true, type:'error', text:'Невдалося завантажити данні'})
         }
 
     } ,[isAdmin, name, setHistory, setList, request])
@@ -103,7 +101,7 @@ function WorkPage (props) {
             await request("/api/auth/update", "POST", {id: companyInfo._id, tasksList: currentTasksList})
             await request("/api/auth/staticInfoUpdate", "POST", history)
         } catch (e) {
-            console.log(e)
+            alertShowFunc({show: true, type:'error', text:'Невдалося виконати завдання'})
         }
 
     }, [list, request, history])
@@ -162,7 +160,7 @@ function WorkPage (props) {
                                                 <div className="taskContainerWork">
                                                     <p className='taskTextWork'>Завдання: {task.title}</p>
                                                     <p>Дата: {new Date(task.date).toLocaleString('uk-UA', {year: 'numeric', month: 'numeric', day: 'numeric' })}</p>
-                                                    <button onClick={() => {updateHandler(oneCompany, task)}}>виконано</button>
+                                                    <button className='completeButtonWork' onClick={() => {updateHandler(oneCompany, task)}}>виконано</button>
                                                 </div>
                                             </li>
                                         :   null
@@ -206,7 +204,6 @@ function WorkPage (props) {
                 label='Завдання' 
             /> 
 
-            {/* {loading ? <Loader loading={loading} /> : <Search />} */}
             <Search />
         </>
         )

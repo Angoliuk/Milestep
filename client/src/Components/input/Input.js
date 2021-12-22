@@ -16,7 +16,7 @@ export const Input = ({name, value = undefined, onChange, classes = 'input',min=
                 </datalist>
             :   null
             }
-            <label htmlFor={name}>{htmlFor}</ label>
+            <label className="inputLabel" htmlFor={name}>{htmlFor}</ label>
         </div>
     )
 }

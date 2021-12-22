@@ -7,14 +7,14 @@ import { connect } from 'react-redux'
 import { Select } from '../../Components/select/Select'
 import { Input } from '../../Components/input/Input'
 import HistoryOptions from '../../Components/options/HistoryOptions'
-import { PagesWrapping } from '../../hoc/PagesWrapping'
+import { PagesWrapping } from '../../hoc/PagesWrapping/PagesWrapping'
 
 function HistoryPage (props) {
 
     const {request} = useHttp() 
     const [chosenCompany, setChosenCompany] = useState('')
     const [historyYear, setHistoryYear] = useState(new Date().getFullYear())
-    const {history, setHistory} = props
+    const {history, setHistory, alertShowFunc} = props
 
 
     const dataRequest = useCallback( async () => {
@@ -24,7 +24,7 @@ function HistoryPage (props) {
             staticInfo.find((info) => info.name === 'history').info.sort((a,b) => a.name.localeCompare(b.name))
             setHistory(staticInfo.find((info) => info.name === 'history'))
         } catch (e) {
-            console.log(e)
+            alertShowFunc({show: true, type:'error', text:'Невдалося завантажити данні'})
         }
 
     }, [request, setHistory])
@@ -44,7 +44,9 @@ function HistoryPage (props) {
                 if (new Date(task.completeToDate).getFullYear() === Number(historyYear)) {
                     let month = new Date(task.completeToDate).getMonth()
                     infoForEveryMonth[month]++}})
-        :   infoForEveryMonth = ['Січень', 'Лютий', 'Квітень', 'Березень', 'Травень', 'Червень', 'Липень', 'Серпень', 'Вересень', 'Жовтень', 'Листопад', 'Грудень']
+        :   window.innerWidth > 1410 
+                ?   infoForEveryMonth = ['Січень', 'Лютий', 'Квітень', 'Березень', 'Травень', 'Червень', 'Липень', 'Серпень', 'Вересень', 'Жовтень', 'Листопад', 'Грудень'] 
+                :   infoForEveryMonth = ['Січ', 'Лют', 'Квіт', 'Бер', 'Трав', 'Чер', 'Лип', 'Сер', 'Вер', 'Жов', 'Лис', 'Гру']
 
         return (
             infoForEveryMonth.map((task, key) => {

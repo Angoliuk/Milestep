@@ -24,3 +24,26 @@
     background-color: rgb(169, 195, 250);
     border-radius: 10px;
 }
+
+.completeButtonWork{
+    height: 50px;
+}
+
+@media screen and (max-width: 1100px){
+    .taskContainerWork{
+        width: 100%;
+    }
+}
+
+@media screen and (max-width: 600px){
+    .taskTextWork{
+        width: 100%;
+    }
+    .taskContainerWork{
+        flex-wrap: wrap;
+    }
+    .completeButtonWork{
+        margin-right: 8%;
+        height: 40px;
+    }
+}

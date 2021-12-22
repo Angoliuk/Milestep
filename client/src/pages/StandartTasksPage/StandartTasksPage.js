@@ -4,13 +4,13 @@ import { useCallback, useEffect, useState } from "react"
 import { connect } from "react-redux"
 import { setStandartTasks } from "../../reduxStorage/actions/tasks"
 import { Input } from '../../Components/input/Input'
-import { PagesWrapping } from '../../hoc/PagesWrapping'
+import { PagesWrapping } from '../../hoc/PagesWrapping/PagesWrapping'
 
 function StandartTasksPage (props) {
     
     const {request} = useHttp() 
     const [taskText, setTaskText] = useState('')
-    const {standartTasks, setStandartTasks} = props
+    const {standartTasks, setStandartTasks, alertShowFunc} = props
     
     const dataRequest = useCallback(async () => {
 
@@ -18,7 +18,7 @@ function StandartTasksPage (props) {
             const staticInfo = await request('/api/auth/staticInfoGet', 'GET', null) 
             setStandartTasks(staticInfo.find((info) => info.name === 'standartTasks'))
         } catch (e) {
-            console.log(e)
+            alertShowFunc({show: true, type:'error', text:'Невдалося завантажити данні'})
         }
 
     }, [request, setStandartTasks])
@@ -50,9 +50,9 @@ function StandartTasksPage (props) {
 
         try {
             await request('/api/auth/staticInfoUpdate', 'POST', standartTasks)
-            alert('saved changes')
+            alertShowFunc({show: true, type:'success', text:'Успішно збережено'})
         } catch (e) {
-            console.log(e)
+            alertShowFunc({show: true, type:'error', text:'Невдалося зберегти, спробуйте ще раз'})
         }
 
     }

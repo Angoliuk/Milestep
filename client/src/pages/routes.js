@@ -9,7 +9,7 @@ import EditPage from './EditPage/EditPage'
 import StandartTasksPage from './StandartTasksPage/StandartTasksPage'
 import HistoryPage from './HistoryPage/HistoryPage'
 import StatPage from './StatPage/StatPage'
-import { RegisterPage } from './RegisterPage/RegisterPage'
+import RegisterPage from './RegisterPage/RegisterPage'
 import { connect } from 'react-redux'
 import LicensesPage from './LicensesPage/LicensesPage'
 

@@ -6,13 +6,13 @@ import { connect } from 'react-redux'
 import { setCompaniesList } from '../../reduxStorage/actions/companies'
 import { Select } from '../../Components/select/Select'
 import CompaniesOptions from '../../Components/options/CompaniesOptions'
-import { PagesWrapping } from '../../hoc/PagesWrapping'
+import { PagesWrapping } from '../../hoc/PagesWrapping/PagesWrapping'
 
 function CompaniesPage (props) {
 
-    const [searchName, setSearchName] = useState()
+    const [searchName, setSearchName] = useState('')
     const {request} = useHttp()
-    const {name, list, isAdmin, setList} = props
+    const {name, list, isAdmin, setList, alertShowFunc} = props
 
 
     const dataRequest = useCallback( async () => {
@@ -25,8 +25,7 @@ function CompaniesPage (props) {
             :   setList(data.filter((company) => company.responsible === name).sort((a,b) => a.name.localeCompare(b.name)))
             
         } catch (e) {
-            console.error(e);
-            console.log("here")
+            alertShowFunc({show: true, type:'error', text:'Невдалося завантажити данні'})
         }
 
     } ,[request, isAdmin, name, setList])
@@ -45,10 +44,10 @@ function CompaniesPage (props) {
             }
             window.location.reload()
         } catch (e) {
-            console.log(e)
+            alertShowFunc({show: true, type:'error', text:'Невдалося видалити компанію'})
         }
         
-    }, [request])
+    }, [request, alertShowFunc])
 
 
     const changeHandlerSearchName = (event) => {
@@ -120,7 +119,7 @@ function CompaniesPage (props) {
                             <Link className="editButton" to={`/edit/${oneElem._id}`}>
                                 <button>Редагувати</button>
                             </Link>
-                            <button className="deleteButton" onClick={() => {deleteHandlerCompany(oneElem)}}>Видалити</button>
+                            <button className="companiesButtonDelete" onClick={() => {deleteHandlerCompany(oneElem)}}>Видалити</button>
                         </div>
                     )
                 })
@@ -130,6 +129,7 @@ function CompaniesPage (props) {
     
     return (
         <>
+
             <Select 
                 onChange={changeHandlerSearchName} 
                 name="companiesSearch"
@@ -139,6 +139,7 @@ function CompaniesPage (props) {
             />  
 
             {list ? <SearchCompany />  : <p>Пусто...</p>}
+
         </> 
         )
 }

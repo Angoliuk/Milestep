@@ -5,3 +5,12 @@
     height: 35px;
     width: 60.5%
 }
+
+@media screen and (max-width: 655px){
+    .select{
+        width: 96.9%;
+    }
+    .selectInput{
+        margin-left: 10px;
+    }
+}

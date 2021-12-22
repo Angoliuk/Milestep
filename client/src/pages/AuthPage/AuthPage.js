@@ -1,23 +1,22 @@
 import { connect } from 'react-redux'
 import React, {  useState  } from 'react'
-import { LoginRegisterNavBar } from '../../Components/LoginRegisterNavBar/LoginRegisterNavBar'
 import { useHttp } from '../../hooks/http.hook'
 import './AuthPage.css'
 import { login } from '../../reduxStorage/actions/user'
 import { Input } from '../../Components/input/Input'
+import { PagesWrapping } from '../../hoc/PagesWrapping/PagesWrapping'
 
 function AuthPage (props) {
 
-    const {loading, request} = useHttp()  
+    const {request} = useHttp()  
+    const {alertShowFunc} = props
     const [form, setForm] = useState({
-        email:'', password:'',
+        email: undefined, password: undefined,
     })
 
 
     const changeHandler = event => {
         setForm({...form, [event.target.name]: event.target.value})
-        console.log(form)
-        console.log(event.target.name)
     }
 
 
@@ -27,22 +26,19 @@ function AuthPage (props) {
             const data = await request('/api/auth/login', 'POST', {...form})
             props.login({name: data.name, isAdmin: data.isAdmin, userId: data.userId })
         } catch (e) {
-            alert("wrong data")
+            alertShowFunc({show: true, type:'error', text:'Невдалося увійти до акаунту'})
         }
 
     }
 
     return(
-        <div className="container">
-            <LoginRegisterNavBar />
-            <div className="loginInputBlock">
+        <div className="loginInputBlock">
+            <div>
+                <h1>Вхід в акаунт</h1>
+                <Input name='email' onChange={changeHandler} type='email' htmlFor='Email' />
+                <Input name='password' onChange={changeHandler} type='password' htmlFor='Password' />
                 <div>
-                    <h1>Вхід в акаунт</h1>
-                    <Input name='email' onChange={changeHandler} type='email' htmlFor='Email' />
-                    <Input name='password' onChange={changeHandler} type='password' htmlFor='Password' />
-                    <div>
-                        <button onClick={loginHandler}>Увійти</button>
-                    </div>
+                    <button onClick={loginHandler}>Увійти</button>
                 </div>
             </div>
         </div>
@@ -61,4 +57,4 @@ function mapDispatchToProps(dispatch) {
     }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(AuthPage)
+export default connect(mapStateToProps, mapDispatchToProps)(PagesWrapping(AuthPage, false))

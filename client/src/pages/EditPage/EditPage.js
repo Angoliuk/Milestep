@@ -11,13 +11,13 @@ import StandartTasksOptions from '../../Components/options/StandartTasksOptions'
 import { setUsersList } from '../../reduxStorage/actions/companies'
 import { InputsAboutCompany } from '../../Components/InputsAboutCompany.js/InputsAboutCompany'
 import { InputsForCreateTask } from '../../Components/InputsForCreateTask/InputsForCreateTask'
-import { PagesWrapping } from '../../hoc/PagesWrapping'
+import { PagesWrapping } from '../../hoc/PagesWrapping/PagesWrapping'
 
 function EditPage (props) {
 
     const companyId = useParams().id
     const {request} = useHttp() 
-    const {setStandartTasks, setUsers} = props
+    const {setStandartTasks, setUsers, alertShowFunc} = props
 
     const [eForm, setEForm] = useState({
         name: undefined,
@@ -35,9 +35,9 @@ function EditPage (props) {
     })
 
     const [taskParam, setTaskParam] = useState({
-        title:undefined,
-        date:undefined,
-        period:'',
+        title: undefined,
+        date: undefined,
+        period: undefined,
         id: 0,
     })
 
@@ -81,7 +81,6 @@ function EditPage (props) {
                 :   null
             )
         })
-        console.log(newTasks)
 
         setEForm({...eForm, tasks: newTasks})
     }
@@ -130,7 +129,7 @@ function EditPage (props) {
                         label='Періодичність' 
                     />
                     <div>
-                        <button className="deleteButton" onClick={() => {deleteHandlerTask(task.id)}}>Видалити завдання</button>
+                        <button className="editDelete" onClick={() => {deleteHandlerTask(task.id)}}>Видалити завдання</button>
                     </div>
                 </form>
             )
@@ -157,8 +156,7 @@ function EditPage (props) {
             setStandartTasks({name: 'standartTasks', info: staticInfo.find((info) => info.name === 'standartTasks').info.sort((a, b) => a.text.localeCompare(b.text))})
             
         } catch (e) {
-            console.error(e);
-            console.log("here")
+            alertShowFunc({show: true, type:'error', text:'Невдалося завантажити данні'})
         }
 
     } ,[request, setStandartTasks, companyId])
@@ -180,10 +178,10 @@ function EditPage (props) {
             eForm.haveLicenses === true
             ?   await request('/api/auth/LicensesPost', 'POST', {companyName: eForm.name, licensesList: []})
             :   await request('/api/auth/LicensesDelete', 'POST', {companyName: eForm.name})
-            alert('everything saved')
+            alertShowFunc({show: true, type:'success', text:'Зміни збережено'})
             goBackAfterEdit()
         } catch (e) {
-            console.log(e)
+            alertShowFunc({show: true, type:'error', text:'Невдалося зберегти зміни'})
         }
 
     }

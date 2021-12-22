@@ -6,24 +6,28 @@ import { useHttp } from "../../hooks/http.hook";
 import { setCompanyLicenses } from "../../reduxStorage/actions/companies";
 import './LicensesPage.css'
 import LicensesOptions from "../../Components/options/LicensesOptions";
-import { PagesWrapping } from "../../hoc/PagesWrapping";
+import { PagesWrapping } from "../../hoc/PagesWrapping/PagesWrapping";
 
 function LicensesPage (props) {
 
     const {request} = useHttp()
-    const {licenses, setLicenses} = props
+    const {licenses, setLicenses, alertShowFunc} = props
     const [newLicense, setNewLicense] = useState({
-        companyName: '',
-        starts: '',
-        ends: '',
-        licenseName: '',
-        address: '',
+        companyName: undefined,
+        starts: undefined,
+        ends: undefined,
+        licenseName: undefined,
+        address: undefined,
     }) 
 
     const dataRequest = useCallback(async () => {
 
-        const data = await request("/api/auth/licensesGet", "GET", null)
-        setLicenses(data.sort((a,b) => a.companyName.localeCompare(b.companyName)))
+        try {
+            const data = await request("/api/auth/licensesGet", "GET", null)
+            setLicenses(data.sort((a,b) => a.companyName.localeCompare(b.companyName)))
+        } catch (e) {
+            alertShowFunc({show: true, type:'error', text:'Невдалося завантажити данні'})
+        }
 
     }, [request, setLicenses])
 
@@ -42,19 +46,23 @@ function LicensesPage (props) {
 
     const addLicense = async() => {
 
-        let updatedLicense = licenses.find((company) => company.companyName === newLicense.companyName)
-        updatedLicense.licensesList.push({starts: newLicense.starts, ends: newLicense.ends, licenseName: newLicense.licenseName, address: newLicense.address})
+        try {
+            let updatedLicense = licenses.find((company) => company.companyName === newLicense.companyName)
+            updatedLicense.licensesList.push({starts: newLicense.starts, ends: newLicense.ends, licenseName: newLicense.licenseName, address: newLicense.address})
 
-        await request('/api/auth/LicensesUpdate', 'POST', {companyName: updatedLicense.companyName, licensesList: updatedLicense.licensesList})
+            await request('/api/auth/LicensesUpdate', 'POST', {companyName: updatedLicense.companyName, licensesList: updatedLicense.licensesList})
 
-        setNewLicense({
-            companyName: '',
-            starts: '',
-            ends: '',
-            licenseName: '',
-            address: '',
-        })
-        alert("event created")
+            setNewLicense({
+                companyName: '',
+                starts: '',
+                ends: '',
+                licenseName: '',
+                address: '',
+            })
+            alertShowFunc({show: true, type:'success', text:'Ліцензію додано'})
+        } catch (e) {
+            alertShowFunc({show: true, type:'error', text:'Невдалося додати ліцензію'})
+        }
 
     }
 

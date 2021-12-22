@@ -9,7 +9,7 @@ export const Select = ({onChange, value='', name, classes='select', OptionsList=
                 ? <OptionsList />
                 : null}
             </select>
-            <label htmlFor={name}>{label}</ label>
+            <label className='selectInput' htmlFor={name}>{label}</ label>
         </div>
     )
 }

@@ -6,7 +6,7 @@ import "./CreatePage.css"
 import { setUsersList } from '../../reduxStorage/actions/companies'
 import { InputsAboutCompany } from '../../Components/InputsAboutCompany.js/InputsAboutCompany'
 import { InputsForCreateTask } from '../../Components/InputsForCreateTask/InputsForCreateTask'
-import { PagesWrapping } from '../../hoc/PagesWrapping'
+import { PagesWrapping } from '../../hoc/PagesWrapping/PagesWrapping'
 
 function CreatePage(props) {
 
@@ -25,8 +25,8 @@ function CreatePage(props) {
         infoESW: undefined, 
         tasks:[]
     })
-    const [taskParam, setTaskParam] = useState({title:'', date: '', period:'', id: 0})
-    const {setStandartTasks, setUsers} = props
+    const [taskParam, setTaskParam] = useState({title: undefined, date: undefined, period: undefined, id: 0})
+    const {setStandartTasks, setUsers, alertShowFunc} = props
 
 
     const changeHandlerForm = (event) => {
@@ -48,7 +48,7 @@ function CreatePage(props) {
             setStandartTasks({name: 'standartTasks', info: staticInfo.find((info) => info.name === 'standartTasks').info.sort((a, b) => a.text.localeCompare(b.text))})
 
         } catch (e) {
-            console.log(e)
+            alertShowFunc({show: true, type:'error', text:'Невдалося завантажити данні'})
         }
 
     }, [request, setStandartTasks, setUsers])
@@ -133,10 +133,10 @@ function CreatePage(props) {
             }
             setEForm({name:'', edrpou: '', numOfWorkers: '', payerPDW: '', address: '', phoneNum: '', haveLicenses:false, responsible:'',  taxationSystem:'', kwed: '', infoESW: '', tasks:[]})
             setTaskParam({title: '', date:'', period:'', id: 0})
-            alert("event created")
-            
+            alertShowFunc({show: true, type:'success', text:'Компанію збережено'})
+
         } catch (e) {
-            alert('error')
+            alertShowFunc({show: true, type:'error', text:'Невдалося додати компанію'})
         }
 
     }
