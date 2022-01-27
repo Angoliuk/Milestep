@@ -10,3 +10,8 @@
     height: 22px;
     padding: 8px;
 }
+
+.licenseButtonDelete{
+    margin: 0;
+    background-color: #f44336;
+}

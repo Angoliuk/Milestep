@@ -63,7 +63,6 @@ function StatPage (props) {
         let time = new Date()
         time = time.setDate(time.getDate() + numOfDays)
         time = new Date(time)
-        console.log(searchTaskName, numOfDays)
         return(
             <div className="tasksStatBlock">
                 <Input 

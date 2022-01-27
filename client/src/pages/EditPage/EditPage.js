@@ -20,24 +20,26 @@ function EditPage (props) {
     const {setStandartTasks, setUsers, alertShowFunc} = props
 
     const [eForm, setEForm] = useState({
-        name: undefined,
-        edrpou: undefined,
-        numOfWorkers: undefined, 
-        payerPDW: undefined, 
-        address: undefined, 
-        phoneNum: undefined,
+        name: '',
+        edrpou: '',
+        numOfWorkers: 0, 
+        payerPDW: '', 
+        address: '', 
+        phoneNum: '',
         haveLicenses: false, 
-        responsible:undefined,  
-        taxationSystem:undefined, 
-        kwed: undefined, 
-        infoESW: undefined, 
+        responsible:'',  
+        taxationSystem:'', 
+        kwed: '', 
+        infoESW: '', 
         tasks:[]
     })
 
+    let haveLicensesBeforeEdit
+
     const [taskParam, setTaskParam] = useState({
-        title: undefined,
-        date: undefined,
-        period: undefined,
+        title: '',
+        date: '',
+        period: '',
         id: 0,
     })
 
@@ -146,6 +148,7 @@ function EditPage (props) {
 
         try {
             const companyData = await request(`/api/auth/edit/${companyId}`, "GET", null)
+            haveLicensesBeforeEdit = companyData.haveLicenses
             setEForm(companyData)
             setTaskParam({...taskParam, id: companyData.tasks.length})
 
@@ -175,9 +178,13 @@ function EditPage (props) {
 
         try {
             await request('/api/auth/updateCompany', 'POST', eForm)
-            eForm.haveLicenses === true
-            ?   await request('/api/auth/LicensesPost', 'POST', {companyName: eForm.name, licensesList: []})
-            :   await request('/api/auth/LicensesDelete', 'POST', {companyName: eForm.name})
+            // eslint-disable-next-line no-unused-expressions
+            haveLicensesBeforeEdit === eForm.haveLicenses
+            ?   null
+            :   eForm.haveLicenses === true
+                ?   await request('/api/auth/LicensesPost', 'POST', {companyName: eForm.name, licensesList: []})
+                :   await request('/api/auth/LicensesDelete', 'POST', {companyName: eForm.name})
+                
             alertShowFunc({show: true, type:'success', text:'Зміни збережено'})
             goBackAfterEdit()
         } catch (e) {
@@ -204,7 +211,8 @@ function EditPage (props) {
 
 function mapStateToProps(state) {
     return{
-        standartTasks: state.tasksInfoReducers.standartTasks
+        standartTasks: state.tasksInfoReducers.standartTasks,
+        licenses: state.companiesInfoReducers.licenses,
     }
 }
 

@@ -13,11 +13,11 @@ function LicensesPage (props) {
     const {request} = useHttp()
     const {licenses, setLicenses, alertShowFunc} = props
     const [newLicense, setNewLicense] = useState({
-        companyName: undefined,
-        starts: undefined,
-        ends: undefined,
-        licenseName: undefined,
-        address: undefined,
+        companyName: null,
+        starts: null,
+        ends: null,
+        licenseName: null,
+        address: null,
     }) 
 
     const dataRequest = useCallback(async () => {
@@ -59,20 +59,43 @@ function LicensesPage (props) {
                 licenseName: '',
                 address: '',
             })
-            alertShowFunc({show: true, type:'success', text:'Ліцензію додано'})
+            alertShowFunc({
+                show: true, 
+                type:'success', 
+                text:'Ліцензію додано'
+            })
         } catch (e) {
-            alertShowFunc({show: true, type:'error', text:'Невдалося додати ліцензію'})
+            alertShowFunc({
+                show: true, 
+                type:'error', 
+                text:'Невдалося додати ліцензію'
+            })
         }
 
     }
 
-    const LicensesTable = () => {
+    const deleteLicense = useCallback(async(companyName, licenseIndex) => {
+        try {
+            const newLicenses = licenses.slice()
+            newLicenses.find((company) => company.companyName === companyName).licensesList.splice(licenseIndex, 1)
+            setLicenses(newLicenses)
+            await request('/api/auth/LicensesUpdate', 'POST', {companyName: companyName, licensesList: newLicenses.find((company) => company.companyName === companyName).licensesList})
+        } catch (e) {
+            alertShowFunc(
+                {show: true,
+                type:'error', 
+                text:'Невдалося видалити ліцензію'
+            })
+        }
+    }, [licenses, setLicenses])
+
+    const LicensesTable = useCallback(() => {
         return(
             <table className='tableForLicenses'>    
                 <thead>
                     <tr>
                         <th className='thForLicenses'>Компанія</th>
-                        <th className='thForLicenses' colSpan='4' >Ліцензії</th>
+                        <th className='thForLicenses' colSpan='6' >Ліцензії</th>
                     </tr>
                 </thead>           
                 <tbody>
@@ -81,16 +104,18 @@ function LicensesPage (props) {
                             return(
                                 <React.Fragment key={i}>
                                     <tr>
-                                        <th className='thForLicenses' rowSpan={licenses[i].licensesList.length+1}>{company.companyName}</th>
+                                        <th className='thForLicenses' rowSpan={company.licensesList.length+1}>{company.companyName}</th>
                                     </tr>
                                     {
                                     company.licensesList.map((license, i) => {
                                         return(
                                             <tr key={i}>
+                                                <th className='thForLicenses'>№ {i+1}</th>
                                                 <th className='thForLicenses'>З: {license.starts}</th>
                                                 <th className='thForLicenses'>До: {license.ends}</th>
                                                 <th className='thForLicenses'>Вид: {license.licenseName}</th>
                                                 <th className='thForLicenses'>Адреса: {license.address}</th>
+                                                <th className='thForLicenses'><button onClick={() => deleteLicense(company.companyName, i)} className="licenseButtonDelete" >Видалити</button></th>
                                             </tr>
                                         )})
                                     }
@@ -103,7 +128,7 @@ function LicensesPage (props) {
             </table>
         )
 
-    }
+    }, [deleteLicense, licenses])
 
 
     return(
