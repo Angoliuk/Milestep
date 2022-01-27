@@ -126,7 +126,6 @@ function CreatePage(props) {
     const addCompany = async () => {
 
         try {
-
             await request('/api/auth/create', 'POST', eForm)
             if (eForm.haveLicenses === true){
                 await request('/api/auth/LicensesPost', 'POST', {companyName: eForm.name, licensesList: []})

@@ -120,8 +120,8 @@ router.post(
     "/create",
     async (req, res) => {
         try {
-            const {name, edrpou, numOfWorkers, payerPDW, address, phoneNum, haveLicenses, responsible, taxationSystem, tasks} = req.body
-            const company = new Company({name, edrpou, numOfWorkers, payerPDW, address, phoneNum, haveLicenses, responsible, taxationSystem, tasks})
+            const {name, edrpou, numOfWorkers, payerPDW, address, phoneNum, haveLicenses, responsible, taxationSystem, tasks, infoESW, kwed} = req.body
+            const company = new Company({name, edrpou, numOfWorkers, payerPDW, address, phoneNum, haveLicenses, responsible, taxationSystem, infoESW, kwed, tasks})
             await company.save()
             res.status(201).json({message: "ok"})
         } catch (e) {
@@ -147,7 +147,7 @@ router.post(
     "/updateCompany",
     async (req, res) => {
         try {
-            const {_id, name, edrpou, numOfWorkers, payerPDW, address, phoneNum, haveLicenses, responsible, taxationSystem, tasks} = req.body
+            const {_id, name, edrpou, numOfWorkers, payerPDW, address, phoneNum, haveLicenses, responsible, taxationSystem, infoESW, kwed, tasks} = req.body
             await Company.findOneAndUpdate( {_id: _id}, {
                 name: name,
                 edrpou: edrpou, 
@@ -158,7 +158,10 @@ router.post(
                 haveLicenses: haveLicenses, 
                 responsible: responsible, 
                 taxationSystem: taxationSystem,  
-                tasks: tasks})
+                tasks: tasks,
+                infoESW: infoESW,
+                kwed: kwed
+            })
             res.status(201).json({message: "update completed"})
         } catch (e) {
             console.error(req.body);

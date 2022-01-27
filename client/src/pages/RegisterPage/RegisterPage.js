@@ -9,7 +9,7 @@ function RegisterPage (props) {
     const {alertShowFunc} = props
     const {loading, request} = useHttp()  
     const [form, setForm] = useState({
-        name: undefined, email: undefined, password: undefined,
+        name: null, email: null, password: null,
     })
 
 

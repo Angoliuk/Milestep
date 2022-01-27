@@ -12,7 +12,7 @@ import { PagesWrapping } from '../../hoc/PagesWrapping/PagesWrapping'
 
 function WorkPage (props) {
 
-    const {name, isAdmin, list, history, setList, setHistory, alertShowFunc} = props
+    const {name, isAdmin, list, history, setList, setHistory, alertShowFunc, setStandartTasks} = props
     const {request} = useHttp()
     const [numOfDays, setNumOfDays] = useState(5)
     const [searchCompanyName, setSearchCompanyName] = useState('')

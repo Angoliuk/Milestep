@@ -7,6 +7,7 @@ import { setCompaniesList } from '../../reduxStorage/actions/companies'
 import { Select } from '../../Components/select/Select'
 import CompaniesOptions from '../../Components/options/CompaniesOptions'
 import { PagesWrapping } from '../../hoc/PagesWrapping/PagesWrapping'
+import printJS from 'print-js'
 
 function CompaniesPage (props) {
 
@@ -65,11 +66,19 @@ function CompaniesPage (props) {
         ? listForSearch = list.filter((company) => company.name === searchName) 
         : listForSearch = list
 
+        const printCompany = (company) => {
+            const companyForPrint = company
+            companyForPrint.tasks = JSON.stringify(companyForPrint.tasks)
+            printJS({printable: [company], properties: ['name', 'edrpou', 'tasks'], type: 'json'})
+        }
+
         return(
             (listForSearch.length > 0)
             ?   listForSearch.map((oneElem, key)=>{
+                // const companyJSON = JSON.stringify(oneElem)
+                // console.log(typeof companyJSON)
                     return(
-                        <div key={key} className="elementForCompanies">
+                        <div key={key} id={key} className="elementForCompanies">
                             <p>Назва: {oneElem.name}</p>
                             <p>ЄДПРОУ: {oneElem.edrpou}</p>
                             <p>Адреса: {oneElem.address}</p>
@@ -119,6 +128,7 @@ function CompaniesPage (props) {
                             <Link className="editButton" to={`/edit/${oneElem._id}`}>
                                 <button>Редагувати</button>
                             </Link>
+                            <button className='editButton' onClick={() => printCompany(oneElem)}>Друк</button>
                             <button className="companiesButtonDelete" onClick={() => {deleteHandlerCompany(oneElem)}}>Видалити</button>
                         </div>
                     )

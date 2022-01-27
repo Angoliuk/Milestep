@@ -4,7 +4,7 @@
 
 .tableForStat{
     border: 2px solid black;
-    width: 100%;
+    width: 600px;
     margin-bottom: 20px;
 }
 
@@ -16,11 +16,19 @@
 
 .tablesForStat{
     display: flex;
-    justify-content: space-around;
+    justify-content: space-between;
     flex-wrap: wrap;
 }
 
 .printForStat{
-    width: 100%;
+    width: 600px;
     margin-left: 0px;
+}
+
+.tasksStatBlock{
+    margin-right: 50px;
+}
+
+.chosenType{
+    background-color: #2e8b57;
 }
