@@ -15,7 +15,7 @@ function StatPage (props) {
     const {request} = useHttp()
     const {companies, setCompanies, alertShowFunc, setStandartTasks} = props
     const [numOfDays, setNumOfDays] = useState(5)
-    const [searchTaskName, setSearchTaskName] = useState('')
+    const [searchTaskName, setSearchTaskName] = useState('Виберіть завдання')
     const [statTypeChoose, setStatTypeChoose] = useState('tasks')
 
     const handleChangeInputNumOfDays = (event) => {
@@ -59,10 +59,7 @@ function StatPage (props) {
         dataRequest()
     }, [dataRequest])
 
-    const TasksTable = useCallback(() => {
-        let time = new Date()
-        time = time.setDate(time.getDate() + numOfDays)
-        time = new Date(time)
+    const TaskTableInputs = useCallback(() => {
         return(
             <div className="tasksStatBlock">
                 <Input 
@@ -84,33 +81,44 @@ function StatPage (props) {
                 /> 
 
                 <button className='printForStat' onClick={() => {printJS({printable: 'tasksTable', type: 'html', targetStyles: ['*']})}}>Друк</button>
-                <table className='tableForStat tasksTable' id="tasksTable">
-                    <thead>
-                        <tr>
-                            <th className='thForStat'>Компанія</th>
-                            <th className='thForStat'>ЕДРПОУ</th>
-                        </tr>
-                    </thead>  
-                    <tbody>
-                        {companies.map((company) => {
-                            const tasksToShow = company.tasks.filter((task) => task.title === searchTaskName && new Date(task.date) <= time) 
-                            return(
-                            tasksToShow && tasksToShow.length > 0
-                            ?   <tr key={company._id}>
-                                    <th className='thForStat'>
-                                        {company.name}
-                                    </th>
-                                    <th className='thForStat'>
-                                        {company.edrpou}
-                                    </th>
-                                </tr>
-                            :   null
-                        )})}
-                    </tbody>
-                </table>
             </div>
         )
-    }, [companies, numOfDays, searchTaskName])
+    }, [numOfDays, searchTaskName]) 
+
+    const TasksTable = useCallback(() => {
+        let time = new Date()
+        time = time.setDate(time.getDate() + numOfDays)
+        time = new Date(time)
+        return(
+            <table className='tableForStat tasksTable' id="tasksTable">
+                <thead>
+                    <tr>
+                        <th colSpan={2} className='thForStat'>{searchTaskName}</th>
+                    </tr>
+                    <tr>
+                        <th className='thForStat'>Компанія</th>
+                        <th className='thForStat'>ЕДРПОУ</th>
+                    </tr>
+                </thead>  
+                <tbody>
+                    {companies.map((company) => {
+                        const tasksToShow = company.tasks.filter((task) => task.title === searchTaskName && new Date(task.date) <= time) 
+                        return(
+                        tasksToShow && tasksToShow.length > 0
+                        ?   <tr key={company._id}>
+                                <th className='thForStat'>
+                                    {company.name}
+                                </th>
+                                <th className='thForStat'>
+                                    {company.edrpou}
+                                </th>
+                            </tr>
+                        :   null
+                    )})}
+                </tbody>
+            </table>   
+        )  
+    }, [searchTaskName, companies, numOfDays])
 
     const WorkersTable = () => {
         return(
@@ -164,7 +172,7 @@ function StatPage (props) {
             <button className={statTypeChoose === 'general' ? 'chosenType' : ''} name="general" onClick={handleChangeStatType}>Загальна</button>
             {
                 {
-                    'tasks': <TasksTable />,
+                    'tasks': <>{TaskTableInputs()}<TasksTable /></>,
                     'workers': <WorkersTable />,
                     'general': <Statistics />,
                 }[statTypeChoose]  
