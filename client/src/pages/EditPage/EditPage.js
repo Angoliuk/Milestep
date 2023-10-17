@@ -1,226 +1,227 @@
-import React, { useCallback, useEffect, useState } from 'react'
-import { useHttp } from '../../hooks/http.hook'
-import { useParams, useHistory } from 'react-router-dom'
-import { connect } from 'react-redux'
-import { setStandartTasks } from '../../reduxStorage/actions/tasks'
-import './EditPage.css'
-import { Select } from '../../Components/select/Select'
-import TaskPeriodOptions from '../../Components/options/TaskPeriodOptions'
-import { Input } from '../../Components/input/Input'
-import StandartTasksOptions from '../../Components/options/StandartTasksOptions'
-import { setUsersList } from '../../reduxStorage/actions/companies'
-import { InputsAboutCompany } from '../../Components/InputsAboutCompany.js/InputsAboutCompany'
-import { InputsForCreateTask } from '../../Components/InputsForCreateTask/InputsForCreateTask'
-import { PagesWrapping } from '../../hoc/PagesWrapping/PagesWrapping'
+import React, { useCallback, useEffect, useState } from 'react';
+import { useHttp } from '../../hooks/http.hook';
+import { useParams, useHistory } from 'react-router-dom';
+import { connect } from 'react-redux';
+import { setStandartTasks } from '../../reduxStorage/actions/tasks';
+import './EditPage.css';
+import { Select } from '../../Components/select/Select';
+import TaskPeriodOptions from '../../Components/options/TaskPeriodOptions';
+import { Input } from '../../Components/input/Input';
+import StandartTasksOptions from '../../Components/options/StandartTasksOptions';
+import { setUsersList } from '../../reduxStorage/actions/companies';
+import { InputsAboutCompany } from '../../Components/InputsAboutCompany.js/InputsAboutCompany';
+import { InputsForCreateTask } from '../../Components/InputsForCreateTask/InputsForCreateTask';
+import { PagesWrapping } from '../../hoc/PagesWrapping/PagesWrapping';
+import { v4 as uuid } from 'uuid';
+function EditPage(props) {
+  const companyId = useParams().id;
+  const { request } = useHttp();
+  const { setStandartTasks, setUsers, alertShowFunc } = props;
 
-function EditPage (props) {
+  const [eForm, setEForm] = useState({
+    name: '',
+    edrpou: '',
+    numOfWorkers: 0,
+    payerPDW: '',
+    address: '',
+    phoneNum: '',
+    haveLicenses: false,
+    responsible: '',
+    taxationSystem: '',
+    kwed: '',
+    infoESW: '',
+    tasks: [],
+  });
 
-    const companyId = useParams().id
-    const {request} = useHttp() 
-    const {setStandartTasks, setUsers, alertShowFunc} = props
+  let haveLicensesBeforeEdit;
 
-    const [eForm, setEForm] = useState({
-        name: '',
-        edrpou: '',
-        numOfWorkers: 0, 
-        payerPDW: '', 
-        address: '', 
-        phoneNum: '',
-        haveLicenses: false, 
-        responsible:'',  
-        taxationSystem:'', 
-        kwed: '', 
-        infoESW: '', 
-        tasks:[]
-    })
+  const [taskParam, setTaskParam] = useState({
+    title: '',
+    date: '',
+    period: '',
+    id: uuid(),
+  });
 
-    let haveLicensesBeforeEdit
+  const changeHandlerForm = (event) => {
+    event.target.type === 'checkbox'
+      ? setEForm({ ...eForm, [event.target.name]: event.target.checked })
+      : setEForm({ ...eForm, [event.target.name]: event.target.value });
+  };
 
-    const [taskParam, setTaskParam] = useState({
-        title: '',
-        date: '',
-        period: '',
-        id: 0,
-    })
+  const changeHandlerTask = (event) => {
+    setTaskParam({ ...taskParam, [event.target.name]: event.target.value });
+  };
 
+  const changeHandlerCreatedTask = (position) => (event) => {
+    let allTasks = eForm.tasks;
 
-    const changeHandlerForm = (event) => {
+    allTasks[position][event.target.name] = event.target.value;
 
-        event.target.type === 'checkbox'
-        ?   setEForm({...eForm, [event.target.name]: event.target.checked}) 
-        :   setEForm({...eForm, [event.target.name]: event.target.value}) 
+    setEForm({ ...eForm, tasks: allTasks });
+  };
 
+  const deleteHandlerTask = (taskId) => {
+    const newTasks = eForm.tasks;
+    setEForm({
+      ...eForm,
+      tasks: newTasks.filter((task) => task.id !== taskId),
+    });
+  };
+
+  const addTask = () => {
+    let newTasksList = eForm.tasks;
+
+    newTasksList.push({
+      id: taskParam.id,
+      title: taskParam.title,
+      date: taskParam.date,
+      period: taskParam.period,
+    });
+
+    setEForm({ ...eForm, tasks: newTasksList });
+    setTaskParam({ title: '', date: '', period: '', id: eForm.tasks.length });
+  };
+
+  const TaskList = () => {
+    const list = eForm.tasks.map((task) => {
+      return (
+        <form className='taskElement' key={task.id}>
+          <Input
+            name='title'
+            onChange={changeHandlerCreatedTask(task.id)}
+            value={task.title}
+            htmlFor='Завдання'
+            DatalistOptions={StandartTasksOptions}
+          />
+          <Input
+            name='date'
+            onChange={changeHandlerCreatedTask(task.id)}
+            value={task.date}
+            classes='inputDate'
+            htmlFor='Дата'
+            type='date'
+          />
+          <Select
+            onChange={changeHandlerCreatedTask(task.id)}
+            value={task.period}
+            name='period'
+            OptionsList={TaskPeriodOptions}
+            label='Періодичність'
+          />
+          <div>
+            <button
+              className='editDelete'
+              onClick={() => {
+                deleteHandlerTask(task.id);
+              }}
+            >
+              Видалити завдання
+            </button>
+          </div>
+        </form>
+      );
+    });
+    return <div>{list}</div>;
+  };
+
+  const dataRequest = useCallback(async () => {
+    try {
+      const companyData = await request(
+        `/api/auth/edit/${companyId}`,
+        'GET',
+        null,
+      );
+      haveLicensesBeforeEdit = companyData.haveLicenses;
+      setEForm(companyData);
+      setTaskParam({ ...taskParam, id: companyData.tasks.length });
+
+      const usersData = await request('/api/auth/allUsers', 'GET', null);
+      setUsers(usersData);
+
+      const staticInfo = await request('/api/auth/staticInfoGet', 'GET', null);
+      setStandartTasks({
+        name: 'standartTasks',
+        info: staticInfo
+          .find((info) => info.name === 'standartTasks')
+          .info.sort((a, b) => a.text.localeCompare(b.text)),
+      });
+    } catch (e) {
+      alertShowFunc({
+        show: true,
+        type: 'error',
+        text: 'Невдалося завантажити данні',
+      });
     }
+  }, [request, setStandartTasks, companyId]);
 
+  useEffect(() => {
+    dataRequest();
+  }, [dataRequest]);
 
-    const changeHandlerTask = (event) => {
+  const history = useHistory();
+  const goBackAfterEdit = () => {
+    history.push('/companies');
+  };
 
-        setTaskParam({...taskParam, [event.target.name]: event.target.value})
+  const saveChanges = async () => {
+    try {
+      await request('/api/auth/updateCompany', 'POST', eForm);
+      // eslint-disable-next-line no-unused-expressions
+      haveLicensesBeforeEdit === eForm.haveLicenses
+        ? null
+        : eForm.haveLicenses === true
+        ? await request('/api/auth/LicensesPost', 'POST', {
+            companyName: eForm.name,
+            licensesList: [],
+          })
+        : await request('/api/auth/LicensesDelete', 'POST', {
+            companyName: eForm.name,
+          });
 
+      alertShowFunc({ show: true, type: 'success', text: 'Зміни збережено' });
+      goBackAfterEdit();
+    } catch (e) {
+      alertShowFunc({
+        show: true,
+        type: 'error',
+        text: 'Невдалося зберегти зміни',
+      });
     }
+  };
 
+  return (
+    <div className='element'>
+      <InputsAboutCompany changeHandlerForm={changeHandlerForm} eForm={eForm} />
 
-    const changeHandlerCreatedTask = (position) => (event) => {
+      <InputsForCreateTask
+        taskParam={taskParam}
+        changeHandlerTask={changeHandlerTask}
+        addTask={addTask}
+      />
 
-        let allTasks = eForm.tasks
+      <TaskList />
 
-        allTasks[position][event.target.name] = event.target.value
-
-        setEForm({...eForm, tasks: allTasks})
-
-        }
-
-
-    const deleteHandlerTask = (position) => {
-
-        let newTasks = eForm.tasks
-
-        newTasks.splice(position, 1)
-        newTasks.map((task) => {
-            return(
-                (task.id > position)
-                ?   task.id--
-                :   null
-            )
-        })
-
-        setEForm({...eForm, tasks: newTasks})
-    }
-
-
-    const addTask = () => {
-
-        let newTasksList = eForm.tasks
-
-        newTasksList.push({
-            id: taskParam.id,
-            title: taskParam.title,
-            date: taskParam.date,
-            period: taskParam.period,
-        })
-
-        setEForm({...eForm, tasks: newTasksList})
-        setTaskParam({title: '', date:'', period:'', id: eForm.tasks.length})
-    }
-
-
-    const TaskList = (()=>{
-        const list = eForm.tasks.map((task)=>{
-            return(
-                <form className='taskElement' key={task.id}>
-                    <Input
-                        name='title' 
-                        onChange={changeHandlerCreatedTask(task.id)} 
-                        value={task.title} 
-                        htmlFor='Завдання'
-                        DatalistOptions={StandartTasksOptions}  
-                    />
-                    <Input 
-                        name='date' 
-                        onChange={changeHandlerCreatedTask(task.id)} 
-                        value={task.date} 
-                        classes='inputDate'
-                        htmlFor='Дата'
-                        type="date"
-                    />   
-                    <Select 
-                        onChange={changeHandlerCreatedTask(task.id)} 
-                        value={task.period} 
-                        name="period"
-                        OptionsList={TaskPeriodOptions} 
-                        label='Періодичність' 
-                    />
-                    <div>
-                        <button className="editDelete" onClick={() => {deleteHandlerTask(task.id)}}>Видалити завдання</button>
-                    </div>
-                </form>
-            )
-        }) 
-        return(
-            <div>
-                {list}
-            </div>
-        )
-    }) 
-
-
-    const dataRequest = useCallback( async () => {
-
-        try {
-            const companyData = await request(`/api/auth/edit/${companyId}`, "GET", null)
-            haveLicensesBeforeEdit = companyData.haveLicenses
-            setEForm(companyData)
-            setTaskParam({...taskParam, id: companyData.tasks.length})
-
-            const usersData = await request('/api/auth/allUsers', 'GET', null)
-            setUsers(usersData)
-
-            const staticInfo = await request('/api/auth/staticInfoGet', 'GET', null) 
-            setStandartTasks({name: 'standartTasks', info: staticInfo.find((info) => info.name === 'standartTasks').info.sort((a, b) => a.text.localeCompare(b.text))})
-            
-        } catch (e) {
-            alertShowFunc({show: true, type:'error', text:'Невдалося завантажити данні'})
-        }
-
-    } ,[request, setStandartTasks, companyId])
-
-
-    useEffect(() => {
-        dataRequest()
-    }, [dataRequest])
-
-
-    const history = useHistory()
-    const goBackAfterEdit = () => { history.push('/companies') }
-
-    
-    const saveChanges = async () => {
-
-        try {
-            await request('/api/auth/updateCompany', 'POST', eForm)
-            // eslint-disable-next-line no-unused-expressions
-            haveLicensesBeforeEdit === eForm.haveLicenses
-            ?   null
-            :   eForm.haveLicenses === true
-                ?   await request('/api/auth/LicensesPost', 'POST', {companyName: eForm.name, licensesList: []})
-                :   await request('/api/auth/LicensesDelete', 'POST', {companyName: eForm.name})
-                
-            alertShowFunc({show: true, type:'success', text:'Зміни збережено'})
-            goBackAfterEdit()
-        } catch (e) {
-            alertShowFunc({show: true, type:'error', text:'Невдалося зберегти зміни'})
-        }
-
-    }
-
-    
-    return (
-            <div className="element">
-
-                <InputsAboutCompany changeHandlerForm={changeHandlerForm} eForm={eForm} />
-
-                <InputsForCreateTask taskParam={taskParam} changeHandlerTask={changeHandlerTask} addTask={addTask} /> 
-
-                <TaskList />
-
-                <button onClick={saveChanges}>Зберегти зміни</button>
-
-            </div>
-        )
+      <button onClick={saveChanges}>Зберегти зміни</button>
+    </div>
+  );
 }
 
 function mapStateToProps(state) {
-    return{
-        standartTasks: state.tasksInfoReducers.standartTasks,
-        licenses: state.companiesInfoReducers.licenses,
-    }
+  return {
+    standartTasks: state.tasksInfoReducers.standartTasks,
+    licenses: state.companiesInfoReducers.licenses,
+  };
 }
 
 function mapDispatchToProps(dispatch) {
-    return{
-        setStandartTasks: (standartTasks) => dispatch(setStandartTasks(standartTasks)),
-        setUsers: (users) => dispatch(setUsersList(users)),
-    }
+  return {
+    setStandartTasks: (standartTasks) =>
+      dispatch(setStandartTasks(standartTasks)),
+    setUsers: (users) => dispatch(setUsersList(users)),
+  };
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(PagesWrapping(EditPage))
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(PagesWrapping(EditPage));
