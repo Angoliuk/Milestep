@@ -44,7 +44,8 @@ function StatPage (props) {
         
         try {
             const data = await request('/api/auth/allCompanies', 'GET', null)
-            setCompanies(data)
+            console.log(data)
+            setCompanies(data.sort((a,b) => a.name.localeCompare(b.name)))
 
             const staticInfo = await request('/api/auth/staticInfoGet', 'GET', null)
             staticInfo.find((info) => info.name === 'standartTasks').info.sort((a,b) => a.text.localeCompare(b.text))

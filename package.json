@@ -22,7 +22,8 @@
     "express": "^4.17.1",
     "express-validator": "^6.12.1",
     "mongoose": "^6.0.5",
-    "print-js": "^1.6.0"
+    "print-js": "^1.6.0",
+    "uuid": "^9.0.1"
   },
   "devDependencies": {
     "concurrently": "^6.2.1",
